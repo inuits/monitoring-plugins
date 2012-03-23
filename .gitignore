@@ -1,0 +1,5 @@
+*.deb
+*.rpm
+packages/*/*/*.deb
+packages/*/*/*.rpm
+vagrant/.vagrant
