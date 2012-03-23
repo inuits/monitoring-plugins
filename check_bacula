@@ -22,6 +22,10 @@
 
 # Modified:
 # Silver Salonen <silver@ultrasoft.ee>
+# Dave Simons <simonsd@inuits.eu>
+
+# version 0.0.4 (23.March.2012)
+# * add $sqlHost variable
 
 # version 0.0.3 (07.May.2007)
 # * fix typo 'successfull' -> 'successful'
@@ -64,6 +68,7 @@ my $progVers = "0.0.3";
 my $sqlDB = "bacula";
 my $sqlUsername = "bacula";
 my $sqlPassword = "";
+my $sqlHost = "localhost";
 
 my %ERRORS = (  'UNKNOWN'       =>      '-1',
                 'OK'            =>      '0',
@@ -132,7 +137,7 @@ if ($opt_version) {
 
 
 if ($opt_job && $opt_warning && $opt_critical) {
- my $dsn = "DBI:mysql:database=$sqlDB;host=localhost";
+ my $dsn = "DBI:mysql:database=$sqlDB;host=$sqlHost";
  my $dbh = DBI->connect( $dsn,$sqlUsername,$sqlPassword ) or die "Error connecting to: '$dsn': $DBI::errstr\n";
  
  if ($opt_hours)
