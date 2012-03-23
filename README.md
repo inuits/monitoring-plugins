@@ -59,4 +59,4 @@ An example Vagrant project has been included to get you started right away.
 ### Contributions
 
 As usual contributions are highly encouraged.
-If you'd like to do so, please do not hesitate send pull requests.
+If you'd like to do so, please do not hesitate to send pull requests.
