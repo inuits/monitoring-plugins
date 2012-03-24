@@ -1,5 +1,6 @@
 *.deb
 *.rpm
+*.swp
 packages/*/*/*.deb
 packages/*/*/*.rpm
 vagrant/.vagrant

@@ -50,6 +50,11 @@ An example Vagrant project has been included to get you started right away.
         <td><a href="http://exchange.nagios.org/directory/Plugins/Backup-and-Recovery/Bacula/check_bacula-2Epl/details/">upstream</a></td>
     </tr>
     <tr>
+        <td>check_mem.pl</td>
+        <td>Garrett Honeycutt</td>
+        <td><a href="http://exchange.nagios.org/directory/Plugins/Uncategorized/Operating-Systems/Linux/check_mem/details">upstream</a></td>
+    </tr>
+    <tr>
         <td>...</td>
         <td>...</td>
         <td><a href="http://google.com">upstream</a></td>
