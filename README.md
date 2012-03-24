@@ -51,7 +51,7 @@ An example Vagrant project has been included to get you started right away.
     </tr>
     <tr>
         <td>check_mem.pl</td>
-        <td>Garrett Honeycutt</td>
+        <td><a href="https://github.com/ghoneycutt">Garrett Honeycutt</a></td>
         <td><a href="http://exchange.nagios.org/directory/Plugins/Uncategorized/Operating-Systems/Linux/check_mem/details">upstream</a></td>
     </tr>
     <tr>
