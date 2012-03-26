@@ -1,5 +1,6 @@
-# Nagios plugin       version   iteration
-check_bacula          0.0.4     1
-check_mem.pl          1.8       1
-check_mysqld.pl       0.93      1
-check_apache-auto.pl  1.0       1
+# Nagios plugin       version       iteration
+check_apache-auto.pl  1.0           1
+check_bacula          0.0.4         1
+check_mem.pl          1.8           1
+check_mysqld.pl       0.93          1
+check_puppet.rb       70ba5a5155    1
