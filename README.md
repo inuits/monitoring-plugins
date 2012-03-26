@@ -17,13 +17,15 @@ RHEL/CentOS:
 
     yum install rpm-build
     gem install fpm --no-rdoc --no-ri
-    sh build.sh
+    cd build
+    make
 
 Debian:
 
     apt-get install rpm
     gem install fpm --no-rdoc --no-ri
-    sh build.sh
+    cd build
+    make
 
 
 ### Optional
@@ -36,7 +38,7 @@ An example Vagrant project has been included to get you started right away.
     vagrant up
     vagrant ssh
     cd build
-    sh build.sh
+    make
 
 ### Available plugins
 
@@ -46,17 +48,17 @@ An example Vagrant project has been included to get you started right away.
     </tr>
     <tr>
         <td>check_bacula</td>
-        <td>Julian Hein</td>
+        <td><a href="http://www.xing.com/profile/Julian_Hein">Julian Hein</a></td>
         <td><a href="http://exchange.nagios.org/directory/Plugins/Backup-and-Recovery/Bacula/check_bacula-2Epl/details/">upstream</a></td>
     </tr>
     <tr>
         <td>check_mem.pl</td>
-        <td><a href="https://github.com/ghoneycutt">Garrett Honeycutt</a></td>
+        <td><a href="http://garretthoneycutt.com/">Garrett Honeycutt</a></td>
         <td><a href="http://exchange.nagios.org/directory/Plugins/Uncategorized/Operating-Systems/Linux/check_mem/details">upstream</a></td>
     </tr>
     <tr>
         <td>check_mysqld.pl</td>
-        <td>William Leibzon</td>
+        <td><a href="http://william.leibzon.org">William Leibzon</a></td>
         <td><a href="http://william.leibzon.org/nagios/">upstream</a></td>
     </tr>
     <tr>
