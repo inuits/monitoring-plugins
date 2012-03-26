@@ -13,8 +13,8 @@ rm -rf *.rpm
 
 for PLUGIN in $(grep -viE '^#' build.txt | awk {'print $1'})
 do
-  PLUGIN_NAME_DEBIAN=$(echo ${PLUGIN} | sed -e 's/check_/check-/g')
-  PLUGIN_NAME_RHEL=$(echo ${PLUGIN} | sed -e 's/check_//g')
+  PLUGIN_NAME_DEBIAN=$(echo ${PLUGIN} | sed -e 's/check_/check-/g' | cut -d '.' -f 1)
+  PLUGIN_NAME_RHEL=$(echo ${PLUGIN} | sed -e 's/check_//g' | cut -d '.' -f 1)
   PLUGIN_VERSION=$(grep -E "^${PLUGIN}\s" build.txt | awk {'print $2'})
   PLUGIN_ITERATION=$(grep -E "^${PLUGIN}\s" build.txt | awk {'print $3'})
   
