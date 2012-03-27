@@ -72,6 +72,11 @@ An example Vagrant project has been included to get you started right away.
         <td><a href="https://github.com/ripienaar/monitoring-scripts/blob/master/puppet/check_puppet.rb">upstream</a></td>
     </tr>
     <tr>
+        <td>check_linux-stats.pl</td>
+        <td>Damien Siaud</td>
+        <td><a href="http://exchange.nagios.org/directory/Plugins/Operating-Systems/Linux/check_linux_stats/details">upstream</a></td>
+    </tr>
+    <tr>
         <td>...</td>
         <td>...</td>
         <td><a href="http://google.com">upstream</a></td>
