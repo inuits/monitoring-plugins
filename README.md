@@ -1,9 +1,9 @@
 ### Nagios-plugins
 
-This is a selection of plugins for both Nagios and Icinga.
-Packages for RHEL/CentOS and Debian/Ubuntu will be built in a CI fashion in the near future.
+This is a selection of plugins for both Nagios and Icinga.<br>
+Packages are built in a CI fashion using Jenkins and can be found on our [repo](http://repo.inuits.eu/centos/).
 
-A script to build the packages yourself has been included.
+A script to build packages yourself is included as well.
 
 ### Requirements
 
@@ -97,4 +97,3 @@ Guidelines:
 - Send a pull request
 - ...
 - Profit!
-
