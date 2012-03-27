@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ## Script:  build.sh
-## Version: 0.1.1
+## Version: 0.1.2
 ## Date:    2012-03-23
 ## Author:  Tom De Vylder <tomdv@inuits.eu>
 ## Contrib: 
@@ -16,6 +16,10 @@ do
   PLUGIN_ITERATION=$(grep -E "^${PLUGIN}\s" build.txt | awk {'print $3'})
   
   echo -e "\e[1;34m[\e[00m --- \e[00;32mBuild package: ${PLUGIN}\e[00m --- \e[1;34m]\e[00m\n"
+
+  # Enforce permissions
+  chmod 755 ${PLUGIN}
+
   # Build Debian 5/6 package
   fpm -s dir -t deb --architecture all \
     -n nagios-plugin-${PLUGIN_NAME_DEBIAN} \
