@@ -76,14 +76,20 @@ An example Vagrant project has been included to get you started right away.
         <td>Damien Siaud</td>
         <td><a href="http://exchange.nagios.org/directory/Plugins/Operating-Systems/Linux/check_linux_stats/details">upstream</a></td>
     </tr>
-    <tr>
-        <td>...</td>
-        <td>...</td>
-        <td><a href="http://google.com">upstream</a></td>
-    </tr>
 </table>
 
 ### Contributions
 
 As usual contributions are highly encouraged.
 If you'd like to do so, please do not hesitate to send pull requests.
+
+Guidelines:
+
+- Fork this repository
+- Add plugin script to the repository
+- Add plugin details to build.txt
+- Update author table in README.md
+- Send a pull request
+- ...
+- Profit!
+
