@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ## Script:  build.sh
-## Version: 0.1.2
+## Version: 0.1.3
 ## Date:    2012-03-23
 ## Author:  Tom De Vylder <tomdv@inuits.eu>
 ## Contrib: 
@@ -25,6 +25,7 @@ do
     -n nagios-plugin-${PLUGIN_NAME_DEBIAN} \
     -v ${PLUGIN_VERSION} --iteration ${PLUGIN_ITERATION} \
     --prefix /usr/lib/nagios/plugins/ \
+    --description "Nagios Plugin - ${PLUGIN_NAME_DEBIAN}" \
     ${PLUGIN} &>/dev/null
   cp nagios-plugin-${PLUGIN_NAME_DEBIAN}_${PLUGIN_VERSION}-${PLUGIN_ITERATION}_all.deb packages/debian/5/
   mv nagios-plugin-${PLUGIN_NAME_DEBIAN}_${PLUGIN_VERSION}-${PLUGIN_ITERATION}_all.deb packages/debian/6/
@@ -34,6 +35,7 @@ do
     -n nagios-plugins-${PLUGIN_NAME_RHEL} \
     -v ${PLUGIN_VERSION} --iteration ${PLUGIN_ITERATION} \
     --prefix /usr/lib64/nagios/plugins/ \
+    --description "Nagios Plugin - ${PLUGIN}" \
     ${PLUGIN} &>/dev/null
   cp nagios-plugins-${PLUGIN_NAME_RHEL}-${PLUGIN_VERSION}-${PLUGIN_ITERATION}.x86_64.rpm packages/rhel/5/
   mv nagios-plugins-${PLUGIN_NAME_RHEL}-${PLUGIN_VERSION}-${PLUGIN_ITERATION}.x86_64.rpm packages/rhel/6/
