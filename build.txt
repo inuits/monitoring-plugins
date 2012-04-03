@@ -1,9 +1,21 @@
-# Nagios plugin         version       iteration
-check_apache-auto.pl    1.0           1
-check_bacula            0.0.4         1
-check_drbd              3e0b548f55    1
-check_linux-procstat.pl 0.4           1
-check_linux-stats.pl    1.1           1
-check_mem.pl            1.8           1
-check_mysqld.pl         0.93          1
-check_puppet.rb         70ba5a5155    1
+# Nagios plugin                       version       iteration
+check_apache-auto.pl                  1.0           1
+check_bacula                          0.0.4         1
+check_drbd                            3e0b548f55    1
+check_linux-procstat.pl               0.4           1
+check_linux-stats.pl                  1.1           1
+check_mem.pl                          1.8           1
+check_mysqld.pl                       0.93          1
+check_puppet.rb                       70ba5a5155    1
+pmp-check-lvm-snapshots               0.9.0         1
+pmp-check-mysql-deadlocks             0.9.0         1
+pmp-check-mysql-deleted-files         0.9.0         1
+pmp-check-mysql-file-privs            0.9.0         1
+pmp-check-mysql-innodb                0.9.0         1
+pmp-check-mysql-pidfile               0.9.0         1
+pmp-check-mysql-processlist           0.9.0         1
+pmp-check-mysql-replication-delay     0.9.0         1
+pmp-check-mysql-replication-running   0.9.0         1
+pmp-check-mysql-status                0.9.0         1
+pmp-check-pt-table-checksum           0.9.0         1
+pmp-check-unix-memory                 0.9.0         1

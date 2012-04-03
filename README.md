@@ -86,6 +86,66 @@ An example Vagrant project has been included to get you started right away.
         <td>Michael Chapman</td>
         <td><a href="https://github.com/anchor/nagios-plugin-drbd">upstream</a></td>
     </tr>
+    <tr>
+        <td>pmp-check-lvm-snapshots</td>
+        <td><a href="http://www.percona.com/">Percona</a></td>
+        <td><a href="http://www.percona.com/software/percona-monitoring-plugins/">upstream</a></td>
+    </tr>
+    <tr>
+        <td>pmp-check-mysql-deadlocks</td>
+        <td><a href="http://www.percona.com/">Percona</a></td>
+        <td><a href="http://www.percona.com/software/percona-monitoring-plugins/">upstream</a></td>
+    </tr>
+    <tr>
+        <td>pmp-check-mysql-deleted-files</td>
+        <td><a href="http://www.percona.com/">Percona</a></td>
+        <td><a href="http://www.percona.com/software/percona-monitoring-plugins/">upstream</a></td>
+    </tr>
+    <tr>
+        <td>pmp-check-mysql-file-privs</td>
+        <td><a href="http://www.percona.com/">Percona</a></td>
+        <td><a href="http://www.percona.com/software/percona-monitoring-plugins/">upstream</a></td>
+    </tr>
+    <tr>
+        <td>pmp-check-mysql-innodb</td>
+        <td><a href="http://www.percona.com/">Percona</a></td>
+        <td><a href="http://www.percona.com/software/percona-monitoring-plugins/">upstream</a></td>
+    </tr>
+    <tr>
+        <td>pmp-check-mysql-pidfile</td>
+        <td><a href="http://www.percona.com/">Percona</a></td>
+        <td><a href="http://www.percona.com/software/percona-monitoring-plugins/">upstream</a></td>
+    </tr>
+    <tr>
+        <td>pmp-check-mysql-processlist</td>
+        <td><a href="http://www.percona.com/">Percona</a></td>
+        <td><a href="http://www.percona.com/software/percona-monitoring-plugins/">upstream</a></td>
+    </tr>
+    <tr>
+        <td>pmp-check-mysql-replication-delay</td>
+        <td><a href="http://www.percona.com/">Percona</a></td>
+        <td><a href="http://www.percona.com/software/percona-monitoring-plugins/">upstream</a></td>
+    </tr>
+    <tr>
+        <td>pmp-check-mysql-replication-running</td>
+        <td><a href="http://www.percona.com/">Percona</a></td>
+        <td><a href="http://www.percona.com/software/percona-monitoring-plugins/">upstream</a></td>
+    </tr>
+    <tr>
+        <td>pmp-check-mysql-status</td>
+        <td><a href="http://www.percona.com/">Percona</a></td>
+        <td><a href="http://www.percona.com/software/percona-monitoring-plugins/">upstream</a></td>
+    </tr>
+    <tr>
+        <td>pmp-check-pt-table-checksum</td>
+        <td><a href="http://www.percona.com/">Percona</a></td>
+        <td><a href="http://www.percona.com/software/percona-monitoring-plugins/">upstream</a></td>
+    </tr>
+    <tr>
+        <td>pmp-check-unix-memory</td>
+        <td><a href="http://www.percona.com/">Percona</a></td>
+        <td><a href="http://www.percona.com/software/percona-monitoring-plugins/">upstream</a></td>
+    </tr>
 </table>
 
 ### Contributions
