@@ -81,6 +81,11 @@ An example Vagrant project has been included to get you started right away.
         <td>Damien Siaud</td>
         <td><a href="http://exchange.nagios.org/directory/Plugins/Operating-Systems/Linux/check_linux_stats/details">upstream</a></td>
     </tr>
+    <tr>
+        <td>check_drbd</td>
+        <td>Michael Chapman</td>
+        <td><a href="https://github.com/anchor/nagios-plugin-drbd">upstream</a></td>
+    </tr>
 </table>
 
 ### Contributions
