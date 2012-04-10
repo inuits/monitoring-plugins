@@ -10,6 +10,7 @@ Package {
 package {
   'make': ensure => present;
   'rpm':  ensure => present;
+  'vim':  ensure => present;
 }
 
 package {

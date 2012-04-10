@@ -5,6 +5,7 @@ check_drbd                            3e0b548f55    1
 check_linux-procstat.pl               0.4           1
 check_linux-stats.pl                  1.1           1
 check_mem.pl                          1.8           1
+check_memcached.pl                    0.6           1
 check_mysqld.pl                       0.93          1
 check_puppet.rb                       70ba5a5155    1
 pmp-check-lvm-snapshots               0.9.0         1

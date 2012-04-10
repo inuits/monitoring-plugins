@@ -67,6 +67,11 @@ An example Vagrant project has been included to get you started right away.
         <td><a href="http://william.leibzon.org/nagios/">upstream</a></td>
     </tr>
     <tr>
+        <td>check_memcached.pl</td>
+        <td><a href="http://william.leibzon.org">William Leibzon</a></td>
+        <td><a href="http://william.leibzon.org/nagios/">upstream</a></td>
+    </tr>
+    <tr>
         <td>check_apache-auto.pl</td>
         <td>Robert Becht</td>
         <td><a href="http://exchange.nagios.org/directory/Plugins/Web-Servers/Apache/Robert-Becht/details">upstream</a></td>
