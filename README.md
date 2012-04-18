@@ -151,6 +151,11 @@ An example Vagrant project has been included to get you started right away.
         <td><a href="http://www.percona.com/">Percona</a></td>
         <td><a href="http://www.percona.com/software/percona-monitoring-plugins/">upstream</a></td>
     </tr>
+    <tr>
+        <td>check_iostat</td>
+        <td>Thiago Varela</td>
+        <td><a href="http://exchange.nagios.org/directory/Plugins/Operating-Systems/Linux/check_iostat--2D-I-2FO-statistics/details">upstream</a></td>
+    </tr>
 </table>
 
 ### Contributions
