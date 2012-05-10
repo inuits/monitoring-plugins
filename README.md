@@ -156,6 +156,11 @@ An example Vagrant project has been included to get you started right away.
         <td>Thiago Varela</td>
         <td><a href="http://exchange.nagios.org/directory/Plugins/Operating-Systems/Linux/check_iostat--2D-I-2FO-statistics/details">upstream</a></td>
     </tr>
+    <tr>
+        <td>check_postfix-mailqueue</td>
+        <td><a href="http://www.bongermino.de"></a>Bjoern Bongermino</td>
+        <td><a href="http://exchange.nagios.org/directory/Plugins/Email-and-Groupware/Postfix/check_postfix_mailqueue/details">upstream</a></td>
+    </tr>
 </table>
 
 ### Contributions
