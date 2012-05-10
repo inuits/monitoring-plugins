@@ -3,6 +3,8 @@ all:
 	make build
 
 clean:
+	rm -rf ../build/*.deb
+	rm -rf ../build/*.rpm
 	rm -rf packages/*/*/*.deb
 	rm -rf packages/*/*/*.rpm
 
