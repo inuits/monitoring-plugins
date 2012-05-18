@@ -9,7 +9,8 @@ A script to build packages yourself is included as well.
 
 * [FPM](https://github.com/jordansissel/fpm)
 * Ruby (for FPM)
-* rpmbuild 
+* rpmbuild
+
 
 ### Usage
 
@@ -30,15 +31,32 @@ Debian:
 
 ### Optional
 
+* Jenkins
+
+In order to have Jenkins to build your packages simply add a new command shell build directive, with the following content:
+
+    make
+
+
 * Vagrant
 
 An example Vagrant project has been included to get you started right away.
 
     cd vagrant
     vagrant up
-    vagrant ssh
-    cd build
-    make
+    make vagrant-build
+
+
+* Unit testing
+
+(work in progress)<br>
+This requires cucumber to be installed on your workstation.
+
+    cd vagrant
+    vagrant up
+    make vagrant-validate
+
+
 
 ### Available plugins
 
@@ -173,7 +191,10 @@ Guidelines:
 - Fork this repository
 - Add plugin script to the repository
 - Add plugin details to build.txt
+- Add plugin name to vagrant/features/build.feature
+- # make vagrant-validate
 - Update author table in README.md
 - Send a pull request
 - ...
 - Profit!
+

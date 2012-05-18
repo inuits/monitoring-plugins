@@ -1,0 +1,51 @@
+AVAILABLE BOXES:
+--
+
+  Debian 6
+  CentOS 6
+
+
+UPDATE REPOSITORIES:
+--
+
+  $ cd /usr/src/puppet/
+  $ git checkout master
+  $ git pull
+  
+  $ cd /usr/src/facter/
+  $ git checkout master
+  $ git pull
+
+
+EXAMPLE USAGE:
+--
+
+  $ cd /usr/src/puppet/
+  $ git checkout tags/2.7.2
+  $ puppet --version
+  2.7.2
+  
+  $ cd /usr/src/puppet/
+  $ git checkout tags/2.6.2
+  $ puppet --version
+  2.6.2
+  
+  $ cd /usr/src/puppet/
+  $ git checkout tags/2.7.14
+  $ puppet --version
+  2.7.9
+  
+  $ cd /usr/src/facter/
+  $ git checkout tags/1.6.8
+  $ facter --version
+  1.6.0
+  
+  $ cd /usr/src/facter/
+  $ git checkout tags/1.5.4
+  $ facter --version
+  1.5.4
+  
+  $ cd /usr/src/facter/
+  $ git checkout tags/1.6.2
+  $ facter --version
+  1.6.2
