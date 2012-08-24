@@ -24,7 +24,7 @@ do
   fpm -s dir -t deb --architecture all \
     -n nagios-plugin-${PLUGIN_NAME_DEBIAN} \
     -v ${PLUGIN_VERSION} --iteration ${PLUGIN_ITERATION} \
-    --prefix /usr/lib/nagios/plugins/ \
+    --prefix /usr/lib/nagios/plugins \
     --description "Nagios Plugin - ${PLUGIN_NAME_DEBIAN}" \
     ${PLUGIN} &>/dev/null
   cp nagios-plugin-${PLUGIN_NAME_DEBIAN}_${PLUGIN_VERSION}-${PLUGIN_ITERATION}_all.deb packages/debian/5/
@@ -34,7 +34,7 @@ do
   setarch i386 fpm -s dir -t rpm --architecture i386 \
     -n nagios-plugins-${PLUGIN_NAME_RHEL} \
     -v ${PLUGIN_VERSION} --iteration ${PLUGIN_ITERATION} \
-    --prefix /usr/lib64/nagios/plugins/ \
+    --prefix /usr/lib64/nagios/plugins \
     --description "Nagios Plugin - ${PLUGIN}" \
     ${PLUGIN} &>/dev/null
   cp nagios-plugins-${PLUGIN_NAME_RHEL}-${PLUGIN_VERSION}-${PLUGIN_ITERATION}.i386.rpm packages/rhel/5/
@@ -44,7 +44,7 @@ do
   setarch i686 fpm -s dir -t rpm --architecture i686 \
     -n nagios-plugins-${PLUGIN_NAME_RHEL} \
     -v ${PLUGIN_VERSION} --iteration ${PLUGIN_ITERATION} \
-    --prefix /usr/lib64/nagios/plugins/ \
+    --prefix /usr/lib64/nagios/plugins \
     --description "Nagios Plugin - ${PLUGIN}" \
     ${PLUGIN} &>/dev/null
   cp nagios-plugins-${PLUGIN_NAME_RHEL}-${PLUGIN_VERSION}-${PLUGIN_ITERATION}.i686.rpm packages/rhel/5/
@@ -54,7 +54,7 @@ do
   setarch x86_64 fpm -s dir -t rpm --architecture x86_64 \
     -n nagios-plugins-${PLUGIN_NAME_RHEL} \
     -v ${PLUGIN_VERSION} --iteration ${PLUGIN_ITERATION} \
-    --prefix /usr/lib64/nagios/plugins/ \
+    --prefix /usr/lib64/nagios/plugins \
     --description "Nagios Plugin - ${PLUGIN}" \
     ${PLUGIN} &>/dev/null
   cp nagios-plugins-${PLUGIN_NAME_RHEL}-${PLUGIN_VERSION}-${PLUGIN_ITERATION}.x86_64.rpm packages/rhel/5/
