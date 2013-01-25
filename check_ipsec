@@ -1,0 +1,194 @@
+#!/bin/bash
+# Written By Nicole
+# Any Comments or Questions please e-mail to ml@nicole-haehnel.de
+#
+# Plugin Name: check_ipsec
+# Version: 2.0
+# Date: 26/08/2008
+#
+# Usage: check_ipsec --tunnels <n>
+#
+# gateways.txt file must be located in same directory
+# and has to look like:
+# nameofconn1	192.168.0.1
+# nameofconn2	192.168.1.1
+#
+# ------------Defining Variables------------
+PROGNAME=`basename $0`
+PROGPATH=`echo $0 | sed -e 's,[\\/][^\\/][^\\/]*$,,'`
+REVISION=`echo '$Revision: 2.0 $' | sed -e 's/[^0-9.]//g'`
+#STRONG=`$IPSECBIN --version |grep strongSwan | wc -l`
+DOWN=""
+# ---------- Change to your needs ----------
+PLUGINPATH="/usr/lib64/nagios/plugins"
+GATEWAYLIST="gateways.txt"
+IPSECBIN="/usr/sbin/ipsec"
+FPINGBIN="/usr/sbin/fping"
+# ping server in network on the other side of the tunnel
+PINGIP=1		# ping yes or no (1/0)
+# ------------------------------------------
+
+. $PROGPATH/utils.sh
+
+
+# Testing availability of $IPSECBIN, $FPINGBIN and $GATEWAYLIST
+
+if [ $# -eq 0 ];
+then
+   echo UNKNOWN - missing Arguments. Run check_ipsec --help
+   exit $STATE_UNKNOWN
+fi
+
+test -e $IPSECBIN
+if [ $? -ne 0 ];
+then
+	echo CRITICAL - $IPSECBIN not exist
+	exit $STATE_CRITICAL
+else
+	STRONG=`$IPSECBIN --version |grep strongSwan | wc -l`
+fi
+
+if [ $PINGIP -eq 1 ]
+then
+	test -e $FPINGBIN
+	if [ $? -ne 0 ];
+	then
+		echo CRITICAL - $FPINGBIN not exist
+		exit $STATE_CRITICAL
+	fi
+fi
+
+test -e $PROGPATH/$GATEWAYLIST
+if [ $? -ne 0 ];
+then
+   echo CRITICAL - $GATEWAYLIST not exist
+   exit $STATE_CRITICAL
+fi
+
+print_usage() {
+        echo "Usage:"
+        echo " $PROGNAME --tunnels <number of configured tunnels>"
+        echo " $PROGNAME --help"
+        echo " $PROGNAME --version"
+        echo " Created by Nicole, questions or problems e-mail ml@nicole-haehnel.de"
+		echo ""
+}
+
+print_help() {
+        print_revision $PROGNAME $REVISION
+        echo ""
+        print_usage
+        echo " Checks vpn connection status of an openswan or strongswan installation."
+		echo ""
+        echo " --tunnels <number of configured tunnels>"
+		echo " -T <number of configured tunnels>"
+        echo " provides the tunnel status of the openswan or strongswan installation"
+		echo ""
+        echo " --help"
+		echo " -h"
+        echo " prints this help screen"
+		echo ""
+        echo " --version"
+		echo " -V"
+        echo " Print version and license information"
+        echo ""
+}
+
+check_tunnel() {
+
+	if [[ "$STRONG" -eq "1" ]]
+	then
+	    eroutes=`$IPSECBIN status | grep -e "IPsec SA established" | grep -e "newest IPSEC" | wc -l`
+	else
+	    eroutes=`$IPSECBIN whack --status | grep -e "IPsec SA established" | grep -e "newest IPSEC" | wc -l`
+	fi 
+
+	
+	if [[ "$eroutes" -eq "$2" ]]
+	then
+		echo "OK - All $2 tunnels are up an running"
+		exit $STATE_OK
+	elif [[ "$eroutes" -gt "$2" ]]
+	then
+		echo "WARNING - More than $2 ($eroutes) tunnels are up an running"
+                exit $STATE_WARNING
+	else
+		echo "CRITICAL - Only $eroutes tunnels from $2 are up an running - $(location)"
+		exit $STATE_CRITICAL
+	fi
+}
+
+
+location() {
+
+count=0
+i=1
+
+while read line; do
+	
+	CONN=`echo $line| awk '{print $1}'`
+	IP=`echo $line| awk '{print $2}'`
+
+	if [[ "$STRONG" -eq "1" ]]
+	then
+	    tunneltest=`$IPSECBIN status | grep -e "IPsec SA established" | grep -e "newest IPSEC" |grep -e $CONN | wc -l`
+	else
+	    tunneltest=`$IPSECBIN whack --status | grep -e "IPsec SA established" | grep -e "newest IPSEC" |grep -e "$CONN" | wc -l`
+	fi
+	
+	if [[ "$tunneltest" -eq "0" ]]
+    then
+        count=$[$count+1]
+        DOWN="$DOWN $CONN"
+    fi
+
+    if [[ "$PINGIP" -eq "1" && "$tunneltest" -eq "1" ]]
+    then
+        alive=`$FPINGBIN $IP -r 1 | grep alive | wc -l`
+
+        if [[ "$alive" -eq "0" ]]
+        then
+            count=$[$count+1]
+            DOWN="$DOWN $CONN (no ping)"
+        fi
+    fi 
+	
+	
+i=$[$i+1]
+
+done < $PLUGINPATH/$GATEWAYLIST
+
+echo $DOWN
+
+}
+
+
+case "$1" in
+--help)
+        print_help
+        exit $STATE_OK
+        ;;
+-h)
+        print_help
+        exit $STATE_OK
+        ;;
+--version)
+        print_revision $PLUGIN $REVISION
+        exit $STATE_OK
+        ;;
+-V)
+        print_revision $PLUGIN $REVISION
+        exit $STATE_OK
+        ;;
+--tunnels)
+        check_tunnel $1 $2
+        ;;
+-T)
+        check_tunnel $1 $2
+        ;;
+*)
+        print_help
+        exit $STATE_OK
+
+esac
+
