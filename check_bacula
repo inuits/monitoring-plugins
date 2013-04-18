@@ -24,6 +24,9 @@
 # Silver Salonen <silver@ultrasoft.ee>
 # Dave Simons <simonsd@inuits.eu>
 
+# version 0.0.5 (18.March.2013)
+# * parameterize sql vars
+
 # version 0.0.4 (23.March.2012)
 # * add $sqlHost variable
 
@@ -64,11 +67,7 @@ sub get_now();
 sub get_date;
 
 my $progname = basename($0);
-my $progVers = "0.0.3";
-my $sqlDB = "bacula";
-my $sqlUsername = "bacula";
-my $sqlPassword = "";
-my $sqlHost = "localhost";
+my $progVers = "0.0.5";
 
 my %ERRORS = (  'UNKNOWN'       =>      '-1',
                 'OK'            =>      '0',
@@ -82,6 +81,10 @@ GetOptions
         "w=s"   =>      \$opt_warning,  "warning=s"     =>      \$opt_warning,
         "H=s"   =>      \$opt_hours,    "hours=s"       =>      \$opt_hours,
         "j=s"   =>      \$opt_job,      "job=s"         =>      \$opt_job,
+        "n=s"   =>      \$opt_sqlDB,    "dbname=s"      =>      \$opt_sqlDB,
+        "s=s"   =>      \$opt_sqlHost,  "dbserver=s"    =>      \$opt_sqlHost,
+        "u=s"   =>      \$opt_sqlUser,  "dbuser=s"      =>      \$opt_sqlUser,
+        "p=s"   =>      \$opt_sqlPass,  "dbpass=s"      =>      \$opt_sqlPass,
         "h"     =>      \$opt_help,     "help"          =>      \$opt_help,
                                         "usage"         =>      \$opt_usage,
         "V"     =>      \$opt_version,  "version"       =>      \$opt_version
@@ -97,12 +100,16 @@ sub print_help() {
  print "c	number of successful jobs for not returning critical\n";
  print "w	number of successful jobs for not returning warning\n";
  print "j	name of the job to check (case-sensitive)\n";
+ print "n   name of the bacula database\n",
+ print "s   name of the host running the bacula database\n";
+ print "u   user with which to connect to the bacula database\n";
+ print "p   password with which to connect to the bacula database\n";
  print "h	show this help\n";
  print "V	print script version\n";
 }
 
 sub print_usage() {
- print "Usage: $progname -H <hours> -c <critical> -w <warning> -j <job-name> [ -h ] [ -V ]\n";
+ print "Usage: $progname -H <hours> -c <critical> -w <warning> -j <job-name> -n <dbname> -s <dbserver> -u <dbuser> -p <dbpass> [ -h ] [ -V ]\n";
 }
 
 sub get_now() {
@@ -137,8 +144,8 @@ if ($opt_version) {
 
 
 if ($opt_job && $opt_warning && $opt_critical) {
- my $dsn = "DBI:mysql:database=$sqlDB;host=$sqlHost";
- my $dbh = DBI->connect( $dsn,$sqlUsername,$sqlPassword ) or die "Error connecting to: '$dsn': $DBI::errstr\n";
+ my $dsn = "DBI:mysql:database=$opt_sqlDB;host=$opt_sqlHost";
+ my $dbh = DBI->connect( $dsn,$opt_sqlUser,$opt_sqlPass ) or die "Error connecting to: '$dsn': $DBI::errstr\n";
  
  if ($opt_hours)
  {
