@@ -1,7 +1,7 @@
 # Nagios plugin                       version       iteration
 
 check_apache-auto.pl                  1.0           1
-check_bacula                          0.0.4         1
+check_bacula                          0.0.5         1
 check_drbd                            3e0b548f55    1
 check_iostat                          0.0.4         1
 check_ipsec                           2.0           1

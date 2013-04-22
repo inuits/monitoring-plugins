@@ -92,9 +92,6 @@ GetOptions
 
 sub print_help() {
  print "\n";
- print "If Bacula holds its MySQL-data behind password, you have to manually enter the password into the script as variable \$sqlPassword.\n";
- print "And be sure to prevent everybody from reading it!\n";
- print "\n";
  print "Options:\n";
  print "H	check successful jobs within <hours> period\n";
  print "c	number of successful jobs for not returning critical\n";
