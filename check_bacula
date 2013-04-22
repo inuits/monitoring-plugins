@@ -59,6 +59,10 @@ use vars qw(
            $date_stop
            $state
            $count
+           $opt_sqlDB
+           $opt_sqlHost
+           $opt_sqlUser
+           $opt_sqlPass
            );
            
 sub print_help();
@@ -97,10 +101,10 @@ sub print_help() {
  print "c	number of successful jobs for not returning critical\n";
  print "w	number of successful jobs for not returning warning\n";
  print "j	name of the job to check (case-sensitive)\n";
- print "n   name of the bacula database\n",
- print "s   name of the host running the bacula database\n";
- print "u   user with which to connect to the bacula database\n";
- print "p   password with which to connect to the bacula database\n";
+ print "n	name of the bacula database\n",
+ print "s	name of the host running the bacula database\n";
+ print "u	user with which to connect to the bacula database\n";
+ print "p	password with which to connect to the bacula database\n";
  print "h	show this help\n";
  print "V	print script version\n";
 }
