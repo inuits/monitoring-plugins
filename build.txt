@@ -25,5 +25,11 @@ pmp-check-mysql-replication-running   0.9.0         1
 pmp-check-mysql-status                0.9.0         1
 pmp-check-pt-table-checksum           0.9.0         1
 pmp-check-unix-memory                 0.9.0         1
+check_rabbitmq-aliveness              1.0           1
+check_rabbitmq-objects                1.0           1
+check_rabbitmq-overview               1.0           1
+check_rabbitmq-queue                  1.0           1
+check_rabbitmq-server                 1.0           1
+check_rabbitmq-watermark              1.0           1
 
 # vim: set ts=2 sw=2 et : #
