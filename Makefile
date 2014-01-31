@@ -14,5 +14,3 @@ build:
 vagrant-build:
 	cd vagrant && vagrant ssh -c 'cd build; make'
 
-vagrant-validate:
-	cd vagrant && cucumber
