@@ -1,12 +1,15 @@
 #!/bin/bash
 
 ## Script:  build.sh
-## Version: 0.1.3
-## Date:    2012-03-23
+## Version: 0.1.4
+## Date:    2014-01-31
 ## Author:  Tom De Vylder <tomdv@inuits.eu>
-## Contrib: 
+## Contrib:
 
 set -e
+
+rm -rf *.deb
+rm -rf *.rpm
 
 for PLUGIN in $(grep -viE '^#|^$' build.txt | awk {'print $1'} | sort | uniq )
 do
@@ -14,7 +17,7 @@ do
   PLUGIN_NAME_RHEL=$(echo ${PLUGIN} | sed -e 's/check_//g' | cut -d '.' -f 1)
   PLUGIN_VERSION=$(grep -E "^${PLUGIN}\s" build.txt | awk {'print $2'})
   PLUGIN_ITERATION=$(grep -E "^${PLUGIN}\s" build.txt | awk {'print $3'})
-  
+
   echo -e "\e[1;34m[\e[00m --- \e[00;32mBuild package: ${PLUGIN}\e[00m --- \e[1;34m]\e[00m"
 
   # Enforce permissions
