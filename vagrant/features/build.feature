@@ -33,5 +33,5 @@ Feature: Build tests
     Then 'stdout' should have 'Build package: pmp-check-pt-table-checksum'
     Then 'stdout' should have 'Build package: pmp-check-unix-memory'
     Then 'stdout' should have 'Build package: check_solr'
-    Then 'stdout' should have 'Build package: check_solr_rows'
+    Then 'stdout' should have 'Build package: check_solr-rows'
 
