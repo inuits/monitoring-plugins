@@ -31,5 +31,6 @@ check_rabbitmq-overview               1.0           1
 check_rabbitmq-queue                  1.0           1
 check_rabbitmq-server                 1.0           1
 check_rabbitmq-watermark              1.0           1
-
+check_solr                            1.0           1
+check_solr_rows                       1.0           1
 # vim: set ts=2 sw=2 et : #

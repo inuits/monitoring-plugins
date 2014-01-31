@@ -1,0 +1,86 @@
+#!/bin/sh
+#
+# Author:  Jan Collijs
+# Email:   jan.collijs@inuits.eu
+# Date:    Augustus 2013
+# Purpose: Icinga-check to monitor a solr instance based on the PingRequestHandler
+#          http://lucene.apache.org/solr/4_1_0/solr-core/org/apache/solr/handler/PingRequestHandler.html
+#
+## January 2014 added check_rows feature using external script from
+#               https://github.com/sperris/check_solr_rows
+
+PROGNAME=`basename $0`
+PROGPATH=`echo $0 | sed -e 's,[\\/][^\\/][^\\/]*$,,'`
+REVISION=`echo '$Revision: 1.00 $' | sed -e 's/[^0-9.]//g'`
+BC=/usr/bin/bc
+
+. $PROGPATH/utils.sh
+
+## Declare params
+SOLR_URL='localhost:8983/solr'
+WARNING='200'
+CRITICAL='100'
+
+## Retrieving solr data
+INDEX=`/usr/lib64/nagios/plugins/check_solr_rows -u $SOLR_URL/select -w 200 -c 100`
+
+STATUS=`curl -s $SOLR_URL/admin/ping | grep status | awk '{print $6}' | sed -e 's/\(^.*>\)\(.*\)\(<.*$\)/\2/'`
+ISTATE=`echo $INDEX | awk -F : '{print $1}'`
+ISERVICE=`echo $INDEX | awk -F : '{print $2}'`
+
+## Compiling the healthcheck
+case "$STATUS" in
+   "OK")
+      SSERVICE="OK: solr health check"
+      SSTATE=$STATE_OK
+   ;;
+   *)
+      SSERVICE="CRITICAL: solr health check is failing"
+      SSTATE=$STATE_CRITICAL
+   ;;
+esac
+
+## Compiling the row check
+case "$ISTATE" in
+   "OK")
+      ISERVICE="OK: solr row check"
+      ISTATE=$STATE_OK
+   ;;
+   "WARNING")
+      ISERVICE="WARNING: solr row check"
+      ISTATE=$STATE_WARNING
+   ;;
+   "CRITICAL")
+      ISERVIC="CRITICAL: solr row check"
+      ISTATE=$STATE_CRITICAL
+   ;;
+esac
+
+# Combing the multiple messages in 1 line and distributing it
+echo "$SSERVICE / $ISERVICE"
+
+## Retrieving icinga state from combination of checks and distribute it
+if [ $SSTATE -lt 0 -o $SSTATE -gt 3 -o $ISTATE -lt 0 -o $ISTATE -gt 3 ]; then
+   STATE=$STATE_UNKNOWN
+elif [ $SSTATE -eq 0 -a $ISTATE -eq 0 ]; then
+   STATE=$STATE_OK
+elif [ $SSTATE -eq 1 -a $ISTATE -eq 1 ]; then
+   STATE=$STATE_WARNING
+elif [ $SSTATE -eq 2 -a $ISTATE -eq 2 ]; then
+   STATE=$STATE_CRITICAL
+elif [ $SSTATE -eq 3 -a $ISTATE -eq 3 ]; then
+   STATE=$STATE_UNKNOW
+elif [ $SSTATE -eq 3 -o $ISTATE -eq 3 ]; then
+    STATE=$STATE_UNKNOWN
+elif [ $SSTATE -eq 2 -o $ISTATE -eq 2 ]; then
+    STATE=$STATE_CRITICAL
+elif [ $SSTATE -eq 1 -o $ISTATE -eq 1 ]; then
+    STATE=$STATE_WARNING
+elif [ $SSTATE -eq 0 -o $ISTATE -eq 0 ]; then
+    STATE=$STATE_OK
+else
+  STATE=$STATE_UNKNOWN
+fi
+
+exit $STATE
+

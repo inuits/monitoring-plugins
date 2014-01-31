@@ -215,6 +215,16 @@ This requires cucumber to be installed on your workstation.
         <td><a href="http://jamesc.net/"></a>Bjoern Bongermino</td>
         <td><a href="https://github.com/jamesc/nagios-plugins-rabbitmq">upstream</a></td>
     </tr>
+    <tr>
+        <td>check_solr</td>
+        <td><a href="http://visibilityspots.com/"></a>Jan Collijs</td>
+        <td><a href="https://github.com/visibilityspots/icinga-scripts#solr">upstream</a></td>
+    </tr>
+    <tr>
+        <td>check_solr_rows</td>
+        <td><a href="http://github.com/sperris"></a>J.P. Dowd</td>
+        <td><a href="https://github.com/sperris/check_solr_rows">upstream</a></td>
+    </tr>
 </table>
 
 ### Contributions

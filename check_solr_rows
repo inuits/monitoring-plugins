@@ -1,0 +1,122 @@
+#!/bin/bash
+#
+# https://github.com/sperris/check_solr_rows
+
+USAGE="Usage $0 -u url -w warnCount -c criticalCount \nEx: $0 -u http://localhost:8080/solr/db/select/ -w 200 -c 100"
+
+
+BC=/usr/bin/bc
+warning=0
+critical=0
+url=""
+
+if [ "$#" == "0" ]; then
+	echo -e "$USAGE"
+	exit 3
+fi
+
+
+OK(){
+echo "OK: The folder size is $solrSize|size=$solrSize"
+exit 0
+}
+WARNING(){
+echo "WARNING: The folder size is $solrSize|size=$solrSize"
+exit 1
+}
+CRITICAL(){
+echo "CRITICAL: The folder size is $solrSize|size=$solrSize"
+exit 2
+}
+
+
+while (( $# )); do
+
+case "$1" in
+	--help)
+        echo $USAGE
+        exit 3
+        ;;
+	-h)
+        echo $USAGE
+        exit 3
+        ;;
+	-u)
+        url=$2
+        ;;
+	-w)
+        declare -i warning=$2
+        w0="0"
+        if [ $warning -gt 0 ];then
+        w0="1"
+        fi
+        ;;
+	-c)
+        declare -i critical=$2
+        c0="0"
+        if [ $critical -gt 0 ];then
+            c0="2"
+            fi
+        ;;
+	*)
+ 	echo "$USAGE"
+esac
+
+shift 2
+
+done
+
+
+
+url="$url?rows=0&q=*:*"
+solrSize=$(curl -s "$url" | grep -oPm1 '(?<=numFound=")[^"]*')
+
+
+let wc0=$(($critical<$warning?0:4))
+let wc1=$(($c0+$w0+$wc0))
+let wc2=$((`echo "$solrSize<$warning"|$BC`))
+let wc3=$((`echo "$solrSize<$critical"|$BC`))
+
+case $wc1 in
+	0)
+	OK
+	;;
+	1)
+	if (( $wc2 == 1 )); then
+	WARNING
+	else
+	OK
+	fi
+	;;
+	2)
+	if (( $wc3 == 1 )); then
+        CRITICAL
+        else
+        OK
+        fi
+	;;
+	3)
+	if (( $wc3 == 1 )); then
+        CRITICAL
+        elif (( $wc2 == 1 )); then
+        WARNING
+	else
+	OK
+        fi
+	;;
+	5)
+        if (( $wc2 == 1 )); then
+        WARNING
+        else
+        OK
+        fi
+	;;
+	46789)
+	echo $USAGE
+	exit 3
+	;;
+	*)
+	echo $USAGE
+	exit 3
+
+esac
