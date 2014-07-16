@@ -23,6 +23,10 @@
 # Modified:
 # Silver Salonen <silver@ultrasoft.ee>
 # Dave Simons <simonsd@inuits.eu>
+# Veros Kaplan <veros@inuits.eu>
+
+# version 0.0.5-2 (16.July.2014)
+# * fixed time formatting
 
 # version 0.0.5 (18.March.2013)
 # * parameterize sql vars
