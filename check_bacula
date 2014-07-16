@@ -115,7 +115,7 @@ sub print_usage() {
 
 sub get_now() {
  my $now  = defined $_[0] ? $_[0] : time;
- my $out = strftime("%Y-%m-%d %X", localtime($now));
+ my $out = strftime("%Y-%m-%d %H:%M:%I", localtime($now));
  return($out);
 }
 
@@ -123,7 +123,7 @@ sub get_date {
  my $day = shift;
  my $now  = defined $_[0] ? $_[0] : time;
  my $new = $now - ((60*60*1) * $day);
- my $out = strftime("%Y-%m-%d %X", localtime($new));
+ my $out = strftime("%Y-%m-%d %H:%M:%I", localtime($new));
  return ($out);
 }
 
