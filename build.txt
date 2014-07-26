@@ -33,4 +33,9 @@ check_rabbitmq-server                 1.0           1
 check_rabbitmq-watermark              1.0           1
 check_solr                            1.0           1
 check_solr-rows                       1.0           1
+check_es_cluster_status.py            1.0           1
+check_es_nodes.py                     1.0           1 
+check_es_unassigned_shards.py         1.0           1
+check_es_jvm_usage.py                 1.0           1 
+check_es_split_brain.py               1.0           1
 # vim: set ts=2 sw=2 et : #

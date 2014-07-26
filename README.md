@@ -225,6 +225,11 @@ This requires cucumber to be installed on your workstation.
         <td><a href="http://github.com/sperris"></a>J.P. Dowd</td>
         <td><a href="https://github.com/sperris/check_solr_rows">upstream</a></td>
     </tr>
+    <tr> 
+        <td>check_es_*</td>
+        <td><a href="https://github.com/opentable/"></a>Paul Stack</td>
+        <td><a href="https://github.com/opentable/nagios-elasticsearch">upstream</a></td>
+        
 </table>
 
 ### Contributions
