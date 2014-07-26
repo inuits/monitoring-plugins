@@ -176,58 +176,58 @@ This requires cucumber to be installed on your workstation.
     </tr>
     <tr>
         <td>check_postfix-mailqueue</td>
-        <td><a href="http://www.bongermino.de"></a>Bjoern Bongermino</td>
+        <td><a href="http://www.bongermino.de">Bjoern Bongermino</a></td>
         <td><a href="http://exchange.nagios.org/directory/Plugins/Email-and-Groupware/Postfix/check_postfix_mailqueue/details">upstream</a></td>
     </tr>
 
     <tr>
         <td>check_rabbitmq_aliveness</td>
-        <td><a href="http://jamesc.net/"></a>Bjoern Bongermino</td>
+        <td><a href="http://jamesc.net/">James Casey</a></td>
         <td><a href="https://github.com/jamesc/nagios-plugins-rabbitmq">upstream</a></td>
     </tr>
     <tr>
         <td>check_rabbitmq_aliveness</td>
-        <td><a href="http://jamesc.net/"></a>Bjoern Bongermino</td>
+        <td><a href="http://jamesc.net/">James Casey</a></td>
         <td><a href="https://github.com/jamesc/nagios-plugins-rabbitmq">upstream</a></td>
     </tr>
     <tr>
         <td>check_rabbitmq_objects</td>
-        <td><a href="http://jamesc.net/"></a>Bjoern Bongermino</td>
+        <td><a href="http://jamesc.net/">James Casey</a></td>
         <td><a href="https://github.com/jamesc/nagios-plugins-rabbitmq">upstream</a></td>
     </tr>
     <tr>
         <td>check_rabbitmq_overview</td>
-        <td><a href="http://jamesc.net/"></a>Bjoern Bongermino</td>
+        <td><a href="http://jamesc.net/">James Casey</a></td>
         <td><a href="https://github.com/jamesc/nagios-plugins-rabbitmq">upstream</a></td>
     </tr>
     <tr>
         <td>check_rabbitmq_queue</td>
-        <td><a href="http://jamesc.net/"></a>Bjoern Bongermino</td>
+        <td><a href="http://jamesc.net/">James Casey</a></td>
         <td><a href="https://github.com/jamesc/nagios-plugins-rabbitmq">upstream</a></td>
     </tr>
     <tr>
         <td>check_rabbitmq_server</td>
-        <td><a href="http://jamesc.net/"></a>Bjoern Bongermino</td>
+        <td><a href="http://jamesc.net/">James Casey</a></td>
         <td><a href="https://github.com/jamesc/nagios-plugins-rabbitmq">upstream</a></td>
     </tr>
     <tr>
         <td>check_rabbitmq_watermark</td>
-        <td><a href="http://jamesc.net/"></a>Bjoern Bongermino</td>
+        <td><a href="http://jamesc.net/">James Casey</a></td>
         <td><a href="https://github.com/jamesc/nagios-plugins-rabbitmq">upstream</a></td>
     </tr>
     <tr>
         <td>check_solr</td>
-        <td><a href="http://visibilityspots.com/"></a>Jan Collijs</td>
+        <td><a href="http://visibilityspots.com/">Jan Collijs</a></td>
         <td><a href="https://github.com/visibilityspots/icinga-scripts#solr">upstream</a></td>
     </tr>
     <tr>
         <td>check_solr_rows</td>
-        <td><a href="http://github.com/sperris"></a>J.P. Dowd</td>
+        <td><a href="http://github.com/sperris">J.P. Dowd</a></td>
         <td><a href="https://github.com/sperris/check_solr_rows">upstream</a></td>
     </tr>
     <tr> 
         <td>check_es_*</td>
-        <td><a href="https://github.com/opentable/"></a>Paul Stack</td>
+        <td><a href="https://github.com/opentable/">Paul Stack</a></td>
         <td><a href="https://github.com/opentable/nagios-elasticsearch">upstream</a></td>
         
 </table>
