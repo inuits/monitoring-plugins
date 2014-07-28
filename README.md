@@ -225,11 +225,11 @@ This requires cucumber to be installed on your workstation.
         <td><a href="http://github.com/sperris">J.P. Dowd</a></td>
         <td><a href="https://github.com/sperris/check_solr_rows">upstream</a></td>
     </tr>
-    <tr> 
+    <tr>
         <td>check_es_*</td>
         <td><a href="https://github.com/opentable/">Paul Stack</a></td>
         <td><a href="https://github.com/opentable/nagios-elasticsearch">upstream</a></td>
-        
+
 </table>
 
 ### Contributions
@@ -242,8 +242,6 @@ Guidelines:
 - Fork this repository
 - Add plugin script to the repository
 - Add plugin details to build.txt
-- Add plugin name to vagrant/features/build.feature
-- # make vagrant-validate
 - Update author table in README.md
 - Send a pull request
 - ...
