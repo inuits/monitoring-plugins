@@ -229,7 +229,12 @@ This requires cucumber to be installed on your workstation.
         <td>check_es_*</td>
         <td><a href="https://github.com/opentable/">Paul Stack</a></td>
         <td><a href="https://github.com/opentable/nagios-elasticsearch">upstream</a></td>
-
+    </tr>
+    <tr> 
+        <td>check_puppetdb_*</td>
+        <td><a href="https://github.com/jasonhancock/nagios-puppetdb.git">Jason Hancock</a></td>
+        <td><a href="https://github.com/jasonhancock/nagios-puppetdb.git">upstream</a></td>
+    </tr>
 </table>
 
 ### Contributions
