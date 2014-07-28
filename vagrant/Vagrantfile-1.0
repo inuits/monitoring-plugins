@@ -2,8 +2,8 @@ Vagrant::Config.run do |config|
   config.vm.share_folder "v-data", "/home/vagrant/build", "../"
 
   config.vm.define :debianbuild do |debianbuild_config|
-    debianbuild_config.vm.box = "debian6-64-envpuppet"
-    debianbuild_config.vm.box_url = "http://files.penumbra.be/vagrant/debian6-64-envpuppet-latest.box"
+    debianbuild_config.vm.box = "debian-73-x64-virtualbox-puppet"
+    debianbuild_config.vm.box_url = "http://puppet-vagrant-boxes.puppetlabs.com/debian-73-x64-virtualbox-puppet.box"
     debianbuild_config.vm.host_name = "debianbuild.labs.penumbra.be"
     debianbuild_config.vm.network :hostonly, "192.168.97.11"
 
