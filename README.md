@@ -47,17 +47,6 @@ An example Vagrant project has been included to get you started right away.
     make vagrant-build
 
 
-* Unit testing
-
-(work in progress)<br>
-This requires cucumber to be installed on your workstation.
-
-    cd vagrant
-    vagrant up
-    make vagrant-validate
-
-
-
 ### Available plugins
 
 <table>
@@ -230,7 +219,7 @@ This requires cucumber to be installed on your workstation.
         <td><a href="https://github.com/opentable/">Paul Stack</a></td>
         <td><a href="https://github.com/opentable/nagios-elasticsearch">upstream</a></td>
     </tr>
-    <tr> 
+    <tr>
         <td>check_puppetdb_*</td>
         <td><a href="https://github.com/jasonhancock/nagios-puppetdb.git">Jason Hancock</a></td>
         <td><a href="https://github.com/jasonhancock/nagios-puppetdb.git">upstream</a></td>
