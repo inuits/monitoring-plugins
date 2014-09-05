@@ -224,6 +224,11 @@ An example Vagrant project has been included to get you started right away.
         <td><a href="https://github.com/jasonhancock/nagios-puppetdb.git">Jason Hancock</a></td>
         <td><a href="https://github.com/jasonhancock/nagios-puppetdb.git">upstream</a></td>
     </tr>
+    <tr>
+        <td>check_mongodb.py</td>
+        <td><a href="http://zcentric.com/">Mike Zupan</a></td>
+        <td><a href="https://github.com/mzupan/nagios-plugin-mongodb.git">upstream</a></td>
+    </tr>
 </table>
 
 ### Contributions

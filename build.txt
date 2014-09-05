@@ -43,4 +43,5 @@ check_puppetdb-populations            1.0           1
 check_puppetdb-queue                  1.0           1
 check_puppetdb-memory                 1.0           1
 check_puppetdb-processed              1.0           1
+check_mongodb.py                      1.0           1
 # vim: set ts=2 sw=2 et : #
