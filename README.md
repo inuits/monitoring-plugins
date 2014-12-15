@@ -234,6 +234,11 @@ An example Vagrant project has been included to get you started right away.
         <td><a href="http://www.ciphron.de/">JK</a></td>
         <td><a href="http://exchange.nagios.org/directory/Plugins/Hardware/Printers/check_printer--2D-All-in-one-printer-check-suitable-for-most-devices/details">upstream</a></td>
     </tr>
+    <tr>
+        <td>check_jstat</td>
+        <td><a href="https://github.com/Ericbla/">Alcatel-Lucent</a></td>
+        <td><a href="https://github.com/Ericbla/check_jstat.git">upstream</a></td>
+    </tr>
 </table>
 
 ### Contributions
