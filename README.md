@@ -239,6 +239,11 @@ An example Vagrant project has been included to get you started right away.
         <td><a href="https://github.com/Ericbla/">Alcatel-Lucent</a></td>
         <td><a href="https://github.com/Ericbla/check_jstat.git">upstream</a></td>
     </tr>
+    <tr>
+        <td>check_ntpd_health.pl</td>
+        <td><a href="https://github.com/leprasmurf">Tim Forbes</a></td>
+        <td><a href="http://exchange.nagios.org/directory/Plugins/Network-Protocols/NTP-and-Time/check_ntpd/details">upstream</a></td>
+    </tr>
 </table>
 
 ### Contributions
