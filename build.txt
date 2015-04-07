@@ -46,5 +46,5 @@ check_puppetdb-processed              1.0           1
 check_mongodb.py                      1.0           1
 check_printer                         1.0           1
 check_jstat                           1.3           1
-check_ntpd_health.pl                  2.1           1
+check_ntpd-health.pl                  2.1           1
 # vim: set ts=2 sw=2 et : #

@@ -26,7 +26,7 @@
 
 # Usage helper for this script
 function usage() {
-    local prog="${1:-check_jstat.sh}"
+    local prog="${1:-check_jstat}"
     echo "Usage: $prog -v";
     echo "       Print version and exit"
     echo "Usage: $prog -h";
