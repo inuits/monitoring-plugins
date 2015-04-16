@@ -1,50 +1,50 @@
-# Nagios plugin                       version       iteration
+# Nagios plugin                       version
 
-check_apache-auto.pl                  1.0           1
-check_bacula                          0.0.5         2
-check_drbd                            3e0b548f55    1
-check_iostat                          0.0.4         1
-check_ipsec                           2.0           1
-check_linux-procstat.pl               0.4           1
-check_linux-stats.pl                  1.1           1
-check_mem.pl                          1.8           1
-check_memcached.pl                    0.6           1
-check_mount.pl                        1.0           1
-check_mysqld.pl                       0.93          1
-check_postfix-mailqueue               1.0           1
-check_puppet.rb                       70ba5a5155    1
-pmp-check-lvm-snapshots               0.9.0         1
-pmp-check-mysql-deadlocks             0.9.0         1
-pmp-check-mysql-deleted-files         0.9.0         1
-pmp-check-mysql-file-privs            0.9.0         1
-pmp-check-mysql-innodb                0.9.0         1
-pmp-check-mysql-pidfile               0.9.0         1
-pmp-check-mysql-processlist           0.9.0         1
-pmp-check-mysql-replication-delay     0.9.0         1
-pmp-check-mysql-replication-running   0.9.0         1
-pmp-check-mysql-status                0.9.0         1
-pmp-check-pt-table-checksum           0.9.0         1
-pmp-check-unix-memory                 0.9.0         1
-check_rabbitmq-aliveness              1.0           1
-check_rabbitmq-objects                1.0           1
-check_rabbitmq-overview               1.0           1
-check_rabbitmq-queue                  1.0           1
-check_rabbitmq-server                 1.0           1
-check_rabbitmq-watermark              1.0           1
-check_solr                            1.0           1
-check_solr-rows                       1.0           1
-check_es-cluster-status.py            1.0           1
-check_es-nodes.py                     1.0           1
-check_es-unassigned-shards.py         1.0           1
-check_es-jvm-usage.py                 1.0           1
-check_es-split-brain.py               1.0           1
-check_puppetdb-dups                   1.0           1
-check_puppetdb-populations            1.0           1
-check_puppetdb-queue                  1.0           1
-check_puppetdb-memory                 1.0           1
-check_puppetdb-processed              1.0           1
-check_mongodb.py                      1.0           1
-check_printer                         1.0           1
-check_jstat                           1.3           1
-check_ntpd-health.pl                  2.1           1
+check_apache-auto.pl                  1.0
+check_bacula                          0.0.5
+check_drbd                            3e0b548f55
+check_iostat                          0.0.4
+check_ipsec                           2.0
+check_linux-procstat.pl               0.4
+check_linux-stats.pl                  1.1
+check_mem.pl                          1.8
+check_memcached.pl                    0.6
+check_mount.pl                        1.0
+check_mysqld.pl                       0.93
+check_postfix-mailqueue               1.0
+check_puppet.rb                       70ba5a5155
+pmp-check-lvm-snapshots               0.9.0
+pmp-check-mysql-deadlocks             0.9.0
+pmp-check-mysql-deleted-files         0.9.0
+pmp-check-mysql-file-privs            0.9.0
+pmp-check-mysql-innodb                0.9.0
+pmp-check-mysql-pidfile               0.9.0
+pmp-check-mysql-processlist           0.9.0
+pmp-check-mysql-replication-delay     0.9.0
+pmp-check-mysql-replication-running   0.9.0
+pmp-check-mysql-status                0.9.0
+pmp-check-pt-table-checksum           0.9.0
+pmp-check-unix-memory                 0.9.0
+check_rabbitmq-aliveness              1.0
+check_rabbitmq-objects                1.0
+check_rabbitmq-overview               1.0
+check_rabbitmq-queue                  1.0
+check_rabbitmq-server                 1.0
+check_rabbitmq-watermark              1.0
+check_solr                            1.0
+check_solr-rows                       1.0
+check_es-cluster-status.py            1.0
+check_es-nodes.py                     1.0
+check_es-unassigned-shards.py         1.0
+check_es-jvm-usage.py                 1.0
+check_es-split-brain.py               1.0
+check_puppetdb-dups                   1.0
+check_puppetdb-populations            1.0
+check_puppetdb-queue                  1.0
+check_puppetdb-memory                 1.0
+check_puppetdb-processed              1.0
+check_mongodb.py                      1.0
+check_printer                         1.0
+check_jstat                           1.3
+check_ntpd-health.pl                  2.1
 # vim: set ts=2 sw=2 et : #

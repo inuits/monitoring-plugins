@@ -16,7 +16,8 @@ do
   PLUGIN_NAME_DEBIAN=$(echo ${PLUGIN} | sed -e 's/check_/check-/g' | cut -d '.' -f 1)
   PLUGIN_NAME_RHEL=$(echo ${PLUGIN} | sed -e 's/check_//g' | cut -d '.' -f 1)
   PLUGIN_VERSION=$(grep -E "^${PLUGIN}\s" build.txt | awk {'print $2'})
-  PLUGIN_ITERATION=$(grep -E "^${PLUGIN}\s" build.txt | awk {'print $3'})
+  PLUGIN_ITERATION=$BUILD_NUMBER
+  PLUGIN_EPOCH=1
 
   echo -e "\e[1;34m[\e[00m --- \e[00;32mBuild package: ${PLUGIN}\e[00m --- \e[1;34m]\e[00m"
 
@@ -26,7 +27,7 @@ do
   # Build Debian 5/6 package
   fpm -s dir -t deb --architecture all \
     -n nagios-plugin-${PLUGIN_NAME_DEBIAN} \
-    -v ${PLUGIN_VERSION} --iteration ${PLUGIN_ITERATION} \
+    -v ${PLUGIN_VERSION} --iteration ${PLUGIN_ITERATION} --epoch $PLUGIN_EPOCH \
     --prefix /usr/lib/nagios/plugins \
     --description "Nagios Plugin - ${PLUGIN_NAME_DEBIAN}" \
     ${PLUGIN} &>/dev/null
@@ -36,7 +37,7 @@ do
   # Build RHEL 5/6 i386 package
   setarch i386 fpm -s dir -t rpm --architecture i386 \
     -n nagios-plugins-${PLUGIN_NAME_RHEL} \
-    -v ${PLUGIN_VERSION} --iteration ${PLUGIN_ITERATION} \
+    -v ${PLUGIN_VERSION} --iteration ${PLUGIN_ITERATION} --epoch $PLUGIN_EPOCH \
     --prefix /usr/lib64/nagios/plugins \
     --description "Nagios Plugin - ${PLUGIN}" \
     ${PLUGIN} &>/dev/null
@@ -46,7 +47,7 @@ do
   # Build RHEL 5/6 i686 package
   setarch i686 fpm -s dir -t rpm --architecture i686 \
     -n nagios-plugins-${PLUGIN_NAME_RHEL} \
-    -v ${PLUGIN_VERSION} --iteration ${PLUGIN_ITERATION} \
+    -v ${PLUGIN_VERSION} --iteration ${PLUGIN_ITERATION} --epoch $PLUGIN_EPOCH \
     --prefix /usr/lib64/nagios/plugins \
     --description "Nagios Plugin - ${PLUGIN}" \
     ${PLUGIN} &>/dev/null
@@ -56,7 +57,7 @@ do
   # Build RHEL 5/6 x86_64 package
   setarch x86_64 fpm -s dir -t rpm --architecture x86_64 \
     -n nagios-plugins-${PLUGIN_NAME_RHEL} \
-    -v ${PLUGIN_VERSION} --iteration ${PLUGIN_ITERATION} \
+    -v ${PLUGIN_VERSION} --iteration ${PLUGIN_ITERATION} --epoch $PLUGIN_EPOCH \
     --prefix /usr/lib64/nagios/plugins \
     --description "Nagios Plugin - ${PLUGIN}" \
     ${PLUGIN} &>/dev/null
