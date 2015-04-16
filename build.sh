@@ -13,10 +13,14 @@ rm -rf *.rpm
 
 for PLUGIN in $(grep -viE '^#|^$' build.txt | awk {'print $1'} | sort | uniq )
 do
+  if [ -n "$GIT_PREVIOUS_COMMIT" ] && [ $(git rev-list HEAD --count -- "${PLUGIN}") -le $(git rev-list "$GIT_PREVIOUS_COMMIT" --count -- "${PLUGIN}") ]
+  then
+    continue
+  fi
   PLUGIN_NAME_DEBIAN=$(echo ${PLUGIN} | sed -e 's/check_/check-/g' | cut -d '.' -f 1)
   PLUGIN_NAME_RHEL=$(echo ${PLUGIN} | sed -e 's/check_//g' | cut -d '.' -f 1)
   PLUGIN_VERSION=$(grep -E "^${PLUGIN}\s" build.txt | awk {'print $2'})
-  PLUGIN_ITERATION=$BUILD_NUMBER
+  PLUGIN_ITERATION=$(git rev-list HEAD --count -- "${PLUGIN}")
   PLUGIN_EPOCH=1
 
   echo -e "\e[1;34m[\e[00m --- \e[00;32mBuild package: ${PLUGIN}\e[00m --- \e[1;34m]\e[00m"
