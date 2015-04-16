@@ -6,21 +6,26 @@
 ## Author:  Tom De Vylder <tomdv@inuits.eu>
 ## Contrib:
 
-set -e
+set -e -x
 
 rm -rf *.deb
 rm -rf *.rpm
 
+if [ -z "${GIT_PREVIOUS_COMMIT}" ]
+then
+  GIT_PREVIOUS_COMMIT=$(cat last_success)
+fi
+
 for PLUGIN in $(grep -viE '^#|^$' build.txt | awk {'print $1'} | sort | uniq )
 do
-  if [ -n "$GIT_PREVIOUS_COMMIT" ] && [ $(git rev-list HEAD --count -- "${PLUGIN}") -le $(git rev-list "$GIT_PREVIOUS_COMMIT" --count -- "${PLUGIN}") ]
+  if [ -n "${GIT_PREVIOUS_COMMIT}" ] && [ $(git rev-list HEAD -- "${PLUGIN}" | wc -l) -le $(git rev-list "${GIT_PREVIOUS_COMMIT}" -- "${PLUGIN}" | wc -l) ]
   then
     continue
   fi
   PLUGIN_NAME_DEBIAN=$(echo ${PLUGIN} | sed -e 's/check_/check-/g' | cut -d '.' -f 1)
   PLUGIN_NAME_RHEL=$(echo ${PLUGIN} | sed -e 's/check_//g' | cut -d '.' -f 1)
   PLUGIN_VERSION=$(grep -E "^${PLUGIN}\s" build.txt | awk {'print $2'})
-  PLUGIN_ITERATION=$(git rev-list HEAD --count -- "${PLUGIN}")
+  PLUGIN_ITERATION=$(git rev-list HEAD -- "${PLUGIN}" | wc -l)
   PLUGIN_EPOCH=1
 
   echo -e "\e[1;34m[\e[00m --- \e[00;32mBuild package: ${PLUGIN}\e[00m --- \e[1;34m]\e[00m"
@@ -69,3 +74,4 @@ do
   mv nagios-plugins-${PLUGIN_NAME_RHEL}-${PLUGIN_VERSION}-${PLUGIN_ITERATION}.x86_64.rpm packages/rhel/6/
 done
 
+git rev-parse HEAD > last_success
