@@ -244,6 +244,12 @@ An example Vagrant project has been included to get you started right away.
         <td><a href="https://github.com/leprasmurf">Tim Forbes</a></td>
         <td><a href="http://exchange.nagios.org/directory/Plugins/Network-Protocols/NTP-and-Time/check_ntpd/details">upstream</a></td>
     </tr>
+
+    <tr>
+        <td>check_service-restart</td>
+        <td><a href="https://exchange.icinga.org/arioch/check_service_restart">Tom De Vylder</a></td>
+        <td><a href="https://github.com/arioch/check_service_restart">upstream</a></td>
+    </tr>
 </table>
 
 ### Contributions
