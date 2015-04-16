@@ -11,7 +11,7 @@ set -e -x
 rm -rf *.deb
 rm -rf *.rpm
 
-if [ -z "${GIT_PREVIOUS_COMMIT}" ]
+if [ -z "${GIT_PREVIOUS_COMMIT}" ] && [ -e last_success ]
 then
   GIT_PREVIOUS_COMMIT=$(cat last_success)
 fi
@@ -50,6 +50,7 @@ do
     --prefix /usr/lib64/nagios/plugins \
     --description "Nagios Plugin - ${PLUGIN}" \
     ${PLUGIN} &>/dev/null
+  mv nagios-plugins-${PLUGIN_NAME_RHEL}-${PLUGIN_VERSION}-${PLUGIN_ITERATION}.i386.rpm nagios-plugins-${PLUGIN_NAME_RHEL}-${PLUGIN_EPOCH}:${PLUGIN_VERSION}-${PLUGIN_ITERATION}.i386.rpm
   cp nagios-plugins-${PLUGIN_NAME_RHEL}-${PLUGIN_EPOCH}:${PLUGIN_VERSION}-${PLUGIN_ITERATION}.i386.rpm packages/rhel/5/
   mv nagios-plugins-${PLUGIN_NAME_RHEL}-${PLUGIN_EPOCH}:${PLUGIN_VERSION}-${PLUGIN_ITERATION}.i386.rpm packages/rhel/6/
 
@@ -60,6 +61,7 @@ do
     --prefix /usr/lib64/nagios/plugins \
     --description "Nagios Plugin - ${PLUGIN}" \
     ${PLUGIN} &>/dev/null
+  mv nagios-plugins-${PLUGIN_NAME_RHEL}-${PLUGIN_VERSION}-${PLUGIN_ITERATION}.i686.rpm nagios-plugins-${PLUGIN_NAME_RHEL}-${PLUGIN_EPOCH}:${PLUGIN_VERSION}-${PLUGIN_ITERATION}.i686.rpm
   cp nagios-plugins-${PLUGIN_NAME_RHEL}-${PLUGIN_EPOCH}:${PLUGIN_VERSION}-${PLUGIN_ITERATION}.i686.rpm packages/rhel/5/
   mv nagios-plugins-${PLUGIN_NAME_RHEL}-${PLUGIN_EPOCH}:${PLUGIN_VERSION}-${PLUGIN_ITERATION}.i686.rpm packages/rhel/6/
 
@@ -70,6 +72,7 @@ do
     --prefix /usr/lib64/nagios/plugins \
     --description "Nagios Plugin - ${PLUGIN}" \
     ${PLUGIN} &>/dev/null
+  mv nagios-plugins-${PLUGIN_NAME_RHEL}-${PLUGIN_VERSION}-${PLUGIN_ITERATION}.x86_64.rpm nagios-plugins-${PLUGIN_NAME_RHEL}-${PLUGIN_EPOCH}:${PLUGIN_VERSION}-${PLUGIN_ITERATION}.x86_64.rpm
   cp nagios-plugins-${PLUGIN_NAME_RHEL}-${PLUGIN_EPOCH}:${PLUGIN_VERSION}-${PLUGIN_ITERATION}.x86_64.rpm packages/rhel/5/
   mv nagios-plugins-${PLUGIN_NAME_RHEL}-${PLUGIN_EPOCH}:${PLUGIN_VERSION}-${PLUGIN_ITERATION}.x86_64.rpm packages/rhel/6/
 done
