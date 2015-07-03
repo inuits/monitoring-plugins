@@ -18,10 +18,6 @@ fi
 
 for PLUGIN in $(grep -viE '^#|^$' build.txt | awk {'print $1'} | sort | uniq )
 do
-  if [ -n "${GIT_PREVIOUS_COMMIT}" ] && [ $(git rev-list HEAD -- "${PLUGIN}" | wc -l) -le $(git rev-list "${GIT_PREVIOUS_COMMIT}" -- "${PLUGIN}" | wc -l) ]
-  then
-    continue
-  fi
   PLUGIN_NAME_DEBIAN=$(echo ${PLUGIN} | sed -e 's/check_/check-/g' | cut -d '.' -f 1)
   PLUGIN_NAME_RHEL=$(echo ${PLUGIN} | sed -e 's/check_//g' | cut -d '.' -f 1)
   PLUGIN_VERSION=$(grep -E "^${PLUGIN}\s" build.txt | awk {'print $2'})
@@ -50,9 +46,8 @@ do
     --prefix /usr/lib64/nagios/plugins \
     --description "Nagios Plugin - ${PLUGIN}" \
     ${PLUGIN} &>/dev/null
-  mv nagios-plugins-${PLUGIN_NAME_RHEL}-${PLUGIN_VERSION}-${PLUGIN_ITERATION}.i386.rpm nagios-plugins-${PLUGIN_NAME_RHEL}-${PLUGIN_EPOCH}:${PLUGIN_VERSION}-${PLUGIN_ITERATION}.i386.rpm
-  cp nagios-plugins-${PLUGIN_NAME_RHEL}-${PLUGIN_EPOCH}:${PLUGIN_VERSION}-${PLUGIN_ITERATION}.i386.rpm packages/rhel/5/
-  mv nagios-plugins-${PLUGIN_NAME_RHEL}-${PLUGIN_EPOCH}:${PLUGIN_VERSION}-${PLUGIN_ITERATION}.i386.rpm packages/rhel/6/
+  cp nagios-plugins-${PLUGIN_NAME_RHEL}-${PLUGIN_VERSION}-${PLUGIN_ITERATION}.i386.rpm packages/rhel/5/
+  mv nagios-plugins-${PLUGIN_NAME_RHEL}-${PLUGIN_VERSION}-${PLUGIN_ITERATION}.i386.rpm packages/rhel/6/
 
   # Build RHEL 5/6 i686 package
   setarch i686 fpm -s dir -t rpm --architecture i686 \
@@ -61,9 +56,8 @@ do
     --prefix /usr/lib64/nagios/plugins \
     --description "Nagios Plugin - ${PLUGIN}" \
     ${PLUGIN} &>/dev/null
-  mv nagios-plugins-${PLUGIN_NAME_RHEL}-${PLUGIN_VERSION}-${PLUGIN_ITERATION}.i686.rpm nagios-plugins-${PLUGIN_NAME_RHEL}-${PLUGIN_EPOCH}:${PLUGIN_VERSION}-${PLUGIN_ITERATION}.i686.rpm
-  cp nagios-plugins-${PLUGIN_NAME_RHEL}-${PLUGIN_EPOCH}:${PLUGIN_VERSION}-${PLUGIN_ITERATION}.i686.rpm packages/rhel/5/
-  mv nagios-plugins-${PLUGIN_NAME_RHEL}-${PLUGIN_EPOCH}:${PLUGIN_VERSION}-${PLUGIN_ITERATION}.i686.rpm packages/rhel/6/
+  cp nagios-plugins-${PLUGIN_NAME_RHEL}-${PLUGIN_VERSION}-${PLUGIN_ITERATION}.i686.rpm packages/rhel/5/
+  mv nagios-plugins-${PLUGIN_NAME_RHEL}-${PLUGIN_VERSION}-${PLUGIN_ITERATION}.i686.rpm packages/rhel/6/
 
   # Build RHEL 5/6 x86_64 package
   setarch x86_64 fpm -s dir -t rpm --architecture x86_64 \
@@ -72,9 +66,8 @@ do
     --prefix /usr/lib64/nagios/plugins \
     --description "Nagios Plugin - ${PLUGIN}" \
     ${PLUGIN} &>/dev/null
-  mv nagios-plugins-${PLUGIN_NAME_RHEL}-${PLUGIN_VERSION}-${PLUGIN_ITERATION}.x86_64.rpm nagios-plugins-${PLUGIN_NAME_RHEL}-${PLUGIN_EPOCH}:${PLUGIN_VERSION}-${PLUGIN_ITERATION}.x86_64.rpm
-  cp nagios-plugins-${PLUGIN_NAME_RHEL}-${PLUGIN_EPOCH}:${PLUGIN_VERSION}-${PLUGIN_ITERATION}.x86_64.rpm packages/rhel/5/
-  mv nagios-plugins-${PLUGIN_NAME_RHEL}-${PLUGIN_EPOCH}:${PLUGIN_VERSION}-${PLUGIN_ITERATION}.x86_64.rpm packages/rhel/6/
+  cp nagios-plugins-${PLUGIN_NAME_RHEL}-${PLUGIN_VERSION}-${PLUGIN_ITERATION}.x86_64.rpm packages/rhel/5/
+  mv nagios-plugins-${PLUGIN_NAME_RHEL}-${PLUGIN_VERSION}-${PLUGIN_ITERATION}.x86_64.rpm packages/rhel/6/
 done
 
 git rev-parse HEAD > last_success
