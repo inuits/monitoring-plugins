@@ -205,14 +205,9 @@ An example Vagrant project has been included to get you started right away.
         <td><a href="https://github.com/jamesc/nagios-plugins-rabbitmq">upstream</a></td>
     </tr>
     <tr>
-        <td>check_solr</td>
-        <td><a href="http://visibilityspots.com/">Jan Collijs</a></td>
-        <td><a href="https://github.com/visibilityspots/icinga-scripts#solr">upstream</a></td>
-    </tr>
-    <tr>
-        <td>check_solr_rows</td>
-        <td><a href="http://github.com/sperris">J.P. Dowd</a></td>
-        <td><a href="https://github.com/sperris/check_solr_rows">upstream</a></td>
+        <td>check_solr.py</td>
+        <td><a href="http://github.com/cpganderton">Chris Ganderton</a></td>
+        <td><a href="https://github.com/cpganderton/nagios-solr">upstream</a></td>
     </tr>
     <tr>
         <td>check_es_*</td>
