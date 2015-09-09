@@ -250,7 +250,7 @@ An example Vagrant project has been included to get you started right away.
         <td><a href="http://zeal4linux.org/nagios.html">upstream</a></td>
     </tr>
     <tr>
-        <td>check_drupal_cron</td>
+        <td>check_drupal-cron</td>
         <td>unknown</td>
         <td>unknown</td>
     </tr>
