@@ -5,7 +5,7 @@ RETVAL=3
 if [ -x /usr/local/bin/drush ];then
   DRUSH='/usr/local/bin/drush'
 elif [ -x /usr/bin/drush ];then 
-  DRUSH='/usr/local/bin/drush'
+  DRUSH='/usr/bin/drush'
 else
   DRUSH=`which drush`
   if [ $? != 0 ]; then
