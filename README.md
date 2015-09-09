@@ -249,6 +249,11 @@ An example Vagrant project has been included to get you started right away.
         <td><a href="http://exchange.nagios.org/directory/Plugins/Operating-Systems/Linux/check_long_procs/details">Ajoy Bharath</a></td>
         <td><a href="http://zeal4linux.org/nagios.html">upstream</a></td>
     </tr>
+    <tr>
+        <td>check_drupal_cron</td>
+        <td>unknown</td>
+        <td>unknown</td>
+    </tr>
 </table>
 
 ### Contributions

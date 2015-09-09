@@ -1,0 +1,56 @@
+#!/bin/bash
+NOW=$(date +%s)
+RETVAL=3
+
+if [ -x /usr/local/bin/drush ];then
+  DRUSH='/usr/local/bin/drush'
+elif [ -x /usr/bin/drush ];then 
+  DRUSH='/usr/local/bin/drush'
+else
+  DRUSH=`which drush`
+  if [ $? != 0 ]; then
+    echo "UNKNOWN: Drush is not installed or it's not in PATH"
+    RETVAL=3
+    exit $RETVAL
+  fi
+fi
+
+
+while getopts u:r:c:w: o; do
+    case "$o" in
+        u)    uri="$OPTARG";;
+        r)    root="$OPTARG";;
+        w)    warning="$OPTARG";;
+        c)    critical="$OPTARG";;
+    esac
+done
+
+if [ -z $uri ] || [ -z $root ] || [ -z $warning ] || [ -z $critical ]; then
+    echo "All the paramaters are required"; exit $RETVAL
+fi
+
+LAST_CRON_RUN=$(${DRUSH} --root=${root} --uri=${uri} vget '^cron_last$'|cut -d: -f 2)
+
+DELTA=$(($NOW - $LAST_CRON_RUN))
+
+#Check if Drush executed correctly
+if [ $? != 0 ]; then
+  echo "UNKNOWN: Drush didn't execute correctly"
+  RETVAL=3
+else
+  #Check Critical threshold
+  if [ $DELTA -gt ${critical} ]; then
+    echo "CRITICAL: Cron ran $DELTA seconds ago"
+    RETVAL=2
+  #Check Warning threshold
+  elif [ $DELTA -gt ${warning} ]; then
+    echo "WARNING: Cron ran $DELTA seconds ago"
+    RETVAL=1
+  #Everything is normal
+  else
+    echo "OK: Cron ran $DELTA seconds ago"
+    RETVAL=0
+  fi
+fi
+
+exit $RETVAL
