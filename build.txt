@@ -49,5 +49,6 @@ check_ntpd-health.pl                  2.1
 check_service-restart                 1.0.0
 check_long-procs.pl                   1.0
 check_drupal-cron                     0.5
+check_pgactivity                      1.25
 
 # vim: set ts=2 sw=2 et : #

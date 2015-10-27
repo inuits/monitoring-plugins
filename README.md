@@ -254,6 +254,11 @@ An example Vagrant project has been included to get you started right away.
         <td>unknown</td>
         <td>unknown</td>
     </tr>
+    <tr>
+	    <td>check_pgactivity</td>
+	    <td><a href="http://opm.io">Open PostgreSQL Monitoring</td>
+	    <td><a href="https://github.com/OPMDG/check_pgactivity">upstream</td>
+    </tr>
 </table>
 
 ### Contributions
