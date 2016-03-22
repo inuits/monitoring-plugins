@@ -210,6 +210,11 @@ An example Vagrant project has been included to get you started right away.
         <td><a href="https://github.com/cpganderton/nagios-solr">upstream</a></td>
     </tr>
     <tr>
+        <td>check_elasticsearch</td>
+        <td><a href="http://www.anchor.com.au/">Anchor</a></td>
+        <td><a href="https://github.com/anchor/nagios-plugin-elasticsearch">upstream</a><td>
+    </tr>
+    <tr>
         <td>check_es_*</td>
         <td><a href="https://github.com/opentable/">Paul Stack</a></td>
         <td><a href="https://github.com/opentable/nagios-elasticsearch">upstream</a></td>
