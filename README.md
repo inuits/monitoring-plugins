@@ -1,7 +1,7 @@
 ### Monitoring-plugins
 
 This is a selection of plugins for both Nagios and Icinga.<br>
-Packages are built in a CI fashion using Jenkins and can be found on our [repo](https://pulp.inuits.eu/inuits).
+Packages are built in a CI fashion using Jenkins and can be found on our [repo](https://pulp.inuits.eu/inuits/).
 
 A script to build packages yourself is included as well.
 
@@ -55,13 +55,13 @@ An example Vagrant project has been included to get you started right away.
     </tr>
     <tr>
         <td>check_bacula</td>
-        <td><a href="http://www.xing.com/profile/Julian_Hein">Julian Hein</a></td>
-        <td><a href="http://exchange.nagios.org/directory/Plugins/Backup-and-Recovery/Bacula/check_bacula-2Epl/details/">upstream</a></td>
+        <td><a href="https://www.xing.com/profile/Julian_Hein">Julian Hein</a></td>
+        <td><a href="https://exchange.nagios.org/directory/Plugins/Backup-and-Recovery/Bacula/check_bacula-2Epl/details/">upstream</a></td>
     </tr>
     <tr>
         <td>check_mem.pl</td>
         <td><a href="http://garretthoneycutt.com/">Garrett Honeycutt</a></td>
-        <td><a href="http://exchange.nagios.org/directory/Plugins/Uncategorized/Operating-Systems/Linux/check_mem/details">upstream</a></td>
+        <td><a href="https://exchange.nagios.org/directory/Plugins/Uncategorized/Operating-Systems/Linux/check_mem/details">upstream</a></td>
     </tr>
     <tr>
         <td>check_mysqld.pl</td>
@@ -81,17 +81,17 @@ An example Vagrant project has been included to get you started right away.
     <tr>
         <td>check_apache-auto.pl</td>
         <td>Robert Becht</td>
-        <td><a href="http://exchange.nagios.org/directory/Plugins/Web-Servers/Apache/Robert-Becht/details">upstream</a></td>
+        <td><a href="https://exchange.nagios.org/directory/Plugins/Web-Servers/Apache/Robert-Becht/details">upstream</a></td>
     </tr>
     <tr>
         <td>check_puppet.rb</td>
-        <td><a href="http://www.devco.net/">R.I. Pienaar</a></ghoneycutttd>
+        <td><a href="https://www.devco.net/">R.I. Pienaar</a></ghoneycutttd>
         <td><a href="https://github.com/ripienaar/monitoring-scripts/blob/master/puppet/check_puppet.rb">upstream</a></td>
     </tr>
     <tr>
         <td>check_linux-stats.pl</td>
         <td>Damien Siaud</td>
-        <td><a href="http://exchange.nagios.org/directory/Plugins/Operating-Systems/Linux/check_linux_stats/details">upstream</a></td>
+        <td><a href="https://exchange.nagios.org/directory/Plugins/Operating-Systems/Linux/check_linux_stats/details">upstream</a></td>
     </tr>
     <tr>
         <td>check_drbd</td>
@@ -100,8 +100,8 @@ An example Vagrant project has been included to get you started right away.
     </tr>
     <tr>
         <td>pmp-check-lvm-snapshots</td>
-        <td><a href="http://www.percona.com/">Percona</a></td>
-        <td><a href="http://www.percona.com/software/percona-monitoring-plugins/">upstream</a></td>
+        <td><a href="https://www.percona.com/">Percona</a></td>
+        <td><a href="https://www.percona.com/software/mysql-tools/percona-monitoring-plugins">upstream</a></td>
     </tr>
     <tr>
         <td>pmp-check-mysql-deadlocks</td>
@@ -161,18 +161,18 @@ An example Vagrant project has been included to get you started right away.
     <tr>
         <td>check_iostat</td>
         <td>Thiago Varela</td>
-        <td><a href="http://exchange.nagios.org/directory/Plugins/Operating-Systems/Linux/check_iostat--2D-I-2FO-statistics/details">upstream</a></td>
+        <td><a href="https://exchange.nagios.org/directory/Plugins/Operating-Systems/Linux/check_iostat--2D-I-2FO-statistics/details">upstream</a></td>
     </tr>
     <tr>
         <td>check_postfix-mailqueue</td>
         <td><a href="http://www.bongermino.de">Bjoern Bongermino</a></td>
-        <td><a href="http://exchange.nagios.org/directory/Plugins/Email-and-Groupware/Postfix/check_postfix_mailqueue/details">upstream</a></td>
+        <td><a href="https://exchange.nagios.org/directory/Plugins/Email-and-Groupware/Postfix/check_postfix_mailqueue/details">upstream</a></td>
     </tr>
 
     <tr>
         <td>check_rabbitmq_aliveness</td>
         <td><a href="http://jamesc.net/">James Casey</a></td>
-        <td><a href="https://github.com/jamesc/nagios-plugins-rabbitmq">upstream</a></td>
+        <td><a href="https://github.com/nagios-plugins-rabbitmq/nagios-plugins-rabbitmq">upstream</a></td>
     </tr>
     <tr>
         <td>check_rabbitmq_aliveness</td>
@@ -206,7 +206,7 @@ An example Vagrant project has been included to get you started right away.
     </tr>
     <tr>
         <td>check_solr.py</td>
-        <td><a href="http://github.com/cpganderton">Chris Ganderton</a></td>
+        <td><a href="https://github.com/cpganderton">Chris Ganderton</a></td>
         <td><a href="https://github.com/cpganderton/nagios-solr">upstream</a></td>
     </tr>
     <tr>
@@ -231,8 +231,8 @@ An example Vagrant project has been included to get you started right away.
     </tr>
     <tr>
         <td>check_printer</td>
-        <td><a href="http://www.ciphron.de/">JK</a></td>
-        <td><a href="http://exchange.nagios.org/directory/Plugins/Hardware/Printers/check_printer--2D-All-in-one-printer-check-suitable-for-most-devices/details">upstream</a></td>
+        <td><a href="https://www.ciphron.de/">JK</a></td>
+        <td><a href="https://exchange.nagios.org/directory/Plugins/Hardware/Printers/check_printer--2D-All-in-one-printer-check-suitable-for-most-devices/details">upstream</a></td>
     </tr>
     <tr>
         <td>check_jstat</td>
@@ -242,7 +242,7 @@ An example Vagrant project has been included to get you started right away.
     <tr>
         <td>check_ntpd-health.pl</td>
         <td><a href="https://github.com/leprasmurf">Tim Forbes</a></td>
-        <td><a href="http://exchange.nagios.org/directory/Plugins/Network-Protocols/NTP-and-Time/check_ntpd/details">upstream</a></td>
+        <td><a href="https://exchange.nagios.org/directory/Plugins/Network-Protocols/NTP-and-Time/check_ntpd/details">upstream</a></td>
     </tr>
     <tr>
         <td>check_service-restart</td>
@@ -251,7 +251,7 @@ An example Vagrant project has been included to get you started right away.
     </tr>
     <tr>
         <td>check_long-procs</td>
-        <td><a href="http://exchange.nagios.org/directory/Plugins/Operating-Systems/Linux/check_long_procs/details">Ajoy Bharath</a></td>
+        <td><a href="https://exchange.nagios.org/directory/Plugins/Operating-Systems/Linux/check_long_procs/details">Ajoy Bharath</a></td>
         <td><a href="http://zeal4linux.org/nagios.html">upstream</a></td>
     </tr>
     <tr>
