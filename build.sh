@@ -59,7 +59,7 @@ do
   cp nagios-plugins-${PLUGIN_NAME_RHEL}-${PLUGIN_VERSION}-${PLUGIN_ITERATION}.i686.rpm packages/rhel/5/
   mv nagios-plugins-${PLUGIN_NAME_RHEL}-${PLUGIN_VERSION}-${PLUGIN_ITERATION}.i686.rpm packages/rhel/6/
 
-  # Build RHEL 5/6 x86_64 package
+  # Build RHEL 5/6/7 x86_64 package
   setarch x86_64 fpm -s dir -t rpm --architecture x86_64 \
     -n nagios-plugins-${PLUGIN_NAME_RHEL} \
     -v ${PLUGIN_VERSION} --iteration ${PLUGIN_ITERATION} --epoch $PLUGIN_EPOCH \
@@ -68,6 +68,7 @@ do
     ${PLUGIN} &>/dev/null
   cp nagios-plugins-${PLUGIN_NAME_RHEL}-${PLUGIN_VERSION}-${PLUGIN_ITERATION}.x86_64.rpm packages/rhel/5/
   mv nagios-plugins-${PLUGIN_NAME_RHEL}-${PLUGIN_VERSION}-${PLUGIN_ITERATION}.x86_64.rpm packages/rhel/6/
+  mv nagios-plugins-${PLUGIN_NAME_RHEL}-${PLUGIN_VERSION}-${PLUGIN_ITERATION}.x86_64.rpm packages/rhel/7/
 done
 
 git rev-parse HEAD > last_success
