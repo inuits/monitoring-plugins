@@ -1,0 +1,139 @@
+#!/bin/bash
+#
+# Author: Bart Janssens
+# Email:  bjanssens@inuits.eu
+# Date:   Wed Apr 6 2016
+#
+# Requires the jq package to work
+#
+showhelp () {
+cat <<eof
+
+  Check the connections in rabbitmq.
+  Will only go cricial if connections are in a closed or closing state.
+  Depends on the jq package to parse json
+
+  Parameters:
+    --help|-h               : Shows help
+    --user|-u               : The user to use, defaults to 'guest'
+    --passwd|-p             : The password of the user, defaults to 'guest'
+    --ignore-connections|-i : A list of connections to igonre
+    --debug|-d              : Enable debug, aka echo some params
+
+  Example usage:
+  ./check_rabbitmq_connections -u username -p verystrongandsecurepasswordIhope
+
+eof
+  exit 3
+}
+
+defaults () {
+  connections_closed=''
+  connections_good=0
+  # Required params
+  # Optional params
+  if [[ -z "${debug}" ]]; then debug=false; fi
+  if [[ -z "${passwd}" ]]; then passwd='guest'; fi
+  if [[ -z "${user}" ]]; then user='guest'; fi
+  if [[ -z "${url}" ]]; then url='localhost:15672'; fi
+}
+
+data () {
+  # Get the data
+  if $debug; then echo "Debug: curl -s -u ${user}:${passwd} http://${url}/api/connections"; fi
+  get=$( curl -s -u ${user}:${passwd} http://${url}/api/connections )
+
+  # Parse the data
+  queue_error=$( echo $get | jq "." | grep 'error' )
+  if [[ ! -z "${queue_error}" ]];
+  then
+    queue_error_error=$( echo $get | jq ".error")
+    queue_error_reason=$( echo $get | jq ".reason")
+    message="Unknown: curl error: ${queue_error_reason}: ${queue_error_error}."
+    exitstatus='3'
+    quit
+  fi
+
+  if $debug; then
+    echo "Defined: $connections_defined"
+  fi
+}
+
+do_main_check () {
+  # For every connecion check the state
+  while read connection
+  do
+    connection_state=$( echo "${get}" | jq ". | map(select(.name == ${connection} )) | .[].state " -r )
+    if [[ "$connection_state" == "closing" ]] || [[ "$connection_state" == "closed" ]]
+    then
+      if [[ ! -z $connections_ignored ]]
+      then
+        for $connection_ignored in $connections_ignored
+        do
+          if [[ "${connection}" == "${connection_ignored}" ]]
+          then
+            if $debug; then echo "Debug: Connection ${connection} ignored."; fi
+            connections_good=$(( $connections_good + 1 ))
+          else
+            connections_closed="${connections_closed}, $connection"
+          fi
+        done
+      else
+        connections_closed="${connections_closed}, $connection"
+      fi
+    else
+      connections_good=$(( $connections_good + 1 ))
+      if $debug; then echo "Debug: ${connection} is ${connection_state}."; fi
+    fi
+  done < <( echo $get | jq ".[].name " )
+  # Construct the correct exit message
+  if [[ -z $connections_closed ]]
+  then
+    message="Ok: All $connections_good connections are good."
+    exitstatus='0'
+  else
+    message="Critical: Connections '$connections_closed' is/are closed"
+    exitstatus='2'
+  fi
+}
+
+quit () {
+  echo "${message}" && exit $exitstatus
+}
+
+# start the case-ing
+while test -n "$1"
+do
+  case "$1" in
+    --help|-h)
+      showhelp
+      ;;
+    --user|-u)
+      shift
+      vhost=$1
+      shift
+      ;;
+    --passwd|-p)
+      shift
+      passwd=$1
+      shift
+      ;;
+    --ignore-connections|-i)
+      shift
+      ignore_connections=$1
+      shift
+      ;;
+    --debug|-d)
+      shift
+      debug=true
+      ;;
+    *)
+      showhelp
+      ;;
+  esac
+done
+
+defaults
+data
+do_main_check
+quit
