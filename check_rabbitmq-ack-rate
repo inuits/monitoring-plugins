@@ -91,16 +91,16 @@ do_main_check () {
         echo "Debug: messages processing:  $queue_processing_rate"
       fi
       # Check the processing rate against the given threasholds
-      if (( $( echo "${queue_processing_rate} < ${queue_processing_rate_cirtical}" | bc -l ) ))
+      if (( $( echo "${queue_processing_rate} < ${queue_processing_rate_cirtical}" | bc -l ) )) && (( $echo "${queue_messages} > ${queue_messages_critical}" | bc -l ))
       then
-        message=$( echo "Critical: Queue '${queue_name}' is processing messages at ${queue_processing_rate}/s" )
+        message=$( echo "Critical: Queue '${queue_name}' is processing messages at ${queue_processing_rate}/s, messages in the queue: '${queue_messages}'." )
         exitstatus='2'
-      elif (( $( echo "${queue_processing_rate} < ${queue_processing_rate_warning}" | bc -l ) ))
+      elif (( $( echo "${queue_processing_rate} < ${queue_processing_rate_warning}" | bc -l ) )) && (( $echo "${queue_messages} > ${queue_messages_warning}" | bc -l ))
       then
-        message=$( echo "Warning: Queue '${queue_name}' is processing messages at ${queue_processing_rate}/s" )
+        message=$( echo "Warning: Queue '${queue_name}' is processing messages at ${queue_processing_rate}/s, messages in the queue: '${queue_messages}'." )
         exitstatus='1'
       else
-        message=$( echo "Ok: Queue '${queue_name}' is processing messages at ${queue_processing_rate}/s" )
+        message=$( echo "OK: Queue '${queue_name}' is processing messages at ${queue_processing_rate}/s." )
         exitstatus='0'
       fi
     # If the publish rate is 0, we have an issue.
@@ -109,14 +109,14 @@ do_main_check () {
       # like 1 that just hasn't been picked up yet
       if (( $echo "${queue_messages} > ${queue_messages_critical}" | bc -l ))
       then
-        message=$( echo "Critical: Queue '${queue_name}' is NOT processing messages, messages in the queue: '${queue_messages}'." )
+        message=$( echo "Critical: Queue '${queue_name}' is NOT publishing messages, messages in the queue: '${queue_messages}'." )
         exitstatus='2'
       elif (( $echo "${queue_messages} > ${queue_messages_warning}" | bc -l ))
       then
-        message=$( echo "Warning: Queue '${queue_name}' is NOT processing messages, messages in the queue: '${queue_messages}'." )
+        message=$( echo "Warning: Queue '${queue_name}' is NOT publishing messages, messages in the queue: '${queue_messages}'." )
         exitstatus='1'
       else
-        message=$( echo "Ok: Queue '${queue_name}' is NOT processing messages, messages in the queue: '${queue_messages}'." )
+        message=$( echo "Ok: Queue '${queue_name}' is NOT publishing messages, messages in the queue: '${queue_messages}'." )
         exitstatus='0'
       fi
     fi
