@@ -44,7 +44,7 @@ defaults () {
   # Optional params
   if [[ -z "${debug}" ]]; then debug=false; fi
   if [[ -z "${passwd}" ]]; then passwd='guest'; fi
-  if [[ -z "${queue_processing_rate_ciritical}" ]]; then queue_processing_rate_ciritical='0.3'; fi
+  if [[ -z "${queue_processing_rate_critical}" ]]; then queue_processing_rate_critical='0.3'; fi
   if [[ -z "${queue_processing_rate_warning}" ]]; then queue_processing_rate_warning='0.5'; fi
   if [[ -z "${user}" ]]; then user='guest'; fi
   if [[ -z "${url}" ]]; then url='localhost:15672'; fi
@@ -91,7 +91,7 @@ do_main_check () {
         echo "Debug: messages processing:  $queue_processing_rate"
       fi
       # Check the processing rate against the given threasholds
-      if (( $( echo "${queue_processing_rate} < ${queue_processing_rate_ciritical}" | bc -l ) )) && (( $echo "${queue_messages} > ${queue_messages_critical}" | bc -l ))
+      if (( $( echo "${queue_processing_rate} < ${queue_processing_rate_critical}" | bc -l ) )) && (( $echo "${queue_messages} > ${queue_messages_critical}" | bc -l ))
       then
         message=$( echo "Critical: Queue '${queue_name}' is processing messages at ${queue_processing_rate}/s, messages in the queue: '${queue_messages}'." )
         exitstatus='2'
