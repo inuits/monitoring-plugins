@@ -29,7 +29,16 @@ if [ -z $uri ] || [ -z $root ] || [ -z $warning ] || [ -z $critical ]; then
     echo "All the paramaters are required"; exit $RETVAL
 fi
 
-LAST_CRON_RUN=$(${DRUSH} --root=${root} --uri=${uri} vget '^cron_last$'|cut -d: -f 2)
+DRUPAL_VERSION=$(${DRUSH} --root=${root} --uri=${uri} status | grep 'Drupal version' | sed 's/.*:\s*//')
+
+if [[ "$DRUPAL_VERSION" =~ '^[6-7]' ]]
+then
+  # drupal 6/7
+  LAST_CRON_RUN=$(${DRUSH} --root=${root} --uri=${uri} vget '^cron_last$'|cut -d: -f 2)
+else
+  # other drupal versions
+  LAST_CRON_RUN=$(${DRUSH} --root=${root} --uri=${uri} state-get system.cron_last)
+fi
 
 DELTA=$(($NOW - $LAST_CRON_RUN))
 
