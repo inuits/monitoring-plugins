@@ -61,6 +61,7 @@ data () {
   queue_error=$( echo $get | jq "." | grep 'error' )
   if [[ ! -z "${queue_error}" ]]; then message="Unknown: curl error:${queue_error} ."; exitstatus='3'; quit; fi
   queue_messages=$( echo $get | jq ". | map(select(.name == \"${queue_name}\")) | .[].messages" -r )
+  queue_messages_unack=$( echo $get | jq ". | map(select(.name == \"${queue_name}\")) | .[].messages_unacknowledged" -r )
   queue_messages_delta=$( echo $get_delta_one | jq ". | map(select(.name == \"${queue_name}\")) | .[].messages" -r )
   queue_messages_publish_rate=$( echo $get | jq ". | map(select(.name == \"${queue_name}\")) | .[].message_stats.publish_details.rate" -r )
   queue_messages_get_rate=$( echo $get | jq ". | map(select(.name == \"${queue_name}\")) | .[].message_stats.get_details.rate" -r )
@@ -71,6 +72,7 @@ data () {
   if $debug
   then
     echo "Debug: messages:  $queue_messages"
+    echo "Debug: messages unack: $queue_messages_unack"
     echo "Debug: messages publish:  $queue_messages_publish_rate"
     echo "Debug: messages get:  $queue_messages_get_rate"
     echo "Debug: messages noack:  $queue_messages_noack_rate"
@@ -78,7 +80,8 @@ data () {
 }
 
 do_main_check () {
-  # Check if there are messages in the queue
+  # Check if there are messages in the queue minus the unacked messages as we don't care about those
+  queue_messages=$(( ${queue_messages} - ${queue_messages_unack} ))
   if (( $( echo "${queue_messages} > 0" | bc -l ) ))
   then
     # If that is the case, check that the publish rate isn't 0
