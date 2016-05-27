@@ -19,8 +19,8 @@ cat <<eof
    --passwd|-p          : The password of the user, defaults to 'guest'
    --user|-u            : The user to use, defaults to 'guest'
    --url                : The url to use, format 'host                                                                                      : port' defaults to 'localhost : 15672'
-   --warning|-w         : The warning threashold, defaults to '0.5'. This is the relationship between messages acked vs messages published
-   --critical|-c        : The critical threashold, defaults to '0.3'. This is the relationship between messages acked vs messages published
+   --warning|-w         : The warning threashold, defaults to '0.5'. This is the relationship between messages acked vs messages acked
+   --critical|-c        : The critical threashold, defaults to '0.3'. This is the relationship between messages acked vs messages acked
    --queue-warning|-qw  : The amount of unprocessed messages in the queue before generating a warning
    --queue-critical|-qc : The amount of unprocessed messages in the queue before the check goes critical.
    --debug|-d           : Show debug values, aka echo some params
@@ -63,7 +63,7 @@ data () {
   queue_messages=$( echo $get | jq ". | map(select(.name == \"${queue_name}\")) | .[].messages" -r )
   queue_messages_unack=$( echo $get | jq ". | map(select(.name == \"${queue_name}\")) | .[].messages_unacknowledged" -r )
   queue_messages_delta=$( echo $get_delta_one | jq ". | map(select(.name == \"${queue_name}\")) | .[].messages" -r )
-  queue_messages_publish_rate=$( echo $get | jq ". | map(select(.name == \"${queue_name}\")) | .[].message_stats.publish_details.rate" -r )
+  queue_messages_ack_rate=$( echo $get | jq ". | map(select(.name == \"${queue_name}\")) | .[].message_stats.ack_details.rate" -r )
   queue_messages_get_rate=$( echo $get | jq ". | map(select(.name == \"${queue_name}\")) | .[].message_stats.get_details.rate" -r )
   queue_messages_noack_rate=$( echo $get | jq ". | map(select(.name == \"${queue_name}\")) | .[].message_stats.ack_details.rate" -r )
   queue_processing_rate='0'
@@ -73,7 +73,7 @@ data () {
   then
     echo "Debug: messages:  $queue_messages"
     echo "Debug: messages unack: $queue_messages_unack"
-    echo "Debug: messages publish:  $queue_messages_publish_rate"
+    echo "Debug: messages ack:  $queue_messages_ack_rate"
     echo "Debug: messages get:  $queue_messages_get_rate"
     echo "Debug: messages noack:  $queue_messages_noack_rate"
   fi
@@ -84,11 +84,11 @@ do_main_check () {
   queue_messages=$(( ${queue_messages} - ${queue_messages_unack} ))
   if (( $( echo "${queue_messages} > 0" | bc -l ) ))
   then
-    # If that is the case, check that the publish rate isn't 0
-    if [[ ! "$queue_messages_publish_rate" == "0" ]]
+    # If that is the case, check that the ack rate isn't 0
+    if [[ ! "$queue_messages_ack_rate" == "0" ]]
     then
       # Calculate the processing rate
-      queue_processing_rate=$( devide "${queue_messages_get_rate} / ${queue_messages_publish_rate}" )
+      queue_processing_rate=$( devide "${queue_messages_get_rate} / ${queue_messages_ack_rate}" )
       if $debug
       then
         echo "Debug: messages processing:  $queue_processing_rate"
@@ -106,20 +106,20 @@ do_main_check () {
         message=$( echo "OK: Queue '${queue_name}' is processing messages at ${queue_processing_rate}/s." )
         exitstatus='0'
       fi
-    # If the publish rate is 0, we have an issue.
+    # If the ack rate is 0, we have an issue.
     else
       # Check to see if the amount of messages in the queue isn't generating a false positive,
       # like 1 that just hasn't been picked up yet
       if (( $echo "${queue_messages} > ${queue_messages_critical}" | bc -l ))
       then
-        message=$( echo "Critical: Queue '${queue_name}' is NOT publishing messages, messages in the queue: '${queue_messages}'." )
+        message=$( echo "Critical: Queue '${queue_name}' is NOT acking messages, messages in the queue: '${queue_messages}'." )
         exitstatus='2'
       elif (( $echo "${queue_messages} > ${queue_messages_warning}" | bc -l ))
       then
-        message=$( echo "Warning: Queue '${queue_name}' is NOT publishing messages, messages in the queue: '${queue_messages}'." )
+        message=$( echo "Warning: Queue '${queue_name}' is NOT acking messages, messages in the queue: '${queue_messages}'." )
         exitstatus='1'
       else
-        message=$( echo "Ok: Queue '${queue_name}' is NOT publishing messages, messages in the queue: '${queue_messages}'." )
+        message=$( echo "Ok: Queue '${queue_name}' is NOT acking messages, messages in the queue: '${queue_messages}'." )
         exitstatus='0'
       fi
     fi
