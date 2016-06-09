@@ -1,0 +1,185 @@
+#!/bin/bash
+showhelp () {
+cat <<eof
+
+  Check to see if the defined amount of bolts are actually running.
+
+  Parameters:
+    --topology-name | -n : The name of the topology
+    --bolt-name | -b     : The name of the bolt to check, if not specified, it will print a list of bolts
+    --url | -u           : The url to connect to storm, defaults to localhost:8080
+    --expected-par | -p  : The expected amount of bolt instances, defaults to 1
+    --help | -h          : Shows help
+    --debug | -d         : Enable debugging, aka echo some params
+
+  Example usage:
+  ./check_topology_bolts -n intercad-topology -b update_incident_bolt
+  
+eof
+  exit 3
+}
+
+debug ()  {
+ if $debug
+ then
+    echo $@
+ fi 
+}
+
+# Params
+defaults () {
+  # Not specified params
+  error_bolts=''
+  good_bolts=0
+  # Required params
+  if [[ -z "${topology_name}" ]]
+  then
+    message="Unknown: You need to specify --topology-name of use --help"
+    exitstatus='3'
+    quit
+  fi
+  # Optional params
+  if [[ -z "${url}" ]]
+  then
+    url='localhost:8080'
+  fi
+  if [[ -z "${debug}" ]]
+  then
+    debug=false
+  fi
+  if [[ -z "${expected_par}" ]]
+  then
+    expected_par='1'
+  fi
+  if [[ -z "${bolt_name}" ]]
+  then
+    bolt_name='ALL'
+  fi
+}
+
+is_bolt_id_defined () {
+  bolt_id_test=$@
+  bolt_ids=$( echo $get_bolts | jq ".bolts[].boltId" -r )
+  return_value=1
+  for element in $bolt_ids
+  do
+    debug 'Checking if bolt_id is defined'
+    if [ $element == $bolt_id_test ]
+    then
+      return_value=0
+      debug 'it is!'
+      break
+    fi
+  done 
+  return $return_value
+}
+
+get_data () {
+  # Get the id of the topology
+  get_topology_id=$( curl -s http://${url}/api/v1/topology/summary )
+  # Check if the topology_name is defined
+  get_topologies_specified=$( echo $get_topology_id | jq ".topologies[].id" -r )
+  debug $get_topologies_specified
+  if [[ -z $get_topologies_specified ]]
+  then
+    message="Error: Topology ${topology_name} not defined"
+    exitstatus='2'
+    quit
+  fi
+  topology_id=$( echo $get_topology_id | jq ".topologies | map(select(.name == \"${topology_name}\" )) | .[].id" -r )
+  debug $topology_id
+ 
+  debug "curl -s http://${url}/api/v1/topology/${topology_id}"
+  get_bolts=$( curl -s http://${url}/api/v1/topology/${topology_id} )
+  if [[ "$bolt_name" == "ALL" ]]
+  then
+    message="Unknown: Available bolts:\n"
+    bolt_ids=$( echo $get_bolts | jq ".bolts[].boltId" -r )
+    message="${message}${bolt_ids}"
+    exitstatus="3"
+    quit
+  else
+    bolt_id=$bolt_name
+  fi
+}
+
+do_main_check_one () {
+  # Check if the bolt is defined in the topology
+  if is_bolt_id_defined $bolt_id
+  then
+    # Get data on the bolt
+    get_bolt_tasks=$( echo $get_bolts | jq " .bolts | map(select(.boltId == \"${bolt_id}\" )) | .[].tasks" -r )
+    get_bolt_last_error=$( echo $get_bolts | jq " .bolts | map(select(.boltId == \"${bolt_id}\" )) | .[].lastError" -r )
+    get_bolt_executors=$( echo $get_bolts | jq " .bolts | map(select(.boltId == \"${bolt_id}\" )) | .[].executors" -r )
+    debug ==============
+    debug $bolt_id
+    debug $get_bolt_tasks
+    debug $get_bolt_executors
+    if [[ ! -z $get_bolt_last_error ]]
+    then
+      debug $get_bolt_last_error
+    else
+      debug No lastError
+    fi
+    debug ==============
+    # Do the actual check
+    if [[ $get_bolt_tasks == $expected_par ]]
+    then 
+      message="Ok: Bolt: ${bolt_name} is running $get_bolt_tasks tasks."
+      exitstatus='0'
+    else
+      message="Critical: Bolt: ${bolt_name} is running $get_bolt_tasks tasks!"
+      exitstatus='2'
+    fi
+  else
+    message="Critical: Bolt not found!"
+    exitstatus='2'
+  fi
+}
+
+quit () {
+  echo -e "${message}" && exit $exitstatus
+}
+
+# Start casing
+while test -n "$1"
+do
+  case "$1" in
+    --help|-h)
+      showhelp
+      ;;  
+    --topology-name|-n)
+      shift
+      topology_name=$1
+      shift
+      ;;  
+    --url|-u)
+      shift
+      url=$1
+      shift
+      ;;
+    --debug|-d)
+      shift
+      debug=true
+      ;;
+    --expected-par|-p)
+      shift
+      expected_par=$1
+      shift
+      ;;
+    --bolt-name|-b)
+      shift
+      bolt_name=$1
+      shift
+      ;;
+    *)
+      showhelp
+      ;;
+  esac
+done
+
+defaults
+get_data
+do_main_check_one
+quit
+

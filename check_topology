@@ -1,0 +1,97 @@
+#!/bin/bash
+#
+# Author: Bart Janssens
+# Email:  bjanssens@inuits.eu
+# Date:   Wed Apr 6 2016
+#
+# Requires the jq package to work
+#
+showhelp () {
+cat <<eof
+
+  A check that looks for the status of the specified topology.
+
+  Parameters:
+    --topology-name|-n : The name of the topology
+    --help|-h          : Shows help
+    --debug|-d         : Enable debug, aka echo some params
+    --state|-s         : Expected state, defaults to running
+
+  Example usage:
+  ./check_storm_topology -n nameofthetopology
+
+eof
+  exit 3
+}
+
+defaults () {
+  if [[ -z "${url}" ]]; then url='localhost:8080'; fi
+  if [[ -z "${expected_status}" ]]; then expected_status='ACTIVE'; fi
+  if [[ -z "${debug}" ]]; then debug=false; fi
+  if [[ -z "${topology_name}" ]]; then message="Unknown: You need to specify, --topology-name or use --help."; exitstatus='3'; quit; fi
+}
+
+data () {
+  # Get the data
+  if $debug; then echo "curl -s http://${url}/api/v1/topology/summary"; fi
+  get=$( curl -s http://${url}/api/v1/topology/summary )
+  if $debug; then echo $get; fi
+}
+
+do_main_check () {
+  # Parse the data
+  topology_status=$( echo $get | jq ".[] | map(select(.name == \"${topology_name}\" )) | .[].status" -r )
+  if $debug; then echo $topology_status; fi
+
+  # Depending on what the status is, exit
+  if [[ ! "${topology_status}" == "${expected_status}" ]]
+  then
+    if [[ -z $topology_status ]]
+    then
+      message="Unknown: Topology ${topology_name} wasn't found!"
+      exitstatus='3'
+    else
+      message="Critical: Topology ${topology_name} state ${topology_status} doesn't match ${expected_status}!"
+      exitstatus='2'
+    fi
+  else
+    message="Ok: Topology ${topology_name} is running."
+    exitstatus='0'
+  fi
+}
+
+quit () {
+  echo "${message}" && exit $exitstatus
+}
+
+while test -n "$1"
+do
+  case "$1" in
+    --help|-h)
+      showhelp
+      ;;
+    --topology-name|-n)
+      shift
+      topology_name=$1
+      shift
+      ;;
+    --status|-s)
+      shift
+      expected_status=$1
+      shift
+      ;;
+    --debug|-d)
+      shift
+      debug=true
+      ;;
+    *)
+      showhelp
+      ;;
+  esac
+done
+
+defaults
+data
+do_main_check
+quit
+
