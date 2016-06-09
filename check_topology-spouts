@@ -1,0 +1,185 @@
+#!/bin/bash
+showhelp () {
+cat <<eof
+
+  Check to see if the defined amount of spouts are actually running.
+
+  Parameters:
+    --topology-name | -n : The name of the topology
+    --spout-name | -s     : The name of the spout to check, if not specified, it will print a list of spouts
+    --url | -u           : The url to connect to storm, defaults to localhost:8080
+    --expected-par | -p  : The expected amount of spout instances, defaults to 1
+    --help | -h          : Shows help
+    --debug | -d         : Enable debugging, aka echo some params
+
+  Example usage:
+  ./check_topology_spouts -n intercad-topology -b update_incident_spout
+  
+eof
+  exit 3
+}
+
+debug ()  {
+ if $debug
+ then
+    echo $@
+ fi 
+}
+
+# Params
+defaults () {
+  # Not specified params
+  error_spouts=''
+  good_spouts=0
+  # Required params
+  if [[ -z "${topology_name}" ]]
+  then
+    message="Unknown: You need to specify --topology-name of use --help"
+    exitstatus='3'
+    quit
+  fi
+  # Optional params
+  if [[ -z "${url}" ]]
+  then
+    url='localhost:8080'
+  fi
+  if [[ -z "${debug}" ]]
+  then
+    debug=false
+  fi
+  if [[ -z "${expected_par}" ]]
+  then
+    expected_par='1'
+  fi
+  if [[ -z "${spout_name}" ]]
+  then
+    spout_name='ALL'
+  fi
+}
+
+is_spout_id_defined () {
+  spout_id_test=$@
+  spout_ids=$( echo $get_spouts | jq ".spouts[].spoutId" -r )
+  return_value=1
+  for element in $spout_ids
+  do
+    debug 'Checking if spout_id is defined'
+    if [ $element == $spout_id_test ]
+    then
+      return_value=0
+      debug 'it is!'
+      break
+    fi
+  done 
+  return $return_value
+}
+
+get_data () {
+  # Get the id of the topology
+  get_topology_id=$( curl -s http://${url}/api/v1/topology/summary )
+  # Check if the topology_name is defined
+  get_topologies_specified=$( echo $get_topology_id | jq ".topologies[].id" -r )
+  debug $get_topologies_specified
+  if [[ -z $get_topologies_specified ]]
+  then
+    message="Error: Topology ${topology_name} not defined"
+    exitstatus='2'
+    quit
+  fi
+  topology_id=$( echo $get_topology_id | jq ".topologies | map(select(.name == \"${topology_name}\" )) | .[].id" -r )
+  debug $topology_id
+ 
+  debug "curl -s http://${url}/api/v1/topology/${topology_id}"
+  get_spouts=$( curl -s http://${url}/api/v1/topology/${topology_id} )
+  if [[ "$spout_name" == "ALL" ]]
+  then
+    message="Unknown: Available spouts:\n"
+    spout_ids=$( echo $get_spouts | jq ".spouts[].spoutId" -r )
+    message="${message}${spout_ids}"
+    exitstatus="3"
+    quit
+  else
+    spout_id=$spout_name
+  fi
+}
+
+do_main_check_one () {
+  # Check if the spout is defined in the topology
+  if is_spout_id_defined $spout_id
+  then
+    # Get data on the spout
+    get_spout_tasks=$( echo $get_spouts | jq " .spouts | map(select(.spoutId == \"${spout_id}\" )) | .[].tasks" -r )
+    get_spout_last_error=$( echo $get_spouts | jq " .spouts | map(select(.spoutId == \"${spout_id}\" )) | .[].lastError" -r )
+    get_spout_executors=$( echo $get_spouts | jq " .spouts | map(select(.spoutId == \"${spout_id}\" )) | .[].executors" -r )
+    debug ==============
+    debug $spout_id
+    debug $get_spout_tasks
+    debug $get_spout_executors
+    if [[ ! -z $get_spout_last_error ]]
+    then
+      debug $get_spout_last_error
+    else
+      debug No lastError
+    fi
+    debug ==============
+    # Do the actual check
+    if [[ $get_spout_tasks == $expected_par ]]
+    then 
+      message="Ok: Spout: ${spout_name} is running $get_spout_tasks tasks."
+      exitstatus='0'
+    else
+      message="Critical: Spout: ${spout_name} is running $get_spout_tasks tasks!"
+      exitstatus='2'
+    fi
+  else
+    message="Critical: Spout not found!"
+    exitstatus='2'
+  fi
+}
+
+quit () {
+  echo -e "${message}" && exit $exitstatus
+}
+
+# Start casing
+while test -n "$1"
+do
+  case "$1" in
+    --help|-h)
+      showhelp
+      ;;  
+    --topology-name|-n)
+      shift
+      topology_name=$1
+      shift
+      ;;  
+    --url|-u)
+      shift
+      url=$1
+      shift
+      ;;
+    --debug|-d)
+      shift
+      debug=true
+      ;;
+    --expected-par|-p)
+      shift
+      expected_par=$1
+      shift
+      ;;
+    --spout-name|-s)
+      shift
+      spout_name=$1
+      shift
+      ;;
+    *)
+      showhelp
+      ;;
+  esac
+done
+
+defaults
+get_data
+do_main_check_one
+quit
+
