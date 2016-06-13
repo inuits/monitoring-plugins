@@ -1,0 +1,122 @@
+#!/bin/bash
+#
+# Author: Bart Janssens
+# Email:  bjanssens@inuits.eu
+# Date:   Wed Jun 10 2016
+#
+# Requires the nmap-ncat and bc packages to work
+#
+showhelp () {
+cat <<eof
+
+  Check to monitor the zookeeper instance. Checks if it is reachable,
+  if it's reporting 'imok' and if the amount of connections isn't above the given values.
+
+ Parameters:
+   --host|-h            : The host to try and connect to, defaults to localhost.
+   --port|-p            : The port to try and connect to, default to 2181.
+   --warning|-w         : The warning threashold, defaults to 250.
+   --critical|-c        : The critical threashold, defaults to 300.
+
+ Example usage:
+ ./check_zookeeper --host localhost --port 2181 --warning 250 --critical 300
+
+eof
+  exit 3
+}
+
+params () {
+  if [ -z $host ]; then host='localhost'; fi
+  if [ -z $port ]; then port='2181'; fi
+  if [ -z $connections_warning ]; then connections_warning='250'; fi
+  if [ -z $connections_critical ]; then connections_critical='300'; fi
+}
+
+check_reachable () {
+  echo 'ruok' | nc $host $port 1>/dev/null && nc_status=$?
+  if [ ! $nc_status -eq '0' ]
+  then
+    message="Unknown: Unable to complete nc command"
+    exitstatus=3
+    quit
+  fi
+}
+
+check_alive () {
+  status=$( echo ruok | nc $host $port )
+  if [ ! $status == 'imok' ]
+  then
+    message="Critical: Zookeeper reporting status: $status"
+    exitstatus=2
+    quit
+  fi
+}
+
+get_srvr () {
+  srvr=$( echo srvr | nc $host $port )
+}
+
+check_connections () {
+  current_connections=$( echo "$srvr" | grep -i connections | cut -d ' ' -f 2 )
+  if (( $( echo "${current_connections} < ${connections_critical}" | bc -l ) ))
+  then
+    if (( $( echo "${current_connections} < ${connections_warning}" | bc -l ) ))
+    then
+      message="Ok: Amount of connections is currently: $current_connections"
+      exitstatus=0
+      quit
+    else
+      message="Warning: Amount of connections is currently: $current_connections"
+      exitstatus=1
+      quit
+    fi
+  else
+    message="Critical: Amount of connections is currently: $current_connections"
+    exitstatus=2
+    quit
+  fi
+}
+
+quit () {
+  echo "$message" && exit $exitstatus
+}
+
+# start the case-ing
+while test -n "$1"
+do
+  case "$1" in
+    --help|-h)
+      showhelp
+      ;;
+    --port|-p)
+      shift
+      port=$1
+      shift
+      ;;
+    --host|-h)
+      shift
+      host=$1
+      shift
+      ;;
+    --warning|-w)
+      shift
+      connections_warning=$1
+      shift
+      ;;
+    --critical|-c)
+      shift
+      connections_critical=$1
+      shift
+      ;;
+    *)
+      showhelp
+      ;;
+  esac
+done
+
+params
+check_reachable
+check_alive
+get_srvr
+check_connections
+
