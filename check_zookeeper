@@ -58,9 +58,9 @@ get_srvr () {
 
 check_connections () {
   current_connections=$( echo "$srvr" | grep -i connections | cut -d ' ' -f 2 )
-  if (( $( echo "${current_connections} < ${connections_critical}" | bc -l ) ))
+  if (( ${current_connections} < ${connections_critical} ))
   then
-    if (( $( echo "${current_connections} < ${connections_warning}" | bc -l ) ))
+    if (( ${current_connections} < ${connections_warning} ))
     then
       message="Ok: Amount of connections is currently: $current_connections"
       exitstatus=0
