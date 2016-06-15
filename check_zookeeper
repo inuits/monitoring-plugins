@@ -58,21 +58,28 @@ get_srvr () {
 
 check_connections () {
   current_connections=$( echo "$srvr" | grep -i connections | cut -d ' ' -f 2 )
-  if (( ${current_connections} < ${connections_critical} ))
+  if [ ! -z $current_connections ]
   then
-    if (( ${current_connections} < ${connections_warning} ))
+    if (( ${current_connections} < ${connections_critical} ))
     then
-      message="Ok: Amount of connections is currently: $current_connections"
-      exitstatus=0
-      quit
+      if (( ${current_connections} < ${connections_warning} ))
+      then
+        message="Ok: Amount of connections is currently: $current_connections"
+        exitstatus=0
+        quit
+      else
+        message="Warning: Amount of connections is currently: $current_connections"
+        exitstatus=1
+        quit
+      fi
     else
-      message="Warning: Amount of connections is currently: $current_connections"
-      exitstatus=1
+      message="Critical: Amount of connections is currently: $current_connections"
+      exitstatus=2
       quit
     fi
   else
-    message="Critical: Amount of connections is currently: $current_connections"
-    exitstatus=2
+    message="Warning: Zookeeper reporting status: $status, but failed to get the connections"
+    exitstatus=1
     quit
   fi
 }
