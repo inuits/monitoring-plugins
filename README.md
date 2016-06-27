@@ -264,6 +264,12 @@ An example Vagrant project has been included to get you started right away.
 	    <td><a href="http://opm.io">Open PostgreSQL Monitoring</td>
 	    <td><a href="https://github.com/OPMDG/check_pgactivity">upstream</td>
     </tr>
+    <tr>
+        <td>check_collective-access</td>
+        <td><a href="https://github.com/honzatlusty">Jan Tlusty</a></td>
+        <td><a href="https://github.com/honzatlusty/nagios-collective-access">upstream</a></td>
+    </tr>
+
 </table>
 
 ### Contributions
