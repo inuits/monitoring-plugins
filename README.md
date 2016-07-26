@@ -269,6 +269,12 @@ An example Vagrant project has been included to get you started right away.
         <td><a href="https://github.com/honzatlusty">Jan Tlusty</a></td>
         <td><a href="https://github.com/honzatlusty/nagios-collective-access">upstream</a></td>
     </tr>
+    <tr>
+        <td>check_fileage</td>
+        <td><a href="https://github.com/loxo33">loxo33</a></td>
+        <td><a href="https://github.com/honzatlusty/sysadmin/blob/master/check_fileage.py">upstream</a></td>
+    </tr>
+
 
 </table>
 
