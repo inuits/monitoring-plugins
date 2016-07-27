@@ -15,6 +15,7 @@ cat <<eof
 
  Parameters:
    --queue|-q           : The queue to check
+   --vhost|-v           : The vhost to check
    --help|-h            : Shows help
    --passwd|-p          : The password of the user, defaults to 'guest'
    --user|-u            : The user to use, defaults to 'guest'
@@ -48,14 +49,18 @@ defaults () {
   if [[ -z "${queue_processing_rate_warning}" ]]; then queue_processing_rate_warning='0.5'; fi
   if [[ -z "${user}" ]]; then user='guest'; fi
   if [[ -z "${url}" ]]; then url='localhost:15672'; fi
+  if [[ -z "${vhost}" ]]; then vhost=''; fi
   if [[ -z "${queue_messages_warning}" ]]; then queue_messages_warning='50'; fi
   if [[ -z "${queue_messages_critical}" ]]; then queue_messages_critical='100'; fi
 }
 
 data () {
+  # Validations
+  if [[ -n "$vhost" ]] && [[ "${vhost:0:1}" != "/" ]]; then vhost="/${vhost}"; fi
+
   # Get the data
-  if $debug; then echo "Debug: curl -s -u ${user}:${passwd} http://${url}/api/queues"; fi
-  get=$( curl -s -u ${user}:${passwd} http://${url}/api/queues )
+  if $debug; then echo "Debug: curl -s -u ${user}:${passwd} http://${url}/api/queues${vhost}"; fi
+  get=$( curl -s -u ${user}:${passwd} http://${url}/api/queues${vhost} )
 
   # Parse the data
   queue_error=$( echo $get | jq "." | grep 'error' )
@@ -147,12 +152,17 @@ do
       ;;
     --user|-u)
       shift
-      vhost=$1
+      user=$1
       shift
       ;;
     --passwd|-p)
       shift
       passwd=$1
+      shift
+      ;;
+    --vhost|-v)
+      shift
+      vhost=$1
       shift
       ;;
     --warning|-w)
