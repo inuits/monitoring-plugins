@@ -59,6 +59,6 @@ check_topology-spouts                 1.0
 check_topology                        1.0
 check_zookeeper                       1.0
 check_fileage.py                      1.0
-check_rabbitmq_sync.rb                1.0
+check_rabbitmq-sync.rb                1.0
 
 # vim: set ts=2 sw=2 et : #

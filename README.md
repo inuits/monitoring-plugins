@@ -275,7 +275,7 @@ An example Vagrant project has been included to get you started right away.
         <td><a href="https://github.com/honzatlusty/sysadmin/blob/master/check_fileage.py">upstream</a></td>
     </tr>
     <tr>
-        <td>check_rabbitmq_sync</td>
+        <td>check_rabbitmq-sync</td>
         <td><a href="https://github.com/honzatlusty">Jan Tlusty</a></td>
         <td><a href="https://github.com/honzatlusty/nagios-rabbitmq-sync">upstream</a></td>
     </tr>
