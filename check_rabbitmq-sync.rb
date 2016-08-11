@@ -37,15 +37,13 @@ end
 
 optparse.parse!
 
-if options[:host] !~ /^https?:\/\/.*/
-  options[:host] = 'http://' + options[:host]
-end
-
-
 if options[:host].nil? or options[:user].nil? or options[:password].nil? or options[:vhost].nil? or options[:port].nil?
   usage(optparse)
 end
 
+if options[:host] !~ /^https?:\/\/.*/
+  options[:host] = 'http://' + options[:host]
+end
 
 begin
   uri = URI::parse("#{options[:host]}:#{options[:port]}/api/queues/#{options[:vhost]}")
