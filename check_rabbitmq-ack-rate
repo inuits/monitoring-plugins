@@ -85,6 +85,15 @@ data () {
 }
 
 do_main_check () {
+
+  # Check if queue_messages is not empty
+  if [ -z "$queue_messages" ]
+  then
+    message=$( echo "Critical: Queue '${queue_name}' doesn't seem to exist." )
+    exitstatus='2'
+    quit
+  fi
+
   # Check if there are messages in the queue minus the unacked messages as we don't care about those
   queue_messages=$(( ${queue_messages} - ${queue_messages_unack} ))
   if (( $( echo "${queue_messages} > 0" | bc -l ) ))
