@@ -279,6 +279,12 @@ An example Vagrant project has been included to get you started right away.
         <td><a href="https://github.com/honzatlusty">Jan Tlusty</a></td>
         <td><a href="https://github.com/honzatlusty/nagios-rabbitmq-sync">upstream</a></td>
     </tr>
+    <tr>
+        <td>check_zmstatus</td>
+        <td><a href="https://github.com/gmykhailiuta">gmykhailiuta</a></td>
+        <td><a href="https://raw.githubusercontent.com/gmykhailiuta/check_zmstatus/master/check_zmstatus.pl">upstream</a></td>
+    </tr>
+
 
 
 
