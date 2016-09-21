@@ -1,0 +1,225 @@
+#!/usr/bin/perl
+#
+# check_crm_v0_7
+#
+# Copyright © 2013 Philip Garner, Sysnix Consultants Limited
+#
+# Authors: Phil Garner - phil@sysnix.com & Peter Mottram - peter@sysnix.com
+#
+# v0.1 09/01/2011
+# v0.2 11/01/2011
+# v0.3 22/08/2011 - bug fix and changes suggested by Vadym Chepkov
+# v0.4 23/08/2011 - update for spelling and anchor regex capture (Vadym Chepkov)
+# v0.5 29/09/2011 - Add standby warn/crit suggested by Sönke Martens & removal
+#                   of 'our' to 'my' to completely avoid problems with ePN
+# v0.6 14/03/2013 - Change from \w+ to \S+ in stopped check to cope with
+#                   Servers that have non word charachters in.  Suggested by
+#                   Igal Baevsky.
+# v0.7 01/09/2013 - In testing as still not fully tested.  Adds optional 
+#		    constraints check (Boris Wesslowski). Adds fail count 
+#		    threshold ( Zoran Bosnjak & Marko Hrastovec )
+#
+# NOTES: Requires Perl 5.8 or higher & the Perl Module Nagios::Plugin
+
+use warnings;
+use strict;
+use Nagios::Plugin;
+
+# Lines below may need changing if crm_mon installed in a different location.
+
+my $crm_mon            = '/usr/sbin/crm_mon -1 -r -f';
+my $crm_configure_show = '/usr/sbin/crm configure show';
+
+our $np;
+setup_nagios_plugin();
+
+my $warn_or_crit;
+determine_warning_or_critical();
+
+my @crm_output;
+gather_crm_output();
+
+our $ms_or_clone_set;
+foreach my $line (@crm_output) {
+  check_connection($line);
+  check_quorum($line);
+  check_offline_nodes($line);
+  check_standby_nodes($line);
+  check_stopped_resources($line);
+  check_set_stopped($line);
+  check_failed_actions($line);
+  check_unmanaged_resources($line);
+  check_not_installed($line);
+  check_fail_count($line);
+}
+check_constraints();
+
+$np->nagios_exit( $np->check_messages() );
+
+sub determine_warning_or_critical {
+  # Check for -w option set warn if this is case instead of crit
+  $warn_or_crit = 'CRITICAL';
+  $warn_or_crit = 'WARNING' if $np->opts->warning;
+}
+
+sub setup_nagios_plugin {
+  $np = Nagios::Plugin->new(
+      shortname => 'check_crm',
+      version   => '0.7',
+      usage     => "Usage: %s <ARGS>\n\t\t--help for help\n",
+  );
+
+  $np->add_arg(
+      spec => 'warning|w',
+      help => 'If failed Nodes, stopped Resources detected or Standby Nodes sends Warning instead of Critical (default) as long as there are no other errors and there is Quorum',
+      required => 0,
+  );
+
+  $np->add_arg(
+      spec     => 'standbyignore|s',
+      help     => 'Ignore any node(s) in standby, by default sends Critical',
+      required => 0,
+  );
+
+  $np->add_arg(
+      spec     => 'constraint|constraints|c',
+      help     => 'Also check configuration for location constraints (caused by migrations) and warn if there are any.  Requires additional privileges see notes',
+      required => 0,
+  );
+
+  $np->add_arg(
+      spec     => 'failcount|failcounts|f=i',
+      help     => 'resource fail count to start warning on [default = 1].',
+      required => 0,
+      default  => 1,
+  );
+
+  $np->getopts;
+}
+
+sub gather_crm_output {
+  my $filehandle;
+  my $command = "$crm_mon";
+  my $errormessage= "Running $command failed";
+
+  open( $filehandle, "$command |" )
+    or $np->nagios_exit( CRITICAL, $errormessage );
+
+  @crm_output = <$filehandle>;
+
+  close($filehandle) or $np->nagios_exit( CRITICAL, $errormessage );
+}
+
+sub check_connection {
+  my $line = shift;
+  if ( $line =~ m/Connection to cluster failed\:(.*)/i ) {
+      $np->nagios_exit( CRITICAL, "Connection to cluster failed: $1" );
+  }
+}
+
+sub check_quorum {
+  my $line = shift;
+  if ( $line =~ m/Current DC:/ ) {
+    if ( $line =~ m/partition with quorum$/ ) {
+        # Assume cluster is OK - we only add warn/crit after here
+        $np->add_message( OK, "cluster OK" );
+    }
+    else {
+        $np->add_message( CRITICAL, "no quorum" );
+    }
+  }
+}
+
+sub check_offline_nodes {
+  my $line = shift;
+  if ( $line =~ m/^Node\s*(\S+)\s*\(\d+\):\s*UNCLEAN \(offline\)/i ) {
+      $np->add_message( CRITICAL, "; node $1 unclean offline" );
+  } elsif ( $line =~ m/^offline:\s*\[\s*(\S+)\s*\]/i ) {
+    my @offline = split( /\s+/, $1 );
+    foreach my $node (@offline) {
+      $np->add_message( $warn_or_crit, "; node $node offline" );
+    }
+  }
+}
+
+
+sub check_standby_nodes {
+  my $line = shift;
+  if ( !$np->opts->standbyignore ) {
+    if ( $line =~ m/^node\s+(\S.*)\s\(\d+\):\s*standby/i ) {
+      $np->add_message( $warn_or_crit, "; node $1 standby" );
+    }
+  }
+}
+
+sub check_stopped_resources {
+  my $line = shift;
+  if ( $line =~ m/\s*(\S+)\s+\(\S+\)\:\s+Stopped/ ) {
+      $np->add_message( $warn_or_crit, "; resource $1 stopped" );
+  }
+}
+
+sub check_set_stopped {
+  my $line = shift;
+
+  if ($line =~ m/\s*(?:Clone|Master\/Slave) Set:\s+\S+\s+\[(\S+)\]/ ) {
+    $ms_or_clone_set = $1;
+  } elsif ( $line =~ m/\s*stopped\:\s*\[\s*+(.*)\s*\]/i ) {
+    my @stopped = split( /\s+/, $1 );
+
+    foreach my $host (@stopped) {
+      $np->add_message( $warn_or_crit, "; resource $ms_or_clone_set stopped on $host" );
+    }
+  }
+}
+
+sub check_failed_actions {
+  my $line = shift;
+  if ( $line =~ m/^Failed [aA]ctions\:/ ) {
+      $np->add_message( CRITICAL, "; failed actions detected or not cleaned up" );
+  }
+}
+
+sub check_unmanaged_resources {
+  my $line = shift;
+  if ( $line =~ m/\s*(\S+?)\s+\(.*\)\:\s+\w+\s+\w+\s+\(unmanaged\)\s+/i )
+  {
+      $np->add_message( CRITICAL, "; resource $1 unmanaged" );
+  }
+}
+
+sub check_not_installed {
+  my $line = shift;
+  if ( $line =~ m/\s*(\S+?)\s+ \(.*\)\:\s+not installed/i ) {
+      $np->add_message( CRITICAL, "; resource $1 not installed" );
+  }
+}
+
+sub check_fail_count {
+  my $line = shift;
+  if ( $line =~ m/\s*(\S+?):.*fail-count=(\d+)/i ) {
+    if ( $2 >= $np->opts->failcount ) {
+        $np->add_message( WARNING, "; failure for resource $1 detected, fail-count=$2" );
+    }
+  }
+}
+
+sub check_constraints {
+  # if -c flag set check configuration for constraints
+
+  my $command = "$crm_configure_show";
+  my $ConstraintsFlag = $np->opts->constraint;
+  if ($ConstraintsFlag) {
+      my $filehandle;
+
+      open( $filehandle, "$command|" )
+        or $np->nagios_exit( CRITICAL, "Running $command has failed" );
+
+      foreach my $line (<$filehandle>) {
+          if ( $line =~ m/location cli-(prefer|standby)-\S+\s+(\S+)/ ) {
+              $np->add_message( WARNING, "; $2 blocking location constraint detected" );
+          }
+      }
+      close($filehandle) or $np->nagios_exit( CRITICAL, "Running $command failed" );
+  }
+}
