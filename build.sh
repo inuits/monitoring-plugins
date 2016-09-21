@@ -22,7 +22,7 @@ do
   PLUGIN_NAME_RHEL=$(echo ${PLUGIN} | sed -e 's/check_//g' | cut -d '.' -f 1)
   PLUGIN_VERSION=$(grep -E "^${PLUGIN}\s" build.txt | awk {'print $2'})
   PLUGIN_ITERATION=$(git rev-list HEAD -- "${PLUGIN}" | wc -l)
-  PLUGIN_EPOCH=1
+  PLUGIN_EPOCH=$(date +'%s')
 
   echo -e "\e[1;34m[\e[00m --- \e[00;32mBuild package: ${PLUGIN}\e[00m --- \e[1;34m]\e[00m"
 
