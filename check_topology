@@ -16,6 +16,7 @@ cat <<eof
     --help|-h          : Shows help
     --debug|-d         : Enable debug, aka echo some params
     --state|-s         : Expected state, defaults to running
+    --url|-u           : Pass alternative API url
 
   Example usage:
   ./check_storm_topology -n nameofthetopology
@@ -78,6 +79,11 @@ do
     --status|-s)
       shift
       expected_status=$1
+      shift
+      ;;
+    --url|-u)
+      shift
+      url=$1
       shift
       ;;
     --debug|-d)
