@@ -40,7 +40,7 @@ data () {
 
 do_main_check () {
   # Parse the data
-  topology_status=$( echo $get | jq ".[] | map(select(.name == \"${topology_name}\" )) | .[].status" -r )
+  topology_status=$( echo $get | jq ".[\"topologies\"] | map(select(.name == \"${topology_name}\" )) | .[].status" -r )
   if $debug; then echo $topology_status; fi
 
   # Depending on what the status is, exit
