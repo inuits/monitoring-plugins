@@ -5,6 +5,7 @@ check_bacula                          0.0.5
 check_collective-access.rb            1.0
 check_crm                             0.7
 check_drbd                            3e0b548f55
+check_graphite                        1.0
 check_iostat                          0.0.4
 check_ipsec                           2.0
 check_linux-procstat.pl               0.4

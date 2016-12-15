@@ -289,6 +289,11 @@ An example Vagrant project has been included to get you started right away.
         <td><a href="https://github.com/gmykhailiuta">gmykhailiuta</a></td>
         <td><a href="https://raw.githubusercontent.com/gmykhailiuta/check_zmstatus/master/check_zmstatus.pl">upstream</a></td>
     </tr>
+    <tr>
+        <td>check_graphite</td>
+        <td><a href="https://github.com/datacratic">datacratic</a></td>
+        <td><a href="https://github.com/datacratic/check_graphite">upstream</a></td>
+    </tr>
 
 
 
