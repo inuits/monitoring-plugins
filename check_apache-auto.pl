@@ -167,6 +167,7 @@ sub apache_status($) {
     @recolte = split(/\n/,$htmlbrut);
     splice (@recolte, 0, $topnbr);
     splice (@recolte, -$endnbr);
+    @recolte = grep { $_ ne '' } @recolte;
 
     #Debugging
     # print "$req\n";
