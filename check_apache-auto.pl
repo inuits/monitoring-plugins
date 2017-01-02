@@ -63,8 +63,6 @@ my $htmltxt = '';
 my @recolte = ();
 my %data = ();
 my $R = '';
-my $topnbr = 10; # Number of items to clear at the beginning of the data collected
-my $endnbr = 1; # Number of items to delete the end of the data collected
 
 
 getopts("H:p:U:P:v:w:c:",\%options);
@@ -156,17 +154,18 @@ sub apache_status($) {
     my $ua = LWP::UserAgent->new();
       $ua->timeout(10);
 
-    my $req = HTTP::Request->new( GET => $hturl );
-     # if login with password is necessary, actively the next line !
-     # $req->headers->authorization_basic( $user, $pass );
-
-    $htmlbrut = $ua->request($req)->as_string ;
+    my $response = $ua->get($hturl);
+    if ($response->is_success) {
+      $htmlbrut = $response->decoded_content;
+    } else {
+      $alert1 = "failed to get data from $hturl";
+      print_result();
+      exit;
+    } 
     $htmlbrut=~ s/ //g;
 
 # Formatting of the data table
     @recolte = split(/\n/,$htmlbrut);
-    splice (@recolte, 0, $topnbr);
-    splice (@recolte, -$endnbr);
 
     #Debugging
     # print "$req\n";
