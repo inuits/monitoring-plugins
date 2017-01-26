@@ -294,6 +294,11 @@ An example Vagrant project has been included to get you started right away.
         <td><a href="https://github.com/datacratic">datacratic</a></td>
         <td><a href="https://github.com/datacratic/check_graphite">upstream</a></td>
     </tr>
+    <tr>
+        <td>check_ssl_cert</td>
+        <td><a href="https://github.com/matteocorti">matteocorti</a></td>
+        <td><a href="https://github.com/matteocorti/check_ssl_cert">upstream</a></td>
+    </tr>
 
 
 
