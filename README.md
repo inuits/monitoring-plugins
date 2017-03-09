@@ -299,6 +299,12 @@ An example Vagrant project has been included to get you started right away.
         <td><a href="https://github.com/matteocorti">matteocorti</a></td>
         <td><a href="https://github.com/matteocorti/check_ssl_cert">upstream</a></td>
     </tr>
+    <tr>
+        <td>check_topology-latency.rb</td>
+        <td><a href="https://github.com/honzatlusty">Jan Tlusty</a></td>
+        <td><a href="https://github.com/honzatlusty/nagios-storm-topology-latency">upstream</a></td>
+    </tr>
+
 
 
 
