@@ -28,6 +28,12 @@ optparse = OptionParser.new do |opts|
   opts.on('-p', '--port PORT', "Port") do |f|
     port = f
   end
+  opts.on('-c', '--critical CRITICAL', "Critical latency") do |f|
+	  critical_latency = f.to_i
+  end
+  opts.on('-w', '--warning WARNING', "Warning latency") do |f|
+	  warning_latency = f.to_i
+  end
   opts.on('-H', '--help', "Displays this message") do
     usage(optparse)
     exit 0
@@ -36,6 +42,10 @@ end
 
 optparse.parse!
 
+if warning_latency >= critical_latency
+  puts "Error: Warning latency must be lower than critical latency"
+  exit 3
+end
 
 if host !~ /^https?:\/\/.*/
    host = 'http://' + host
