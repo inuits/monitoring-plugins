@@ -3,8 +3,8 @@
 # ============================== SUMMARY =====================================
 #
 # Program : check_mysqld.pl
-# Version : 0.93
-# Date    : Mar 01, 2012
+# Version : 0.94
+# Date    : Mar 31, 2012
 # Author  : William Leibzon - william@leibzon.org
 # Licence : GPL - summary below, full text at http://www.fsf.org/licenses/gpl.txt
 #
@@ -57,15 +57,15 @@
 #     this plugin if new version comes out and remember to not have read-all
 #     unix permissions which is default.
 #  3. Specify login credentials in [client] section of my.cnf file and use
-#     -F option. You can use common user/pass in each file and specify 
+#     -F option. You can use common user/pass in each file and specify
 #     host with -H or may even decide to use different files for each host
 #     being checked specifying this command like this:
 # 	define command{
 #	   command_name check_mysqld
-#          command_line $USER1$/check_mysqld.pl -F /path/to/configs/my_$HOSTADDRESS$.cfg -a uptime,threads_connected,questions,slow_queries,open_tables -w ",,,," -c ",,,,"
+#          command_line $USER1$/check_mysqld.pl -F /path/to/configs/my_$HOSTADDRESS$.cfg -T -a uptime,threads_connected,questions,slow_queries,open_tables -w ",,,," -c ",,,,"
 # 	}
-#    
-# The attributes/parameters checked are mysql internal variables retuned from 
+#
+# The attributes/parameters checked are mysql internal variables retuned from
 # "SHOW STATUS" or "SHOW GLOBAL STATUS" (which one depends on mysql version).
 # For each attribute to be checked which you specify in '-a' you must
 # also specify warning and critical threshold value in the same order
@@ -79,7 +79,7 @@
 # Warning and critical thresholds are specified with '-w' and '-c' and each
 # one must have exact same number of values to be checked (separated by ',')
 # as number of variables specified with '-a'. Any values you dont want to
-# compare you specify as ~ (or just not specify a value, i.e. ',,'). 
+# compare you specify as ~ (or just not specify a value, i.e. ',,').
 #
 # There are also number of other one-letter modifiers that can be used
 # as prefix before actual data value to direct how data is to be checked.
@@ -92,7 +92,7 @@
 # Additionally supported are two specifications of range formats:
 #   number1:number2   issue alert if data is OUTSIDE of range [number1..number2]
 #	              i.e. alert if data<$number1 or data>$number2
-#   @number1:number2  issue alert if data is WITHIN range [number1..number2] 
+#   @number1:number2  issue alert if data is WITHIN range [number1..number2]
 #		      i.e. alert if data>=$number and $data<=$number2
 #
 # A special modifier '^' can also be used to disable checking that warn values
@@ -101,24 +101,24 @@
 # warning alert if value is < 100 and critical alert if its greater then 200.
 #
 # You can specify more then one type of threshold for the same variable -
-# simply repeat the variable more then once in the list in '-a' 
+# simply repeat the variable more then once in the list in '-a'
 #
 # --------------------------------------------------------------------------
 #
 # If you're using version 5.02 or newer of mysql server then this plugin
 # will do "SHOW GLOBAL STATUS" rather than "SHOW STATUS". For more information
-# on differences see: 
+# on differences see:
 #   http://dev.mysql.com/doc/refman/5.0/en/server-status-variables.html
 #
 # Note that it maybe the case that you do actually want "SHOW STATUS" even with
 # mysqld 5.0.2, then specify query line with '-q' option like
-#   ./check_mysqld.pl -p foo -f -u nagios -A uptime,threads_connected,slow_queries,open_tables -H nagios -q 'SHOW STATUS' 
+#   ./check_mysqld.pl -p foo -f -u nagios -A uptime,threads_connected,slow_queries,open_tables -H nagios -q 'SHOW STATUS'
 #
 # Sample command and service definitions:
 #
 # define command{
 #  command_name check_mysqld
-#  command_line $USER1$/check_mysqld.pl -H $HOSTADDRESS$ -u $ARG1$ -p $ARG2$ -a uptime,threads_connected,questions,slow_queries,open_tables -w ",,,," -c ",,,,"
+#  command_line $USER1$/check_mysqld.pl -H $HOSTADDRESS$ -u $ARG1$ -p $ARG2$ -f -T -a uptime,threads_connected,questions,slow_queries,open_tables -w ",,,," -c ",,,,"
 # }
 #
 # define service {
@@ -130,7 +130,7 @@
 #
 # Examples of command-line use:
 # /usr/lib/nagios/plugins/check_mysqld.pl -v
-# /usr/lib/nagios/plugins/check_mysqld.pl -p foo -f -u nagios -a uptime,threads_connected,questions,slow_queries,open_tables -A threads_running,innodb_row_lock_time_avg  -w ",,,," -c ",,,,>25" -H nagios -v
+# /usr/lib/nagios/plugins/check_mysqld.pl -p foo -f -u nagios -T -a uptime,threads_connected,questions,slow_queries,open_tables -A threads_running,innodb_row_lock_time_avg  -w ",,,," -c ",,,,>25" -H nagios -v
 #
 # ======================= VERSION HISTORY and TODO ================================
 #
@@ -146,34 +146,36 @@
 #  [0.7  -  May 2006] First public release. Very limited threshold specification.
 #  [0.8  -  Dec 2007] Update to my latest format & code for parsing
 #     		      warning & critical parameters so they can be of the form
-#     		      "<value" (alert if value is less then specified), 
+#     		      "<value" (alert if value is less then specified),
 #     		      ">value" (alert if its greatr then specified, default)
 #     		      as well as "1,~,1" or '1,,1' (ignore 2nd)
 #     		      Note: for backward compatibility specifying '0' for threshold is
 #           		    more or less same as '~', if you really want 0 then prefix
-#           		    it with '<' or '>' or '=' to force the check         
+#           		    it with '<' or '>' or '=' to force the check
 #     		      Number of other code cleanup and fixes. This includes allowing
 #     		      more then one threshold for same variable (repeat the variable in
 #     		      the list of variables with 'a') but making sure that in performance
-#     		      variables its listed only once and in proper order. 
-#  [0.85 -  Dec 2007] Thanks to the suggestion by Mike Lykov plugin can now do 
+#     		      variables its listed only once and in proper order.
+#  [0.85 -  Dec 2007] Thanks to the suggestion by Mike Lykov plugin can now do
 #     		      'SHOW GLOBAL STATUS' since mysqld newer then 5.0.2
 #     		      will only report one session data in 'SHOW STATUS'. Also in
 #     		      part to allow override default behavior (choosing which SHOW
 #     		      to do) and to extend plugin functionality a new option '-q'
 #     		      is added that allows to specify which query to execute. This
-#     		      will let plugin be used with others types of mysql 'SHOW' commands 
+#     		      will let plugin be used with others types of mysql 'SHOW' commands
 #  [0.851 - Dec 2007] Fixed bug: -t (timeout) parameter was ignored before
 #  [0.9   - Jan 2008] Threshold parsing and check code has been rewritten and now
 #		      supports ranges in similar way to nagios plugin specification.
 #  [0.901 - Jan 2008] Added forced closing of db connection at alarm
-#  [0.902 - Jan 2008] Bug fixed in comparison of non-numeric data 
+#  [0.902 - Jan 2008] Bug fixed in comparison of non-numeric data
 #  [0.91  - Dec 2011] Bug fixes. If unable to connect check if TCP port is even open
 #  [0.92  - Feb 2012] Patch by Diego Salvi to add -F option that allows to use
 #		      mysql configuration file for login credentials
 #  [0.93  - Mar 2012] Modified threshold checking to assume bare number is 0:number threshold
-#		      and so also report WARN/CRIT if data value is <0 as per nagios plugin spec
-#		      Added threshold info to performance data i.e. "var=data:warn:crit" in perfdata
+#		      and report WARN/CRIT if data value is <0 as per nagios plugin spec
+#		      Added threshold info to performance data i.e. "var=data:warn:crit"
+#  [0.94  - Mar 2012] Added -T option that measures connection time (in floating seconds)
+#		      and allows to set thresholds on it. Bug fixes for new threshold code.
 #
 # TODO or consider for future:
 #  1. Add support for storing values in a file or reusing old performance
@@ -185,6 +187,8 @@
 
 use strict;
 use IO::Socket;
+use Time::HiRes;
+use Getopt::Long qw(:config no_ignore_case);
 
 # default mysql hostname, port, database, user and password, see NOTES above
 my $HOSTNAME= 'localhost';
@@ -203,13 +207,12 @@ our $TIMEOUT;
 our %ERRORS;
 eval 'use utils qw(%ERRORS $TIMEOUT)';
 if ($@) {
- $TIMEOUT = 20;
- %ERRORS = ('OK'=>0,'WARNING'=>1,'CRITICAL'=>2,'UNKNOWN'=>3,'DEPENDENT'=>4);
+   $TIMEOUT = 20;
+   %ERRORS = ('OK'=>0,'WARNING'=>1,'CRITICAL'=>2,'UNKNOWN'=>3,'DEPENDENT'=>4);
 }
 
 # ============= MAIN PROGRAM CODE - DO NOT MODIFY BELOW THIS LINE ==============
 
-use Getopt::Long qw(:config no_ignore_case);
 use DBI;
 
 my $o_host=     undef;		# hostname
@@ -225,23 +228,24 @@ my @o_varsL=    ();             # array from above list
 my $o_perfvars= undef;          # list of variables to include in perfomance data
 my @o_perfvarsL=();             # array from above list
 my $o_warn=     undef;          # warning level option
-my @o_warnL=    ();             # array of warn data processing threshold 
+my @o_warnL=    ();             # array of warn data processing threshold
 my $o_crit=     undef;          # Critical level option
-my @o_critL=    ();             # array of critical data processing thresholds 
+my @o_critL=    ();             # array of critical data processing thresholds
 my $o_perf=     undef;          # Performance data option
 my $o_timeout=  undef;          # Timeout to use - note that normally timeout is take from nagios anyway
 my $o_replication=undef;        # Normal replication status value, if something else then you'll see CRITICAL error
 my $o_slave=    undef;          # Normal slave status, if something else then you'll see CRITICAL error
 my $o_query=    undef;		# Query to execute instead of default SHOW STATUS
 my $o_my_cnf=   undef;		# mysql default file
+my $o_timecheck=undef;		# threshold spec for connection time
 
-my $Version='0.93';
+my $Version='0.94';
 my $dbh= undef;			# DB connection object
 
 sub p_version { print "check_mysqld version : $Version\n"; }
 
 sub print_usage {
-   print "Usage: $0 [-v] [-H <host> [-P <port>]] [-u <username>] [-q <query>] [-p <password>] [-F <mysql configuration file>] [-a <mysql variables> -w <variables warning thresholdz> -c <variables critical thresholds>] [-A <performance output variables>] [-s <expected slave status>] [-r <expected replication status>] [-f] [-t <timeout>] [-V]\n";
+   print "Usage: $0 [-v] [-H <host> [-P <port>]] [-u <username>] [-q <query>] [-p <password>] [-F <mysql configuration file>] [-a <mysql variables> -w <variables warning thresholdz> -c <variables critical thresholds>] [-A <performance output variables>] [-s <expected slave status>] [-r <expected replication status>] [-T [conntime_warn,conntime_crit]] [-f] [-t <timeout>] [-V]\n";
 }
 
 sub help {
@@ -272,8 +276,8 @@ sub help {
    (Default is empty password)
    ==> IMPORTANT: THIS FORM OF AUTHENTICATION IS NOT SECURE!!! <==
    Your clear-text password will be visible as a process table entry
- -p, --password=PASSWD
-   Password to use when connecting to database (Default is empty password)
+ -t, --timeout=NUMBER
+   Allows to set timeout for execution of this plugin. This overrides nagios default.
  -F, --mysql-default-file=STRING
    MySQL my.cnf like file, data in [client] section will be read to find mysql port
    and used as credentials to connect to database. Poviding a configuration file will
@@ -282,10 +286,10 @@ sub help {
  -q, --query=STRING
    Specify query to do instead of 'SHOW STATUS'. This is useful to check
    some other specialized mysql commands and tables. In order to work
-   returned data should be similar to one from "SHOW STATUS", i.e. 
+   returned data should be similar to one from "SHOW STATUS", i.e.
    table with two columns.
  -a, --variables=STRING,[STRING,[STRING...]]
-   List of variables as found in 'SHOW STATUS' which should be monitored. 
+   List of variables as found in 'SHOW STATUS' which should be monitored.
    The list can be arbitrarily long and the default (if option is not used)
    is not to monitor any variable. You can repeat same variable if you need
    it checked for both below and above thresholds.
@@ -313,10 +317,16 @@ sub help {
  -s, --slave=status
    If slave status (normally it is 'OFF') is anything other then what is
    specified with, then CRITICAL alert would be sent. This can also be done
-   with '=' option so seperate option is kept for backward compatibility 
+   with '=' option so seperate option is kept for backward compatibility
  -r, --replication=status
    If replication status (normally it is NULL) is anything other then what
    is specified with this option, then CRITICAL alert would be sent.
+ -T, --connection_time=[WARN,CRIT]
+   When used as just -T the plugin will measure and output connection response
+   time in seconds. With -f this would also be provided on perf variables.
+   You can also specify values for this parameter, these are interprted as
+   WARNING and CRITICAL thresholds (separated by ','). The format for WARN
+   and CRIT is same as what you would use in -w and -c.
  -f, --perfparse
    This should only be used with '-a', '-s' or '-r' and causes to output
    variable data not only as part of main status line but also as
@@ -350,7 +360,7 @@ sub check_threshold {
     my $lv2 = $th_array->[2];
 
     # verb("debug check_threshold: $mod : ".(defined($lv1)?$lv1:'')." : ".(defined($lv2)?$lv2:''));
-    return "" if !defined($lv1) || ($mod eq '' && $lv1 eq ''); 
+    return "" if !defined($lv1) || ($mod eq '' && $lv1 eq '');
     return " " . $attrib . " is " . $data . " = " . $lv1 if $mod eq '=' && $data eq $lv1;
     return " " . $attrib . " is " . $data . " != " . $lv1 if $mod eq '!' && $data ne $lv1;
     return " " . $attrib . " is " . $data . " > " . $lv1 if $mod eq '>' && $data>$lv1;
@@ -368,7 +378,7 @@ sub parse_threshold {
 
     # link to an array that holds processed threshold data
     # array: 1st is type of check, 2nd is value2, 3rd is value2, 4th is option, 5th is nagios spec string representation for perf out
-    my $th_array = [ '', undef, undef, '', '' ]; 
+    my $th_array = [ '', undef, undef, '', '' ];
     my $th = $thin;
     my $at = '';
 
@@ -426,14 +436,18 @@ sub parse_threshold {
 # where within range depends on actual threshold spec and normally just means less
 sub threshold_specok {
     my ($warn_thar,$crit_thar) = @_;
-    return 1 if isnum($warn_thar->[1]) && isnum($crit_thar->[1]) &&
-                $warn_thar->[0] eq $crit_thar->[0] && 
-                $warn_thar->[3] !~ /\^/ && $crit_thar->[3] != /\^/ &&
-              (($warn_thar->[1]>=$crit_thar->[1] && ($warn_thar->[0] =~ />/ || $warn_thar->[0] eq ':')) ||
-               ($warn_thar->[1]<=$crit_thar->[1] && ($warn_thar->[0] =~ /</ || $warn_thar->[0] eq '@')) ||
-               ($warn_thar->[2]<=$crit_thar->[2] && $warn_thar->[0] eq ':') ||
-               ($warn_thar->[2]>=$crit_thar->[2] && $warn_thar->[0] eq '@'));
-    return 0;
+    return 0 if (defined($warn_thar->[1]) && !isnum($warn_thar->[1])) || (defined($crit_thar->[1]) && !isnum($crit_thar->[1]));
+    return 1 if defined($warn_thar) && defined($warn_thar->[1]) &&
+                defined($crit_thar) && defined($crit_thar->[1]) &&
+                isnum($warn_thar->[1]) && isnum($crit_thar->[1]) &&
+                $warn_thar->[0] eq $crit_thar->[0] &&
+                (!defined($warn_thar->[3]) || $warn_thar->[3] !~ /\^/) &&
+                (!defined($crit_thar->[3]) || $crit_thar->[3] !~ /\^/) &&
+              (($warn_thar->[1]>$crit_thar->[1] && ($warn_thar->[0] =~ />/ || $warn_thar->[0] eq '@')) ||
+               ($warn_thar->[1]<$crit_thar->[1] && ($warn_thar->[0] =~ /</ || $warn_thar->[0] eq ':')) ||
+               ($warn_thar->[0] eq ':' && $warn_thar->[2]>=$crit_thar->[2]) ||
+               ($warn_thar->[0] eq '@' && $warn_thar->[2]<=$crit_thar->[2]));
+    return 0;  # return with 0 means specs check out and are ok
 }
 
 # parse command line options
@@ -450,6 +464,7 @@ sub check_options {
         't:i'   => \$o_timeout,         'timeout:i'     => \$o_timeout,
         'V'     => \$o_version,         'version'       => \$o_version,
 	'r:s'   => \$o_replication,     'replication:s' => \$o_replication,
+	'T:s'	=> \$o_timecheck,	'reponse_time:s' => \$o_timecheck,
 	's:s'   => \$o_slave,           'slave:s'       => \$o_slave,
 	'a:s'   => \$o_variables,       'variables:s'   => \$o_variables,
         'c:s'   => \$o_crit,            'critical:s'    => \$o_crit,
@@ -467,7 +482,7 @@ sub check_options {
     # and adds number of additional format options using '>','<','!','=' prefixes
     my (@ar_warnLv,@ar_critLv);
     @o_perfvarsL=split( /,/ , lc $o_perfvars ) if defined($o_perfvars) && $o_perfvars ne '*';
-    if (defined($o_warn) || defined($o_crit) || defined($o_variables)) {
+    if (defined($o_warn) || defined($o_crit) || defined($o_variables) || (defined($o_timecheck)&& $o_timecheck ne '')) {
 	if (defined($o_variables)) {
 	  @o_varsL=split( /,/ , lc $o_variables );
 	  if (defined($o_warn)) {
@@ -479,13 +494,25 @@ sub check_options {
     	     @ar_critLv=split( /,/ , lc $o_crit );
 	  }
 	}
-	else {
+	elsif (!defined($o_timecheck)) {
 	  print "Specifying warning and critical levels requires '-a' parameter with list of STATUS variables\n";
 	  print_usage();
 	  exit $ERRORS{"UNKNOWN"};
         }
+	if (defined($o_timecheck) && $o_timecheck ne '') {
+	  my @o_timeth=split(/,/, lc $o_timecheck);
+	  verb("Processing timecheck thresholds: $o_timecheck");
+	  if (scalar(@o_timeth)!=2) {
+	      printf "Incorrect value '%s' for Connection Time Thresholds. Connection time threshold must include both warning and critical thresholds separated by ','\n", $o_timecheck;
+	      print_usage();
+	      exit $ERRORS{"UNKNOWN"};
+	  }
+	  unshift(@o_varsL,"connection_time");
+	  unshift(@ar_warnLv,$o_timeth[0]);
+	  unshift(@ar_critLv,$o_timeth[1]);
+	}
 	if (scalar(@ar_warnLv)!=scalar(@o_varsL) || scalar(@ar_critLv)!=scalar(@o_varsL)) {
-	  printf "Number of specified warning levels (%d) and critical levels (%d) must be equal to the number of attributes specified at '-a' (%d). If you need to ignore some attribute do it as ',,'\n", scalar(@ar_warnLv), scalar(@ar_critLv), scalar(@o_varsL); 
+	  printf "Number of specified warning levels (%d) and critical levels (%d) must be equal to the number of attributes specified at '-a' (%d). If you need to ignore some attribute do it as ',,'\n", scalar(@ar_warnLv), scalar(@ar_critLv), scalar(@o_varsL);
 	  verb("Warning Levels: ".join(",",@ar_warnLv));
 	  verb("Critical Levels: ".join(",",@ar_critLv));
 	  print_usage();
@@ -525,9 +552,9 @@ sub check_options {
 
 # Get the alarm signal (just in case nagios screws up)
 $SIG{'ALRM'} = sub {
-     $dbh->disconnect() if defined($dbh);
-     print ("ERROR: Alarm signal (Nagios time-out)\n");
-     exit $ERRORS{"UNKNOWN"};
+    $dbh->disconnect() if defined($dbh);
+    print ("ERROR: Alarm signal (Nagios time-out)\n");
+    exit $ERRORS{"UNKNOWN"};
 };
 
 ########## MAIN #######
@@ -544,6 +571,7 @@ else {
   alarm ($o_timeout+10);
 }
 
+my $start_time;
 my $dsn = "DBI:mysql:";
 if ($MY_CNF) {
 # Why this? Because if mysql_read_default_file has been provided
@@ -562,12 +590,14 @@ $dsn.="host=$HOSTNAME" if $HOSTNAME;
 $dsn.=":port=$PORT" if $PORT;
 $dsn.=";mysql_read_default_file=$MY_CNF" if $MY_CNF;
 
-verb("connecting using credentials specified in $MY_CNF file") if $MY_CNF; 
+verb("connecting using credentials specified in $MY_CNF file") if $MY_CNF;
 my $vstr = "connecting";
 $vstr .= " to database '".$DATABASE."'" if $DATABASE;
 $vstr .= " on host '".$HOSTNAME."'" if $HOSTNAME;
 $vstr .= " with user '".$USERNAME."'" if $USERNAME;
 verb($vstr) if $DATABASE || $HOSTNAME || $USERNAME;
+
+$start_time = [ Time::HiRes::gettimeofday() ] if defined($o_timecheck);
 
 $dbh = DBI->connect($dsn,$USERNAME,$PASSWORD, { PrintError => 0 } );
 
@@ -580,7 +610,7 @@ if (!$dbh) {
         );
         if ($sock) {
 	   close($sock);
-    	   print "CRITICAL ERROR - Unable to connect to database '$DATABASE' on server '$HOSTNAME' on port $PORT with user '$USERNAME' - $DBI::errstr\n"; 
+    	   print "CRITICAL ERROR - Unable to connect to database '$DATABASE' on server '$HOSTNAME' on port $PORT with user '$USERNAME' - $DBI::errstr\n";
         }
         else {
 	   print "CRITICAL ERROR - Can not connect to '$HOSTNAME' on port $PORT\n";
@@ -593,7 +623,7 @@ if (!$dbh) {
 }
 
 my $db_command="SELECT VERSION()";
-verb ("Mysql Query: $db_command"); 
+verb ("Mysql Query: $db_command");
 my $sth=$dbh->prepare($db_command);
 if (!$sth->execute()) {
     print "CRITICAL ERROR - Unable to execute '$db_command' on server '$HOSTNAME' connected as user '$USERNAME' - $DBI::errstr\n";
@@ -665,6 +695,16 @@ if ($sth->err) {
 $sth->finish();
 $dbh->disconnect();
 
+if (defined($o_timecheck)) {
+    $dataresults{'connection_time'}=[0,0,0] if !defined('connection_time');
+    $dataresults{'connection_time'}[0]=Time::HiRes::tv_interval($start_time);;
+    $statusdata .= sprintf(" connection_time=%.3fs", $dataresults{'connection_time'}[0]);
+    $dataresults{'connection_time'}[1]++;
+    if ($o_timecheck eq '' && defined($o_perf)) {
+        $perfdata .= ' connection_time=' . $dataresults{'connection_time'}[0].'s';
+    }
+}
+
 # main loop to check if warning & critical attributes are ok
 for ($i=0;$i<scalar(@o_varsL);$i++) {
   if (defined($dataresults{$o_varsL[$i]}[0])) {
@@ -679,15 +719,17 @@ for ($i=0;$i<scalar(@o_varsL);$i++) {
 	$statusinfo .= $chk;
     }
     if ($dataresults{$o_varsL[$i]}[1]==0) {
-	  $dataresults{$o_varsL[$i]}[1]++;
-	  $statusdata .= " " . $o_varsL[$i] . "=" . $dataresults{$o_varsL[$i]}[0];
+	$dataresults{$o_varsL[$i]}[1]++;
+	$statusdata .= " " . $o_varsL[$i] . "=" . $dataresults{$o_varsL[$i]}[0];
     }
     if (defined($o_perf) && $dataresults{$o_varsL[$i]}[2]==0) {
-	  $dataresults{$o_varsL[$i]}[2]++;
-          $perfdata .= " " . $o_varsL[$i] . "=" . $dataresults{$o_varsL[$i]}[0];
-	  $perfdata .= ';' if $o_warnL[$i][5] ne '' || $o_critL[$i][5] ne '';
-	  $perfdata .= $o_warnL[$i][5] if $o_warnL[$i][5] ne '';
-	  $perfdata .= ';'.$o_critL[$i][5] if $o_critL[$i][5] ne '';
+	$dataresults{$o_varsL[$i]}[2]++;
+        $perfdata .= " " . $o_varsL[$i] . "=" . $dataresults{$o_varsL[$i]}[0];
+        if (defined($o_warnL[$i][5]) && defined($o_critL[$i][5])) {
+	    $perfdata .= ';' if $o_warnL[$i][5] ne '' || $o_critL[$i][5] ne '';
+	    $perfdata .= $o_warnL[$i][5] if $o_warnL[$i][5] ne '';
+	    $perfdata .= ';'.$o_critL[$i][5] if $o_critL[$i][5] ne '';
+	}
     }
   }
   else {
