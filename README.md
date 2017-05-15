@@ -304,6 +304,12 @@ An example Vagrant project has been included to get you started right away.
         <td><a href="https://github.com/honzatlusty">Jan Tlusty</a></td>
         <td><a href="https://github.com/honzatlusty/nagios-storm-topology-latency">upstream</a></td>
     </tr>
+    <tr>
+        <td>check_graphite-metric</td>
+        <td><a href="https://github.com/kali-hernandez">kali-hernandez</a></td>
+        <td><a href="https://github.com/kali-hernandez/nagios_plugins/blob/master/check_graphite_metric">upstream</a></td>
+    </tr>
+
 
 
 
