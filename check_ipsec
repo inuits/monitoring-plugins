@@ -46,7 +46,7 @@ done
 [[ -z "$TUNN_ID" ]] && die 2 "[ERROR] No tunnel id specified"
 
 # Check config files
-TUNN_CFG=$(grep -r "rightid = @$TUNN_ID" /etc/ipsec.d/*.conf)
+TUNN_CFG=$(grep -r "conn $TUNN_ID" /etc/ipsec.d/*.conf)
 [ -z "$TUNN_CFG" ] && die 1 "[ERROR] No configuration found for tunnel id '${TUNN_ID}'"
 
 # Check connection status
