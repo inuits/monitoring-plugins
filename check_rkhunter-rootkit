@@ -4,7 +4,7 @@
 SCANNING=true
 
 while $SCANNING; do
-  ps aux | grep rkhunter | grep -v grep | grep -v check_rkhunter_rootkit.sh >> /dev/null
+  ps aux | grep rkhunter | grep -v grep | grep -v check_rkhunter-rootkit >> /dev/null
 
   #rkhunter is running, dont read log file yet
   if [ $? -eq 0 ]; then
