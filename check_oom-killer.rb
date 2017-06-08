@@ -5,7 +5,7 @@
 # striped down to only contain oom killer check by 
 # Yornik Heyl<yornik@yornik.nl>
 # Date: 2013-12-02 10:57
-# Version: 0.1
+# Version: 0.1.1
 # -----------------------
 
 require 'date'
