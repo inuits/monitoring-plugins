@@ -3,9 +3,9 @@
 # -----------------------
 # Author: Andreas Paul (xorpaul) <xorpaul@gmail.com> 
 # striped down to only contain oom killer check by 
-# Yornik Heyl<yornik@yornik.nl>
+# Yornik Heyl<yornik@yornik.nl> from https://github.com/xorpaul/check_linux/blob/master/check_linux.rb
 # Date: 2013-12-02 10:57
-# Version: 0.1.1
+# Version: 0.1.2
 # -----------------------
 
 require 'date'
@@ -37,6 +37,7 @@ def check_oom()
   return oom_result
 end
 
+results = []
 results << check_oom()
 
 puts "\n\nresult array: #{results}\n\n" if $debug
