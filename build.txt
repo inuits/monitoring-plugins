@@ -67,5 +67,6 @@ check_ssl-cert                        1.0
 check_topology-latency.rb             1.0
 check_graphite-metric                 1.0
 check_oom-killer.rb                   0.1.2
+check_bgp                             1.0
 
 # vim: set ts=2 sw=2 et : #
