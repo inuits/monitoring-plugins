@@ -96,7 +96,7 @@ class ElasticSearchCheck(NagiosCheck):
         host = opts.host or "localhost"
         port = int(opts.port or '9200')
         prefix = opts.prefix or ""
-        if not prefix.endswith('/'):
+        if len(prefix) > 0 and not prefix.endswith('/'):
             prefix += '/'
 
         failure_domain = []
@@ -148,7 +148,7 @@ class ElasticSearchCheck(NagiosCheck):
         # Details like the number of get, search, and indexing 
         # operations come from here.
         es_stats = get_json(r'http://%s:%d/%s_nodes/_local/'
-                            'stats?all=true' % (host, port, prefix))
+                            'stats' % (host, port, prefix))
 
         myid = es_stats['nodes'].keys()[0]
 
