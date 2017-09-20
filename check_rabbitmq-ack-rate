@@ -19,11 +19,12 @@ cat <<eof
    --help|-h            : Shows help
    --passwd|-p          : The password of the user, defaults to 'guest'
    --user|-u            : The user to use, defaults to 'guest'
-   --url                : The url to use, format 'host                                                                                      : port' defaults to 'localhost : 15672'
+   --url                : The url to use, format 'host:port' defaults to 'localhost:15672'
    --warning|-w         : The warning threashold, defaults to '0.5'. This is the relationship between messages acked vs messages acked
    --critical|-c        : The critical threashold, defaults to '0.3'. This is the relationship between messages acked vs messages acked
    --queue-warning|-qw  : The amount of unprocessed messages in the queue before generating a warning
    --queue-critical|-qc : The amount of unprocessed messages in the queue before the check goes critical.
+   --priority-queue|-pc : The queue defined by -q|--queue is not checked and the check is green if the priority queue is NOT empty.
    --debug|-d           : Show debug values, aka echo some params
 
  Example usage:
@@ -65,6 +66,12 @@ data () {
   # Parse the data
   queue_error=$( echo $get | jq "." | grep 'error' )
   if [[ ! -z "${queue_error}" ]]; then message="Unknown: curl error:${queue_error} ."; exitstatus='3'; quit; fi
+
+  if [[ -n "${priority_queue_name}" ]];then
+    priority_queue_messages=$( echo $get | jq ". | map(select(.name == \"${priority_queue_name}\")) | .[].messages" -r )
+    priority_queue_messages_unack=$( echo $get | jq ". | map(select(.name == \"${priority_queue_name}\")) | .[].messages_unacknowledged" -r )
+  fi
+
   queue_messages=$( echo $get | jq ". | map(select(.name == \"${queue_name}\")) | .[].messages" -r )
   queue_messages_unack=$( echo $get | jq ". | map(select(.name == \"${queue_name}\")) | .[].messages_unacknowledged" -r )
   queue_messages_delta=$( echo $get_delta_one | jq ". | map(select(.name == \"${queue_name}\")) | .[].messages" -r )
@@ -87,11 +94,24 @@ data () {
 do_main_check () {
 
   # Check if queue_messages is not empty
-  if [ -z "$queue_messages" ]
-  then
+  if [[ -z "${queue_messages}" ]];then
     message=$( echo "Critical: Queue '${queue_name}' doesn't seem to exist." )
     exitstatus='2'
     quit
+  fi
+
+  # Check if priority_queue_messages is not empty
+  if [[ -n "${priority_queue_name}" && -z "${queue_messages}" ]];then
+    message=$( echo "Critical: Queue '${priority_queue_name}' doesn't seem to exist." )
+    exitstatus='2'
+    quit
+  fi
+
+  # Check if there are messages in the priority queue minus the unacked messages as we don't care about those
+  priority_queue_messages=$(( ${queue_messages} - ${queue_messages_unack} ))
+  if (( $( echo "${priority_queue_messages} > 0" | bc -l ) ));then
+    message=$( echo "Ok: The priority queue '${priority_queue_name}' is not empty." )
+    exitstatus='0'
   fi
 
   # Check if there are messages in the queue minus the unacked messages as we don't care about those
@@ -192,6 +212,11 @@ do
     --queue-critical|-qc)
       shift
       queue_messages_critical=$1
+      shift
+      ;;
+    --priority-queue|-pc)
+      shift
+      priority_queue_name=$1
       shift
       ;;
     --debug|-d)
