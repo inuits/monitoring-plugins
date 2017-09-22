@@ -20,10 +20,10 @@ cat <<eof
    --passwd|-p          : The password of the user, defaults to 'guest'
    --user|-u            : The user to use, defaults to 'guest'
    --url                : The url to use, format 'host:port' defaults to 'localhost:15672'
-   --warning|-w         : The warning threshold of ack rate, defaults to '10'
-   --critical|-c        : The critical thresholdof ack rate, defaults to '5'
-   --queue-warning|-qw  : The amount of unprocessed messages in the queue before generating a warning, defaults to '50'
-   --queue-critical|-qc : The amount of unprocessed messages in the queue before the check goes critical, defaults to '100'
+   --warning|-w         : The warning threshold of ack rate, defaults to '10'.
+   --critical|-c        : The critical thresholdof ack rate, defaults to '5'.
+   --queue-warning|-qw  : The amount of unprocessed messages in the queue before generating a warning, defaults to '50'. A negative number turns off this check.
+   --queue-critical|-qc : The amount of unprocessed messages in the queue before generation a critical, defaults to '100'. A negative number turns off this check.
    --priority-queue|-pc : The queue defined by -q|--queue is not checked and the check is green if the priority queue is NOT empty.
    --debug|-d           : Show debug values, aka echo some params
 
@@ -73,6 +73,10 @@ data () {
   queue_messages_ack_rate=$( echo $get | jq ". | map(select(.name == \"${queue_name}\")) | .[].message_stats.ack_details.rate" -r )
   queue_messages_get_rate=$( echo $get | jq ". | map(select(.name == \"${queue_name}\")) | .[].message_stats.get_details.rate" -r )
   queue_messages_noack_rate=$( echo $get | jq ". | map(select(.name == \"${queue_name}\")) | .[].message_stats.ack_details.rate" -r )
+
+  [[ "${queue_messages_ack_rate}" == 'null' ]] && queue_messages_ack_rate=0
+  [[ "${queue_messages_get_rate}" == 'null' ]] && queue_messages_get_rate=0
+  [[ "${queue_messages_noack_rate}" == 'null' ]] && queue_messages_noack_rate=0
 
   # Check the data
   if $debug;then
@@ -129,11 +133,11 @@ do_main_check () {
   fi
 
   # Check the total number of messages
-  if (( $( echo "${queue_messages} > ${queue_messages_critical}" | bc -l ) ));then
+  if (( $( echo "${queue_messages} > ${queue_messages_critical}" | bc -l ) )) && (( "${queue_messages_critical}" => 0 ));then
     message="Critical: The queue '${queue_name}' is filling up. Ack rate: ${queue_messages_ack_rate}/s, messages in the queue: '${queue_messages}'."
     exitstatus=2
     quit
-  elif (( $( echo "${queue_messages} > ${queue_messages_warning}" | bc -l ) ));then
+  elif (( $( echo "${queue_messages} > ${queue_messages_warning}" | bc -l ) )) && (( "${queue_messages_warning}" => 0 ));then
     message="Warning: The queue '${queue_name}' is filling up. Ack rate: ${queue_messages_ack_rate}/s, messages in the queue: '${queue_messages}'."
     exitstatus=1
     quit
