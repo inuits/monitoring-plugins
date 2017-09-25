@@ -110,7 +110,7 @@ do_main_check () {
   # Check if there are messages in the queue minus the unacked messages as we don't care about those
   queue_messages=$(( ${queue_messages} - ${queue_messages_unack} ))
   if (( $( echo "${queue_messages} == 0" | bc -l ) ));then
-    message="Ok: The queue '${queue_name}' has no new messages to process. The current ack rate is ${queue_messages_ack_rate}/s."
+    message="Ok: The queue '${queue_name}' has no new messages to process. The current ack rate is ${queue_messages_ack_rate}m/s."
     exitstatus=0
     quit
   fi
@@ -119,13 +119,13 @@ do_main_check () {
   if (( $( echo "${queue_messages} > ${queue_processing_rate_warning}" | bc -l ) ));then
 
     if (( $( echo "${queue_messages_ack_rate} < ${queue_processing_rate_critical}" | bc -l ) ));then
-      message="Critical: The queue '${queue_name}' is acking messages too slowly at ${queue_messages_ack_rate}/s, messages in the queue: '${queue_messages}'."
+      message="Critical: The queue '${queue_name}' is acking messages too slowly at ${queue_messages_ack_rate}m/s, messages in the queue: '${queue_messages}'."
       exitstatus=2
       quit
     fi
 
     if (( $( echo "${queue_messages_ack_rate} < ${queue_processing_rate_warning}" | bc -l ) ));then
-      message="Warning: The queue '${queue_name}' is acking messages too slowly at ${queue_messages_ack_rate}/s, messages in the queue: '${queue_messages}'."
+      message="Warning: The queue '${queue_name}' is acking messages too slowly at ${queue_messages_ack_rate}m/s, messages in the queue: '${queue_messages}'."
       exitstatus=1
       # do not quit yet because the check still can be critical, see the following check below
     fi
@@ -133,18 +133,18 @@ do_main_check () {
   fi
 
   # Check the total number of messages
-  if (( $( echo "${queue_messages} > ${queue_messages_critical}" | bc -l ) )) && (( "${queue_messages_critical}" => 0 ));then
-    message="Critical: The queue '${queue_name}' is filling up. Ack rate: ${queue_messages_ack_rate}/s, messages in the queue: '${queue_messages}'."
+  if (( $( echo "${queue_messages} > ${queue_messages_critical}" | bc -l ) )) && (( "${queue_messages_critical}" >= 0 ));then
+    message="Critical: The queue '${queue_name}' is filling up. Ack rate: ${queue_messages_ack_rate}m/s, messages in the queue: '${queue_messages}'."
     exitstatus=2
     quit
-  elif (( $( echo "${queue_messages} > ${queue_messages_warning}" | bc -l ) )) && (( "${queue_messages_warning}" => 0 ));then
-    message="Warning: The queue '${queue_name}' is filling up. Ack rate: ${queue_messages_ack_rate}/s, messages in the queue: '${queue_messages}'."
+  elif (( $( echo "${queue_messages} > ${queue_messages_warning}" | bc -l ) )) && (( "${queue_messages_warning}" >= 0 ));then
+    message="Warning: The queue '${queue_name}' is filling up. Ack rate: ${queue_messages_ack_rate}m/s, messages in the queue: '${queue_messages}'."
     exitstatus=1
     quit
   fi
 
   if [[ $exitstatus != 1 ]];then
-    message="Ok: The queue '${queue_name}' is acking messages at ${queue_messages_ack_rate}/s, messages in the queue: '${queue_messages}'."
+    message="Ok: The queue '${queue_name}' is acking messages at ${queue_messages_ack_rate}m/s, messages in the queue: '${queue_messages}'."
     exitstatus=0
   fi
 
