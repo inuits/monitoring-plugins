@@ -64,7 +64,6 @@ data () {
 
   if [[ -n "${priority_queue_name}" ]];then
     priority_queue_messages=$( echo $get | jq ". | map(select(.name == \"${priority_queue_name}\")) | .[].messages" -r )
-    priority_queue_messages_unack=$( echo $get | jq ". | map(select(.name == \"${priority_queue_name}\")) | .[].messages_unacknowledged" -r )
   fi
 
   queue_messages=$( echo $get | jq ". | map(select(.name == \"${queue_name}\")) | .[].messages" -r )
@@ -85,6 +84,9 @@ data () {
     echo "Debug: messages ack:  $queue_messages_ack_rate"
     echo "Debug: messages get:  $queue_messages_get_rate"
     echo "Debug: messages noack:  $queue_messages_noack_rate"
+    if [[ -n "${priority_queue_name}" ]];then
+      echo "Debug: messages in the priority queue '${priority_queue_name}':  $priority_queue_messages"
+    fi
   fi
 }
 
@@ -98,8 +100,7 @@ do_main_check () {
   fi
 
   if [[ -n "${priority_queue_name}" ]];then
-    # Check if there are messages in the priority queue minus the unacked messages as we don't care about those
-    priority_queue_messages=$(( ${priority_queue_messages} - ${priority_queue_messages_unack} ))
+    # Check if there are messages in the priority queue (including unacked messages)
     if (( $( echo "${priority_queue_messages} > 0" | bc -l ) ));then
       message="Ok: The queue with higher priority '${priority_queue_name}' is not empty so the queue '${queue_name}' can grow."
       exitstatus=0
