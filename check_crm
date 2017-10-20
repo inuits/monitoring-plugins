@@ -216,7 +216,7 @@ sub check_constraints {
         or $np->nagios_exit( CRITICAL, "Running $command has failed" );
 
       foreach my $line (<$filehandle>) {
-          if ( $line =~ m/location cli-(prefer|standby)-\S+\s+(\S+)/ ) {
+          if ( $line =~ m/location cli-(prefer|standby|ban)-\S+\s+(\S+)/ ) {
               $np->add_message( WARNING, "; $2 blocking location constraint detected" );
           }
       }
