@@ -50,7 +50,6 @@ An example Vagrant project has been included to get you started right away.
 ### Available plugins
 
 <table>
-
     <tr>
         <th>Plugin</th><th>Author(s)</th><th>Source</th>
     </tr>
@@ -309,8 +308,6 @@ An example Vagrant project has been included to get you started right away.
         <td><a href="https://github.com/kali-hernandez">kali-hernandez</a></td>
         <td><a href="https://github.com/kali-hernandez/nagios_plugins/blob/master/check_graphite_metric">upstream</a></td>
     </tr>
-
-
 </table>
 
 ### Contributions
