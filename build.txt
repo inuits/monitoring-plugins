@@ -16,7 +16,7 @@ check_mount.pl                        1.0
 check_mysqld.pl                       0.94
 check_postfix-mailqueue               1.0
 check_puppet.rb                       70ba5a5155
-pmp-check-lvm-snapshots               0.9.0
+pmp-check-lvm-snapshots               1.1.7
 pmp-check-mysql-deadlocks             0.9.0
 pmp-check-mysql-deleted-files         0.9.0
 pmp-check-mysql-file-privs            0.9.0

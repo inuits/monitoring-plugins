@@ -50,6 +50,7 @@ An example Vagrant project has been included to get you started right away.
 ### Available plugins
 
 <table>
+
     <tr>
         <th>Plugin</th><th>Author(s)</th><th>Source</th>
     </tr>
@@ -173,7 +174,6 @@ An example Vagrant project has been included to get you started right away.
         <td><a href="http://www.bongermino.de">Bjoern Bongermino</a></td>
         <td><a href="https://exchange.nagios.org/directory/Plugins/Email-and-Groupware/Postfix/check_postfix_mailqueue/details">upstream</a></td>
     </tr>
-
     <tr>
         <td>check_rabbitmq_aliveness</td>
         <td><a href="http://jamesc.net/">James Casey</a></td>
@@ -309,10 +309,6 @@ An example Vagrant project has been included to get you started right away.
         <td><a href="https://github.com/kali-hernandez">kali-hernandez</a></td>
         <td><a href="https://github.com/kali-hernandez/nagios_plugins/blob/master/check_graphite_metric">upstream</a></td>
     </tr>
-
-
-
-
 
 
 </table>
