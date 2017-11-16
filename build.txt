@@ -16,7 +16,7 @@ check_mount.pl                        1.0
 check_mysqld.pl                       0.94
 check_postfix-mailqueue               1.0
 check_puppet.rb                       70ba5a5155
-pmp-check-lvm-snapshots               0.9.0
+pmp-check-lvm-snapshots               1.1.7
 pmp-check-mysql-deadlocks             0.9.0
 pmp-check-mysql-deleted-files         0.9.0
 pmp-check-mysql-file-privs            0.9.0
@@ -36,6 +36,7 @@ check_rabbitmq-server                 1.0
 check_rabbitmq-watermark              1.0
 check_rabbitmq-ack-rate               1.0
 check_rabbitmq-connections            1.0
+check_rkhunter-rootkit                1.1
 check_solr.py                         1.0
 check_es-cluster-status.py            1.0
 check_es-nodes.py                     1.0
@@ -67,6 +68,6 @@ check_ssl-cert                        1.0
 check_topology-latency.rb             1.0
 check_graphite-metric                 1.0
 check_oom-killer.rb                   0.1.2
-check_bgp                             1.0
+check_bgp                             1.1
 
 # vim: set ts=2 sw=2 et : #

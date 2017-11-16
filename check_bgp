@@ -1,6 +1,6 @@
 #!/bin/bash
-# Script to monitor BGP conections. 
-# MIT License Copyright (c) [2017] [Yornik Heyl] (yornik@yornik.nl) 
+# Script to monitor BGP conections.
+# MIT License Copyright (c) [2017] [Yornik Heyl] (yornik@yornik.nl)
 
 # helper function by Dave Simons
 die () {
@@ -13,12 +13,12 @@ die () {
 status_string=$(vtysh -c 'show  ip bgp  neighbors'| awk '/Description: '$1'/,/BGP state/' | sed -n -e 's/^.*BGP state = //p' )
 
 if [ -z "$status_string" ]; then
- die 2 "[UNKNOWN] BGP conection with $1 is not cofigured "
+ die 3 "[UNKNOWN] BGP conection with $1 is not cofigured "
 fi
 
 
 if echo "$status_string" |grep --quiet Established ;then
  die 0 "[OK] BGP conection with $1 is up"
-else 
- die 2 "[FAIL] BGP conection with $1 is down in state $status_string"
+else
+ die 2 "[ERROR] BGP conection with $1 is down in state $status_string"
 fi

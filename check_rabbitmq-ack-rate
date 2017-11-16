@@ -19,11 +19,12 @@ cat <<eof
    --help|-h            : Shows help
    --passwd|-p          : The password of the user, defaults to 'guest'
    --user|-u            : The user to use, defaults to 'guest'
-   --url                : The url to use, format 'host                                                                                      : port' defaults to 'localhost : 15672'
-   --warning|-w         : The warning threashold, defaults to '0.5'. This is the relationship between messages acked vs messages acked
-   --critical|-c        : The critical threashold, defaults to '0.3'. This is the relationship between messages acked vs messages acked
-   --queue-warning|-qw  : The amount of unprocessed messages in the queue before generating a warning
-   --queue-critical|-qc : The amount of unprocessed messages in the queue before the check goes critical.
+   --url                : The url to use, format 'host:port' defaults to 'localhost:15672'
+   --warning|-w         : The warning threshold of ack rate, defaults to '10'.
+   --critical|-c        : The critical thresholdof ack rate, defaults to '5'.
+   --queue-warning|-qw  : The amount of unprocessed messages in the queue before generating a warning, defaults to '50'. A negative number turns off this check.
+   --queue-critical|-qc : The amount of unprocessed messages in the queue before generation a critical, defaults to '100'. A negative number turns off this check.
+   --priority-queue|-pc : The queue defined by -q|--queue is not checked and the check is green if the priority queue is NOT empty.
    --debug|-d           : Show debug values, aka echo some params
 
  Example usage:
@@ -33,25 +34,20 @@ eof
   exit 3
 }
 
-function devide() {
-  result=$(echo "scale=$float_scale; $*" | bc -q 2>/dev/null)
-  echo $result
-}
-
 defaults () {
-  float_scale='2'
+  float_scale=2
   # Required params
-  if [[ -z "${queue_name}" ]]; then message="Unknown: You need to specify, --queue or use --help."; exitstatus='3'; quit; fi
+  if [[ -z "${queue_name}" ]]; then message="Unknown: You need to specify, --queue or use --help."; exitstatus=3; quit; fi
   # Optional params
   if [[ -z "${debug}" ]]; then debug=false; fi
-  if [[ -z "${passwd}" ]]; then passwd='guest'; fi
-  if [[ -z "${queue_processing_rate_critical}" ]]; then queue_processing_rate_critical='0.3'; fi
-  if [[ -z "${queue_processing_rate_warning}" ]]; then queue_processing_rate_warning='0.5'; fi
-  if [[ -z "${user}" ]]; then user='guest'; fi
-  if [[ -z "${url}" ]]; then url='localhost:15672'; fi
+  if [[ -z "${passwd}" ]]; then passwd=guest; fi
+  if [[ -z "${queue_processing_rate_critical}" ]]; then queue_processing_rate_critical=5; fi
+  if [[ -z "${queue_processing_rate_warning}" ]]; then queue_processing_rate_warning=10; fi
+  if [[ -z "${user}" ]]; then user=guest; fi
+  if [[ -z "${url}" ]]; then url=localhost:15672; fi
   if [[ -z "${vhost}" ]]; then vhost=''; fi
-  if [[ -z "${queue_messages_warning}" ]]; then queue_messages_warning='50'; fi
-  if [[ -z "${queue_messages_critical}" ]]; then queue_messages_critical='100'; fi
+  if [[ -z "${queue_messages_warning}" ]]; then queue_messages_warning=50; fi
+  if [[ -z "${queue_messages_critical}" ]]; then queue_messages_critical=100; fi
 }
 
 data () {
@@ -59,88 +55,100 @@ data () {
   if [[ -n "$vhost" ]] && [[ "${vhost:0:1}" != "/" ]]; then vhost="/${vhost}"; fi
 
   # Get the data
-  if $debug; then echo "Debug: curl -s -u ${user}:${passwd} http://${url}/api/queues${vhost}"; fi
+  $debug && echo "Debug: curl -s -u ${user}:${passwd} http://${url}/api/queues${vhost}"
   get=$( curl -s -u ${user}:${passwd} http://${url}/api/queues${vhost} )
 
   # Parse the data
   queue_error=$( echo $get | jq "." | grep 'error' )
-  if [[ ! -z "${queue_error}" ]]; then message="Unknown: curl error:${queue_error} ."; exitstatus='3'; quit; fi
+  if [[ ! -z "${queue_error}" ]]; then message="Unknown: curl error:${queue_error} ."; exitstatus=3; quit; fi
+
+  if [[ -n "${priority_queue_name}" ]];then
+    priority_queue_messages=$( echo $get | jq ". | map(select(.name == \"${priority_queue_name}\")) | .[].messages" -r )
+  fi
+
   queue_messages=$( echo $get | jq ". | map(select(.name == \"${queue_name}\")) | .[].messages" -r )
   queue_messages_unack=$( echo $get | jq ". | map(select(.name == \"${queue_name}\")) | .[].messages_unacknowledged" -r )
   queue_messages_delta=$( echo $get_delta_one | jq ". | map(select(.name == \"${queue_name}\")) | .[].messages" -r )
   queue_messages_ack_rate=$( echo $get | jq ". | map(select(.name == \"${queue_name}\")) | .[].message_stats.ack_details.rate" -r )
   queue_messages_get_rate=$( echo $get | jq ". | map(select(.name == \"${queue_name}\")) | .[].message_stats.get_details.rate" -r )
   queue_messages_noack_rate=$( echo $get | jq ". | map(select(.name == \"${queue_name}\")) | .[].message_stats.ack_details.rate" -r )
-  queue_processing_rate='0'
+
+  [[ "${queue_messages_ack_rate}" == 'null' ]] && queue_messages_ack_rate=0
+  [[ "${queue_messages_get_rate}" == 'null' ]] && queue_messages_get_rate=0
+  [[ "${queue_messages_noack_rate}" == 'null' ]] && queue_messages_noack_rate=0
 
   # Check the data
-  if $debug
-  then
+  if $debug;then
     echo "Debug: messages:  $queue_messages"
     echo "Debug: messages unack: $queue_messages_unack"
     echo "Debug: messages ack:  $queue_messages_ack_rate"
     echo "Debug: messages get:  $queue_messages_get_rate"
     echo "Debug: messages noack:  $queue_messages_noack_rate"
+    if [[ -n "${priority_queue_name}" ]];then
+      echo "Debug: messages in the priority queue '${priority_queue_name}':  $priority_queue_messages"
+    fi
   fi
 }
 
 do_main_check () {
 
   # Check if queue_messages is not empty
-  if [ -z "$queue_messages" ]
-  then
-    message=$( echo "Critical: Queue '${queue_name}' doesn't seem to exist." )
-    exitstatus='2'
+  if [[ -z "${queue_messages}" ]];then
+    message="Critical: The queue '${queue_name}' doesn't seem to exist."
+    exitstatus=2
     quit
+  fi
+
+  if [[ -n "${priority_queue_name}" ]];then
+    # Check if there are messages in the priority queue (including unacked messages)
+    if (( $( echo "${priority_queue_messages} > 0" | bc -l ) ));then
+      message="Ok: The queue with higher priority '${priority_queue_name}' is not empty so the queue '${queue_name}' can grow."
+      exitstatus=0
+      quit
+    fi
   fi
 
   # Check if there are messages in the queue minus the unacked messages as we don't care about those
   queue_messages=$(( ${queue_messages} - ${queue_messages_unack} ))
-  if (( $( echo "${queue_messages} > 0" | bc -l ) ))
-  then
-    # If that is the case, check that the ack rate isn't 0
-    if [[ ! "$queue_messages_ack_rate" == "0" ]]
-    then
-      # Calculate the processing rate
-      queue_processing_rate=$( devide "${queue_messages_get_rate} / ${queue_messages_ack_rate}" )
-      if $debug
-      then
-        echo "Debug: messages processing:  $queue_processing_rate"
-      fi
-      # Check the processing rate against the given threasholds
-      if (( $( echo "${queue_processing_rate} < ${queue_processing_rate_critical}" | bc -l ) )) && (( $echo "${queue_messages} > ${queue_messages_critical}" | bc -l ))
-      then
-        message=$( echo "Critical: Queue '${queue_name}' is processing messages at ${queue_processing_rate}/s, messages in the queue: '${queue_messages}'." )
-        exitstatus='2'
-      elif (( $( echo "${queue_processing_rate} < ${queue_processing_rate_warning}" | bc -l ) )) && (( $echo "${queue_messages} > ${queue_messages_warning}" | bc -l ))
-      then
-        message=$( echo "Warning: Queue '${queue_name}' is processing messages at ${queue_processing_rate}/s, messages in the queue: '${queue_messages}'." )
-        exitstatus='1'
-      else
-        message=$( echo "OK: Queue '${queue_name}' is processing messages at ${queue_processing_rate}/s." )
-        exitstatus='0'
-      fi
-    # If the ack rate is 0, we have an issue.
-    else
-      # Check to see if the amount of messages in the queue isn't generating a false positive,
-      # like 1 that just hasn't been picked up yet
-      if (( $echo "${queue_messages} > ${queue_messages_critical}" | bc -l ))
-      then
-        message=$( echo "Critical: Queue '${queue_name}' is NOT acking messages, messages in the queue: '${queue_messages}'." )
-        exitstatus='2'
-      elif (( $echo "${queue_messages} > ${queue_messages_warning}" | bc -l ))
-      then
-        message=$( echo "Warning: Queue '${queue_name}' is NOT acking messages, messages in the queue: '${queue_messages}'." )
-        exitstatus='1'
-      else
-        message=$( echo "Ok: Queue '${queue_name}' is NOT acking messages, messages in the queue: '${queue_messages}'." )
-        exitstatus='0'
-      fi
-    fi
-  else
-    message=$( echo "Ok: Queue '${queue_name}' is idle" )
-    exitstatus='0'
+  if (( $( echo "${queue_messages} == 0" | bc -l ) ));then
+    message="Ok: The queue '${queue_name}' has no new messages to process. The current ack rate is ${queue_messages_ack_rate}m/s."
+    exitstatus=0
+    quit
   fi
+
+  # There has to be some messages to process before we check the ack rate
+  if (( $( echo "${queue_messages} > ${queue_processing_rate_warning}" | bc -l ) ));then
+
+    if (( $( echo "${queue_messages_ack_rate} < ${queue_processing_rate_critical}" | bc -l ) ));then
+      message="Critical: The queue '${queue_name}' is acking messages too slowly at ${queue_messages_ack_rate}m/s, messages in the queue: '${queue_messages}'."
+      exitstatus=2
+      quit
+    fi
+
+    if (( $( echo "${queue_messages_ack_rate} < ${queue_processing_rate_warning}" | bc -l ) ));then
+      message="Warning: The queue '${queue_name}' is acking messages too slowly at ${queue_messages_ack_rate}m/s, messages in the queue: '${queue_messages}'."
+      exitstatus=1
+      # do not quit yet because the check still can be critical, see the following check below
+    fi
+
+  fi
+
+  # Check the total number of messages
+  if (( $( echo "${queue_messages} > ${queue_messages_critical}" | bc -l ) )) && (( "${queue_messages_critical}" >= 0 ));then
+    message="Critical: The queue '${queue_name}' is filling up. Ack rate: ${queue_messages_ack_rate}m/s, messages in the queue: '${queue_messages}'."
+    exitstatus=2
+    quit
+  elif (( $( echo "${queue_messages} > ${queue_messages_warning}" | bc -l ) )) && (( "${queue_messages_warning}" >= 0 ));then
+    message="Warning: The queue '${queue_name}' is filling up. Ack rate: ${queue_messages_ack_rate}m/s, messages in the queue: '${queue_messages}'."
+    exitstatus=1
+    quit
+  fi
+
+  if [[ $exitstatus != 1 ]];then
+    message="Ok: The queue '${queue_name}' is acking messages at ${queue_messages_ack_rate}m/s, messages in the queue: '${queue_messages}'."
+    exitstatus=0
+  fi
+
 }
 
 quit () {
@@ -181,7 +189,7 @@ do
       ;;
     --critical|-c)
       shift
-      queue_processing_rate_ciritical=$1
+      queue_processing_rate_critical=$1
       shift
       ;;
     --queue-warning|-qw)
@@ -192,6 +200,11 @@ do
     --queue-critical|-qc)
       shift
       queue_messages_critical=$1
+      shift
+      ;;
+    --priority-queue|-pc)
+      shift
+      priority_queue_name=$1
       shift
       ;;
     --debug|-d)

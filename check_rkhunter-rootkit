@@ -1,0 +1,38 @@
+#!/bin/bash
+#this script will tell icinga about any rootkit infections, or warnings
+
+SCANNING=true
+
+while $SCANNING; do
+  ps aux | grep rkhunter | grep -v grep | grep -v check_rkhunter-rootkit >> /dev/null
+
+  #rkhunter is running, dont read log file yet
+  if [ $? -eq 0 ]; then
+    echo 'rkhunter is currently scanning, sleeping for 10 seconds & trying again'
+    sleep 10
+  else
+    SCANNING=false
+  fi
+done
+
+LOG=$(cat /var/log/rkhunter/rkhunter.log)
+
+echo "$LOG" | grep '/usr/bin/rkhunter --propupdate' > /dev/null
+
+if [ $? -eq 0 ]; then
+  echo 'rkhunter did not run yet'
+  exit 3
+fi
+
+FOOBAR=$(echo "$LOG" | grep -i infected)
+
+if [ $? -eq 0 ]; then
+  echo 'POSSIBLE ROOTKIT INFECTION'
+  echo ''
+  echo "$FOOBAR"
+  exit 2
+fi
+
+echo "No issues found!"
+
+exit 0
