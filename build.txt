@@ -66,7 +66,7 @@ check_rabbitmq-sync.rb                1.0
 check_zmstatus.pl                     1.0
 check_ssl-cert                        1.0
 check_topology-latency.rb             1.0
-check_graphite-metric                 1.0
+check_graphite-metric                 1.1
 check_oom-killer.rb                   0.1.2
 check_bgp                             1.1
 

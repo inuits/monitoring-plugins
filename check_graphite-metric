@@ -232,7 +232,7 @@ CURL_URI="${GRAPHITE_QUERY_BASE}${METRIC_STRING}"
 for GRAPHITE_OUT in $(curl ${CURL_OPTIONS} ${CURL_URI} | sed 's/ //g') ; do
 	if [[ "${GRAPHITE_OUT:0:1}" =~ ^\<.*|^\{.* ]] ; then
 		GLOBAL_STATE=3
-		CHECK_OUTPUT="Graphite returned an error, check your metric: ${METRIC_STRING}"
+		CHECK_OUTPUT="Graphite returned an error, check your metric"
 		exit_unk
 	fi
 	GRAPHITE_METRIC=$(cut -f1 -d\| <<< $GRAPHITE_OUT | sed 's/,[0-9]*,[0-9]*,[0-9]*$//')
@@ -245,7 +245,7 @@ done
 PREV_STATUS=${NAGIOS_LASTSERVICESTATEID:-0}
 if [ ${#RES_VALUES[@]} -eq 0 ] ; then
 	EXIT_NAGIOS_STATUS=$DEFAULT_NULL_STATUS
-	if [ ${DEFAULT_NULL_STATUS} -eq 3 ] ; then CHECK_OUTPUT="Graphite query ${METRIC_STRING} returned nothing." ; fi
+	if [ ${DEFAULT_NULL_STATUS} -eq 3 ] ; then CHECK_OUTPUT="Graphite query returned nothing." ; fi
 else
 	for METRIC in ${RES_METRICS[*]} ; do
 		METRIC_STATUS=0
