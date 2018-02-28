@@ -267,7 +267,7 @@ def mongo_connect(host=None, port=None, ssl=False, user=None, passwd=None, repli
             if replica is None:
                 con = pymongo.MongoClient(host, port)
             else:
-                con = pymongo.Connection(host, port, read_preference=pymongo.ReadPreference.SECONDARY, ssl=ssl, replicaSet=replica, network_timeout=10)
+                con = pymongo.MongoClient(host, port, readPreference='secondaryPreferred', ssl=ssl, replicaSet=replica)
         else:
             if replica is None:
                 con = pymongo.Connection(host, port, slave_okay=True, network_timeout=10)
@@ -306,10 +306,7 @@ def exit_with_general_critical(e):
 
 
 def set_read_preference(db):
-    if pymongo.version >= "2.2":
-        pymongo.read_preferences.Secondary
-    else:
-        db.read_preference = pymongo.ReadPreference.SECONDARY
+    db.read_preference = pymongo.ReadPreference.SECONDARY
 
 def check_connect(host, port, warning, critical, perf_data, user, passwd, conn_time):
     warning = warning or 3
@@ -358,8 +355,6 @@ def check_rep_lag(con, host, port, warning, critical, percent, perf_data, max_la
     rs_status = {}
     slaveDelays = {}
     try:
-        set_read_preference(con.admin)
-
         # Get replica set status
         try:
             rs_status = con.admin.command("replSetGetStatus")
@@ -1011,7 +1006,7 @@ def check_queries_per_second(con, query_type, warning, critical, perf_data, mong
             if mongo_version == "2":
                 db.nagios_check.update({u'_id': last_count['_id']}, {'$set': {"data.%s" % query_type: {'count': num, 'ts': int(time.time())}}})
             else:
-                db.nagios_check.update_one({u'_id': last_count['_id']}, {'$set': {"data.%s" % query_type: {'count': num, 'ts': int(time.time())}}})
+                db.nagios_check.updateOne({u'_id': last_count['_id']}, {'$set': {"data.%s" % query_type: {'count': num, 'ts': int(time.time())}}})
 
             message = "Queries / Sec: %f" % query_per_sec
             message += performance_data(perf_data, [(query_per_sec, "%s_per_sec" % query_type, warning, critical, message)])
@@ -1023,7 +1018,7 @@ def check_queries_per_second(con, query_type, warning, critical, perf_data, mong
             if mongo_version == "2":
                 db.nagios_check.update({u'_id': last_count['_id']}, {'$set': {"data.%s" % query_type: {'count': num, 'ts': int(time.time())}}})
             else:
-                db.nagios_check.update_one({u'_id': last_count['_id']}, {'$set': {"data.%s" % query_type: {'count': num, 'ts': int(time.time())}}})
+                db.nagios_check.updateOne({u'_id': last_count['_id']}, {'$set': {"data.%s" % query_type: {'count': num, 'ts': int(time.time())}}})
 
         except TypeError:
             #
@@ -1258,7 +1253,16 @@ def check_asserts(con, host, warning, critical, perf_data):
 
 def get_stored_primary_server_name(db):
     """ get the stored primary server name from db. """
+
+    collections = ''
+    try:
+        collections = db.command('listCollections').get('cursor').get('firstBatch')[0].get('name')
+    except:
+        pass
+
     if "last_primary_server" in db.collection_names():
+        stored_primary_server = db.last_primary_server.find_one()["server"]
+    elif "last_primary_server" in collections:
         stored_primary_server = db.last_primary_server.find_one()["server"]
     else:
         stored_primary_server = None
@@ -1290,9 +1294,9 @@ def check_replica_primary(con, host, warning, critical, perf_data, replicaset, m
     if current_primary != saved_primary:
         last_primary_server_record = {"server": current_primary}
         if mongo_version == "2":
-            db.last_primary_server.update({"_id": "last_primary"}, {"$set": last_primary_server_record}, upsert=True, safe=True)
+            db.last_primary_server.update({"_id": "last_primary"}, {"$set": last_primary_server_record}, upsert=True)
         else:        
-            db.last_primary_server.update_one({"_id": "last_primary"}, {"$set": last_primary_server_record}, upsert=True, safe=True)
+            db.last_primary_server.update({"_id": "last_primary"}, {"$set": last_primary_server_record}, upsert=True)
         message = "Primary server has changed from %s to %s" % (saved_primary, current_primary)
         primary_status = 1
     return check_levels(primary_status, warning, critical, message)
