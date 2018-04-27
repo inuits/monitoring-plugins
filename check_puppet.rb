@@ -13,9 +13,18 @@
 require 'optparse'
 require 'yaml'
 
-lockfile = "/var/lib/puppet/state/puppetdlock"
-statefile = "/var/lib/puppet/state/state.yaml"
-summaryfile = "/var/lib/puppet/state/last_run_summary.yaml"
+puppet_version = `puppet --version`
+
+if puppet_version.match(/^[4-5]/)
+  lockfile = "/opt/puppetlabs/puppet/cache/state/agent_disabled.lock"
+  statefile = "/opt/puppetlabs/puppet/cache/state/state.yaml"
+  summaryfile = "/opt/puppetlabs/puppet/cache/state/last_run_summary.yaml"
+elsif puppet_version.match(/^3/)
+  lockfile = "/var/lib/puppet/state/puppetdlock"
+  statefile = "/var/lib/puppet/state/state.yaml"
+  summaryfile = "/var/lib/puppet/state/last_run_summary.yaml"
+end
+
 enabled = true
 running = false
 lastrun_failed = false
@@ -64,11 +73,9 @@ if warn == 0 || crit == 0
 end
 
 if File.exists?(lockfile)
-    if File::Stat.new(lockfile).zero?
-       enabled = false
-    else
-       running = true
-    end
+    enabled = false
+else
+    running = true
 end
 
 lastrun = File.stat(statefile).mtime.to_i if File.exists?(statefile)
