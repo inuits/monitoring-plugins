@@ -1,7 +1,7 @@
 ### Monitoring-plugins
 
 This is a selection of plugins for both Nagios and Icinga.<br>
-Packages are built in a CI fashion using Jenkins and can be found on our [repo](https://pulp.inuits.eu/inuits/).
+Packages are built in a CI fashion using Jenkins and can be found on our [repo](https://pulp.inuits.io/inuits/).
 
 A script to build packages yourself is included as well.
 
