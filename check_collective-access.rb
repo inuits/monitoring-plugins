@@ -55,8 +55,8 @@ end
 expected_states = YAML.load(File.read(options[:config]))
 
 begin
-html_auth = open("http://#{options[:host]}/service.php/auth/login", :http_basic_authentication=>[options[:user], options[:password]])
-html = open("http://#{options[:host]}/index.php/administrate/setup/ConfigurationCheck/DoCheck", "Cookie" => html_auth.meta['set-cookie'].split('; ',2)[0])
+html_auth = open("https://#{options[:host]}/service.php/auth/login", :http_basic_authentication=>[options[:user], options[:password]])
+html = open("https://#{options[:host]}/index.php/administrate/setup/ConfigurationCheck/DoCheck", "Cookie" => html_auth.meta['set-cookie'].split('; ',2)[0])
 rescue
  puts 'Unable to log in to the app, it is either misconfigured or the wrong credentials have been provided'
  exit 3
