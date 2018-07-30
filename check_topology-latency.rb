@@ -85,7 +85,7 @@ end
     if max_latency >= critical_latency
       exit_code = 2
     elsif max_latency >= warning_latency
-      exit code = 1
+      exit_code = 1
     else
       exit_code = 0 
     end
