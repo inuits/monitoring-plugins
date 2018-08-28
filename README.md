@@ -308,6 +308,11 @@ An example Vagrant project has been included to get you started right away.
         <td><a href="https://github.com/kali-hernandez">kali-hernandez</a></td>
         <td><a href="https://github.com/kali-hernandez/nagios_plugins/blob/master/check_graphite_metric">upstream</a></td>
     </tr>
+    <tr>
+        <td>check_yum</td>
+        <td><a href="https://github.com/kjetilho">kjetilho</a></td>
+        <td><a href="https://github.com/kjetilho/check_yum/blob/master/check_yum">upstream</a></td>
+    </tr>
 </table>
 
 ### Contributions
