@@ -313,6 +313,11 @@ An example Vagrant project has been included to get you started right away.
         <td><a href="https://github.com/kjetilho">kjetilho</a></td>
         <td><a href="https://github.com/kjetilho/check_yum/blob/master/check_yum">upstream</a></td>
     </tr>
+    <tr>
+        <td>check_haproxy</td>
+        <td><a href="https://github.com/benprew">benprew</a></td>
+        <td><a href="https://github.com/benprew/nagios-checks/blob/master/check_haproxy.rb">upstream</a></td>
+    </tr>
 </table>
 
 ### Contributions
