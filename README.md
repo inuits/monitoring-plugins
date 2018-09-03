@@ -318,6 +318,11 @@ An example Vagrant project has been included to get you started right away.
         <td><a href="https://github.com/benprew">benprew</a></td>
         <td><a href="https://github.com/benprew/nagios-checks/blob/master/check_haproxy.rb">upstream</a></td>
     </tr>
+    <tr>
+        <td>check_postgres</td>
+        <td><a href="https://github.com/bucardo">bucardo</a></td>
+        <td><a href="https://github.com/bucardo/check_postgres/blob/master/check_postgres.pl">upstream</a></td>
+    </tr>
 </table>
 
 ### Contributions
