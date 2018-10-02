@@ -73,7 +73,10 @@ def on_subscribe(mosq, userdata, mid, granted_qos):
 
     #print "on_subscribe"
     if not args.mqtt_readonly:
-        (res, mid) =  mosq.publish(args.check_topic, args.mqtt_payload, qos=2, retain=False)
+        #
+        # Change: set qos to 1 for compatibility with rabbitmq_mqtt
+        #
+        (res, mid) =  mosq.publish(args.check_topic, args.mqtt_payload, qos=1, retain=False)
 
 def on_message(mosq, userdata, msg):
     """
