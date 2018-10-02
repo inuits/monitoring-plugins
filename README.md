@@ -323,6 +323,11 @@ An example Vagrant project has been included to get you started right away.
         <td><a href="https://github.com/bucardo">bucardo</a></td>
         <td><a href="https://github.com/bucardo/check_postgres/blob/master/check_postgres.pl">upstream</a></td>
     </tr>
+    <tr>
+        <td>check_mqtt.py</td>
+        <td><a href="https://github.com/jpmens">jpmens</a></td>
+        <td><a href="https://github.com/jpmens/check-mqtt/blob/master/check-mqtt.py">upstream</a></td>
+    </tr>
 </table>
 
 ### Contributions
