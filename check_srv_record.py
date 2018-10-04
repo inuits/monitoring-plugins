@@ -34,10 +34,10 @@ def exit_now(status=3, message='Something went wrong'):
 
 def socket_is_open(ip, port, timeout, retries):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.settimeout(timeout)
+    s.settimeout(int(timeout))
     
     res = False
-    for i in range(retries):
+    for i in range(int(retries)):
         try:
             s.connect((str(ip), int(port)))
             s.shutdown(socket.SHUT_RDWR)
