@@ -328,6 +328,11 @@ An example Vagrant project has been included to get you started right away.
         <td><a href="https://github.com/jpmens">jpmens</a></td>
         <td><a href="https://github.com/jpmens/check-mqtt/blob/master/check-mqtt.py">upstream</a></td>
     </tr>
+    <tr>
+        <td>check_srv_record.py</td>
+        <td><a href="https://github.com/landervdb">landervdb</a></td>
+        <td><a href="https://github.com/landervdb/nagios-plugins/blob/master/check-mqtt.py">upstream</a></td>
+    </tr>
 </table>
 
 ### Contributions
