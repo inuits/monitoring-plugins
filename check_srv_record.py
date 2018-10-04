@@ -43,6 +43,8 @@ def socket_is_open(ip, port, timeout, retries):
             s.shutdown(socket.SHUT_RDWR)
             res = True
             break;
+        except:
+            continue
         finally:
             s.close()
     return res 
