@@ -77,7 +77,7 @@ targets = resolve_srv_record(args.query)
 for target in targets:
     result = socket_is_open(target[1], target[2], args.timeout, args.retries)
     if not result:
-        exit_now(2, "%s is not reachable" % target[0])
+        exit_now(2, "%s:%s is not reachable" % (target[0], target[2]))
     else:
-        hosts_up += target[0] +', '
+        hosts_up += "%s:%s, " % (target[0], target[2])
 exit_now(0, "%s are reachable" % hosts_up[:-2])

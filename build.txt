@@ -73,6 +73,6 @@ check_yum                             1.1.0
 check_haproxy.rb                      1.0
 check_postgres.pl                     2.24.0
 check_mqtt.py                         1.2
-check_srv_record.py                   1.0.2
+check_srv_record.py                   1.0.3
 
 # vim: set ts=2 sw=2 et : #
