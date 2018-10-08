@@ -333,6 +333,11 @@ An example Vagrant project has been included to get you started right away.
         <td><a href="https://github.com/landervdb">landervdb</a></td>
         <td><a href="https://github.com/landervdb/nagios-plugins/blob/master/check-mqtt.py">upstream</a></td>
     </tr>
+    <tr>
+        <td>check_mailman-moderator-approval.sh</td>
+        <td><a href="https://github.com/pulecp">Pavel Pulec</a></td>
+        <td><a href="https://github.com/pulecp/nagios-mailman-moderator-approval">upstream</a></td>
+    </tr>
 </table>
 
 ### Contributions
