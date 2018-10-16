@@ -163,6 +163,11 @@ sub apache_status($) {
     $htmlbrut = $ua->request($req)->as_string ;
     $htmlbrut=~ s/ //g;
 
+    if (substr($htmlbrut, 0, 3) eq '500') {
+      print "CRITICAL: Can't connect to Apache, return code: 500\n";
+      exit 2;
+    }
+
 # Formatting of the data table
     @recolte = split(/\n/,$htmlbrut);
     splice (@recolte, 0, $topnbr);

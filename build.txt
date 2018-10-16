@@ -1,6 +1,6 @@
 # Nagios plugin                       version
 
-check_apache-auto.pl                  1.0
+check_apache-auto.pl                  1.1
 check_bacula                          0.0.5
 check_collective-access.rb            1.1
 check_crm                             0.7
