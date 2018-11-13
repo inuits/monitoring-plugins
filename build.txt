@@ -35,7 +35,7 @@ check_rabbitmq-queue                  1.0
 check_rabbitmq-server                 1.0
 check_rabbitmq-watermark              1.0
 check_rabbitmq-ack-rate               1.0
-check_rabbitmq-connections            1.0
+check_rabbitmq-connections            1.1
 check_rkhunter-rootkit                1.1
 check_solr.py                         1.0
 check_es-cluster-status.py            1.0

@@ -61,9 +61,8 @@ data () {
 
 do_main_check () {
   # For every connecion check the state
-  while read connection
+  while read -r connection_state connection
   do
-    connection_state=$( echo "${get}" | jq ". | map(select(.name == ${connection} )) | .[].state " -r )
     if [[ "$connection_state" == "closing" ]] || [[ "$connection_state" == "closed" ]]
     then
       if [[ ! -z $connections_ignored ]]
@@ -85,7 +84,7 @@ do_main_check () {
       connections_good=$(( $connections_good + 1 ))
       if $debug; then echo "Debug: ${connection} is ${connection_state}."; fi
     fi
-  done < <( echo $get | jq ".[].name " )
+  done < <( echo $get | jq -r '.[] | .state + " " + .name' )
   # Construct the correct exit message
   if [[ -z $connections_closed ]]
   then
