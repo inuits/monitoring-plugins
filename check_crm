@@ -51,6 +51,7 @@ foreach my $line (@crm_output) {
   check_unmanaged_resources($line);
   check_not_installed($line);
   check_fail_count($line);
+  check_maintenance($line);
 }
 check_constraints();
 
@@ -201,6 +202,13 @@ sub check_fail_count {
     if ( $2 >= $np->opts->failcount ) {
         $np->add_message( WARNING, "; failure for resource $1 detected, fail-count=$2" );
     }
+  }
+}
+
+sub check_maintenance {
+  my $line = shift;
+  if ( $line =~ m/^\s*(\*{3,}).*management\sis\sDISABLED/i) {
+        $np->add_message ( WARNING, ";maintenance mode is enabled");
   }
 }
 
