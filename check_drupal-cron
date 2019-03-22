@@ -15,6 +15,15 @@ else
   fi
 fi
 
+# Workaround for https://github.com/drush-ops/drush/issues/2183.
+# On older Drush 8.x versions, .my.cnf has preference over settings.php,
+# which causes `drush state-get system.cron_last` to fail.
+if [[ -f "${HOME}/.my.cnf" ]]
+then
+  DRUSH_HOME="/tmp"
+else
+  DRUSH_HOME="${HOME}"
+fi
 
 while getopts u:r:c:w: o; do
     case "$o" in
@@ -34,10 +43,10 @@ DRUPAL_VERSION=$(${DRUSH} --root=${root} --uri=${uri} status | grep 'Drupal vers
 if [[ "$DRUPAL_VERSION" =~ ^[6-7] ]]
 then
   # drupal 6/7
-  LAST_CRON_RUN=$(${DRUSH} --root=${root} --uri=${uri} vget '^cron_last$'|cut -d: -f 2)
+  LAST_CRON_RUN=$(HOME=${DRUSH_HOME} ${DRUSH} --root=${root} --uri=${uri} vget '^cron_last$'|cut -d: -f 2)
 else
   # other drupal versions
-  LAST_CRON_RUN=$(${DRUSH} --root=${root} --uri=${uri} state-get system.cron_last)
+  LAST_CRON_RUN=$(HOME=${DRUSH_HOME} ${DRUSH} --root=${root} --uri=${uri} state-get system.cron_last)
 fi
 
 DELTA=$(($NOW - $LAST_CRON_RUN))
