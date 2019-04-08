@@ -209,6 +209,11 @@ An example Vagrant project has been included to get you started right away.
         <td><a href="https://github.com/jamesc/nagios-plugins-rabbitmq">upstream</a></td>
     </tr>
     <tr>
+        <td>check_ro_mounts</td>
+        <td><a href="https://github.com/vvidic">Valentin Vidić</a></td>
+        <td><a href="https://exchange.nagios.org/directory/Plugins/Operating-Systems/Linux/check_ro_mounts/details">upstream</a></td>
+    </tr>
+    <tr>
         <td>check_solr.py</td>
         <td><a href="https://github.com/cpganderton">Chris Ganderton</a></td>
         <td><a href="https://github.com/cpganderton/nagios-solr">upstream</a></td>
