@@ -338,6 +338,11 @@ An example Vagrant project has been included to get you started right away.
         <td><a href="https://github.com/pulecp">Pavel Pulec</a></td>
         <td><a href="https://github.com/pulecp/nagios-mailman-moderator-approval">upstream</a></td>
     </tr>
+    <tr>
+        <td>check_phpfpm_status.pl</td>
+        <td><a href="https://github.com/regilero">regilero</a></td>
+        <td><a href="https://github.com/regilero/check_phpfpm_status">upstream</a></td>
+    </tr>
 </table>
 
 ### Contributions
