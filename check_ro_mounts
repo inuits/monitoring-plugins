@@ -23,7 +23,7 @@
 
 use strict;
 use Getopt::Long;
-use lib "/usr/lib/nagios/plugins";
+use lib "/usr/lib64/nagios/plugins";
 use utils qw (%ERRORS &support);
 
 my $name = 'RO_MOUNTS';
