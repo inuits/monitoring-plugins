@@ -349,9 +349,9 @@ An example Vagrant project has been included to get you started right away.
         <td><a href="https://github.com/regilero/check_phpfpm_status">upstream</a></td>
     </tr>
     <tr>
-        <td>check_elasticsearch_6</td>
-        <td><a href="https://github.com/orthecreedence">orthecreedence</a></td>
-        <td><a href="https://github.com/orthecreedence/check_elasticsearch">upstream</a></td>
+        <td>check_elasticsearch_6.pl + check_elasticsearch_*</td>
+        <td><a href="https://github.com/HariSekhon">HariSekhon</a></td>
+        <td><a href="https://github.com/HariSekhon/nagios-plugins">upstream</a></td>
     </tr>
 </table>
 
