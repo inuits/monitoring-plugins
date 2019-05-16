@@ -37,7 +37,7 @@ def apicall(url, port, user, password):
 		jsondata = json.load(urllib2.urlopen(r))
 	except urllib2.HTTPError, e:
 		if str(e.code) == '403':
-			print('Connection refused for user: {}\nHTTPError: '.format(user) + str(e.code))
+			print('Connection refused for user: {user}\nHTTPError: {error}'.format(user=user, error=e.code))
 		else:
 			print('HTTPError: '+ str(e.code))
 		sys.exit(2)
