@@ -353,6 +353,11 @@ An example Vagrant project has been included to get you started right away.
         <td><a href="https://github.com/HariSekhon">HariSekhon</a></td>
         <td><a href="https://github.com/HariSekhon/nagios-plugins">upstream</a></td>
     </tr>
+    <tr>
+        <td>check_rundeck.py</td>
+        <td><a href="https://github.com/WoutRenkin">Wout Renkin</a></td>
+        <td><a>Unknown</a></td>
+    </tr>
 </table>
 
 ### Contributions
