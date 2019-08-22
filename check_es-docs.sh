@@ -60,15 +60,15 @@ result=$(curl  -k -s -u ${user}:${password} -X GET "${es_host}/${indexes}/_count
 
 if [[ -z $result ]]; then
   status=3
-  message='Unknown: unable to get the number of documents.'
+  message="Unknown: unable to get the number of documents from within the last ${seconds} seconds."
 elif [[ $result -le $docs_critical ]]; then
   status=2
-  message="Critical: ${result} docs were found."
+  message="Critical: ${result} documents were found from within the last ${seconds} seconds."
 elif [[ $result -le $docs_warning ]]; then
   status=1
-  message="Warning: ${result} docs were found."
+  message="Warning: ${result} documents were found from within the last ${seconds} seconds."
 else
-  message="OK: ${result} docs were found."
+  message="OK: ${result} documents were found from within the last ${seconds} seconds."
   status=0
 fi
 
