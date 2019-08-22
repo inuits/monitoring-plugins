@@ -358,6 +358,11 @@ An example Vagrant project has been included to get you started right away.
         <td><a href="https://github.com/WoutRenkin">Wout Renkin</a></td>
         <td><a>Unknown</a></td>
     </tr>
+    <tr>
+        <td>check_es_docs.sh</td>
+        <td><a href="https://github.com/honzatlusty">Jan Tlusty</a></td>
+	<td><a href="https://github.com/honzatlusty/nagios-check-es-docs">upstream</a></td>
+    </tr>
 </table>
 
 ### Contributions

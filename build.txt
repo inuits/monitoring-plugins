@@ -91,5 +91,5 @@ check_elasticsearch_node_shards.pl                        0.3.0
 check_elasticsearch_node_stats.pl                         0.2.0
 check_elasticsearch_nodes.pl                              0.4.0
 check_rundeck.py                      1.0
-
+check_es_docs                                             1.0
 # vim: set ts=2 sw=2 et : #
