@@ -37,7 +37,7 @@ do
     u) user=$OPTARG;;
     p) password=$OPTARG;;
     h) es_host=$OPTARG;;
-    h) indexes=$OPTARG;;
+    i) indexes=$OPTARG;;
     w) docs_warning=$OPTARG;;
     c) docs_critical=$OPTARG;;
     s) seconds=$OPTARG;;
@@ -60,15 +60,15 @@ result=$(curl  -k -s -u ${user}:${password} -X GET "${es_host}/${indexes}/_count
 
 if [[ -z $result ]]; then
   status=3
-  message="Unknown: unable to get the number of documents from within the last ${seconds} seconds."
+  message="Unknown: unable to get the number of documents in ${indexes} from within the last ${seconds} seconds."
 elif [[ $result -le $docs_critical ]]; then
   status=2
-  message="Critical: ${result} documents were found from within the last ${seconds} seconds."
+  message="Critical: ${result} documents were found in ${indexes} from within the last ${seconds} seconds."
 elif [[ $result -le $docs_warning ]]; then
   status=1
-  message="Warning: ${result} documents were found from within the last ${seconds} seconds."
+  message="Warning: ${result} documents were found in ${indexes} from within the last ${seconds} seconds."
 else
-  message="OK: ${result} documents were found from within the last ${seconds} seconds."
+  message="OK: ${result} documents were found in ${indexes} from within the last ${seconds} seconds."
   status=0
 fi
 
