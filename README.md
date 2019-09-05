@@ -363,6 +363,11 @@ An example Vagrant project has been included to get you started right away.
         <td><a href="https://github.com/honzatlusty">Jan Tlusty</a></td>
 	<td><a href="https://github.com/honzatlusty/nagios-check-es-docs">upstream</a></td>
     </tr>
+    <tr>
+        <td>check_zammad.pl</td>
+        <td><a href="https://github.com/KrlWil">KrlWil</a></td>
+	<td><a href="https://github.com/KrlWil/check_zammad">upstream</a></td>
+    </tr>
 </table>
 
 ### Contributions
