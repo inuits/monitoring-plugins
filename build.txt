@@ -92,5 +92,5 @@ check_elasticsearch_node_stats.pl                         0.2.0
 check_elasticsearch_nodes.pl                              0.4.0
 check_rundeck.py                      1.0
 check_es-docs.sh                                          1.0
-check_zammad.pl                                           0.1
+check_zammad.pl                                           0.2
 # vim: set ts=2 sw=2 et : #
