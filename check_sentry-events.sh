@@ -50,41 +50,32 @@ fi
 
 
 timestamp=$(date +%s --date=" ${days_ago} days ago")
-projects=$(curl --silent -H "Authorization: Bearer ${token}" ${sentry_url}/api/0/projects/ | jq .[].name -r)
+organizations=$(curl --silent -H "Authorization: Bearer ${token}" ${sentry_url}/api/0/organizations/ | jq .[].slug -r)
 
-for project in $projects; do
-  _warning=''
-  _critical=''
-  slug=''
-  #check whether the project has moved to a new url
-  url=$(curl --silent -H "Authorization: Bearer ${token}" "${sentry_url}/api/0/projects/inuits/${project}/stats/?&since=${timestamp}" | jq -r .detail.extra.url 2>/dev/null)
-  if [[ -z $url ]]; then
-    events=$(curl --silent -H "Authorization: Bearer ${token}" "${sentry_url}/api/0/projects/inuits/${project}/stats/?&since=${timestamp}" | jq .[][1] | awk '{s+=$1} END {print s}')
-  else
-    events=$(curl --silent -H "Authorization: Bearer ${token}" "${sentry_url}${url}" | jq .[][1] | awk '{s+=$1} END {print s}')
-    slug=$(curl --silent -H "Authorization: Bearer ${token}" "${sentry_url}/api/0/projects/inuits/${project}/stats/" | jq -r .slug 2>/dev/null)
-  fi
-  if [[ -z $slug ]]; then
+
+for organization in $organizations; do
+  projects=$(curl --silent -H "Authorization: Bearer ${token}" "${sentry_url}/api/0/organizations/${organization}/projects/" | jq .[].slug -r)
+  for project in $projects; do
+    _warning=''
+    _critical=''
+    events=$(curl --silent -H "Authorization: Bearer ${token}" "${sentry_url}/api/0/projects/${organization}/${project}/stats/?&since=${timestamp}&until=${timestamp_now}" | jq .[][1] | awk '{s+=$1} END {print s}')
     output="${output}$project: $events; "
-    slug=$project
-  else
-    output="${output}$slug: $events; "
-  fi
-  if egrep -q "^${slug};[0-9]+;[0-9]+$" $extra_config_file; then
-    _warning=$(cat $extra_config_file | egrep "^${slug};[0-9]+;[0-9]+$" | cut -f2 -d ';')
-    _critical=$(cat $extra_config_file | egrep "^${slug};[0-9]+;[0-9]+$" | cut -f3 -d ';')
-    if [[ $events -ge $_critical ]]; then
+    if egrep -q "^${project};[0-9]+;[0-9]+$" $extra_config_file; then
+      _warning=$(cat $extra_config_file | egrep "^${project};[0-9]+;[0-9]+$" | cut -f2 -d ';')
+      _critical=$(cat $extra_config_file | egrep "^${project};[0-9]+;[0-9]+$" | cut -f3 -d ';')
+      if [[ $events -ge $_critical ]]; then
       exit_code=2
-    elif [[ $events -ge $_warning ]]; then
-      [[ $exit_code -lt 1 ]] && exit_code=1
+      elif [[ $events -ge $_warning ]]; then
+        [[ $exit_code -lt 1 ]] && exit_code=1
+      fi
+    else
+      if [[ $events -ge $critical ]]; then
+        exit_code=2
+      elif [[ $events -ge $warning ]]; then
+        [[ $exit_code -lt 1 ]] && exit_code=1
+      fi
     fi
-  else
-    if [[ $events -ge $critical ]]; then
-      exit_code=2
-    elif [[ $events -ge $warning ]]; then
-      [[ $exit_code -lt 1 ]] && exit_code=1
-    fi
-  fi
+  done
 done
 echo "${output}for the past ${days_ago} days"
 exit $exit_code
