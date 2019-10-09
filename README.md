@@ -373,6 +373,10 @@ An example Vagrant project has been included to get you started right away.
         <td><a href="https://github.com/honzatlusty">Jan Tlusty</a></td>
         <td><a href="https://github.com/honzatlusty/nagios-sentry-events">upstream</a></td>
     </tr>
+    <tr>
+        <td>check_vault.sh</td>
+        <td><a href="https://github.com/carroarmato0">carroarmato0</a></td>
+    </tr>
 </table>
 
 ### Contributions
