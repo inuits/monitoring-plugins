@@ -94,4 +94,5 @@ check_rundeck.py                      1.0
 check_es-docs.sh                                          1.0
 check_zammad.pl                                           0.2
 check_sentry-events.sh                                    1.0
+check_vault.sh                        1.1
 # vim: set ts=2 sw=2 et : #
