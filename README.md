@@ -376,6 +376,12 @@ An example Vagrant project has been included to get you started right away.
     <tr>
         <td>check_vault.sh</td>
         <td><a href="https://github.com/carroarmato0">carroarmato0</a></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>check_consul.py</td>
+        <td><a href="https://github.com/LEDfan">LEDfan</a></td>
+        <td></td>
     </tr>
 </table>
 
