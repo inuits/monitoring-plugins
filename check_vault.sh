@@ -4,9 +4,13 @@
 # check_vault                                            #
 #                                                        #
 # Author: Christophe Vanlancker <carroarmato0@inuits.eu> #
+# Update: Temmerman Joeri <ratty@inuits.eu>              #
 #                                                        #
 # This is a simple Nagios/Icinga check which will query  #
 # the state of Vault.                                    #
+#                                                        #
+# 2019-10-16:                                            #
+#  - Minor rewrite to support vault v1.2.3               #
 #                                                        #
 # 2017-10-11:                                            #
 #  - Fix Vault command not found when using nrpe         #
@@ -59,9 +63,7 @@ if [ -z "$ADDRESS" ]; then
   fi
 fi
 
-
-STATUS_COMMAND="vault status $ADDRESS";
-
+STATUS_COMMAND="vault status -format=json $ADDRESS";
 OUTPUT=$(eval $STATUS_COMMAND 2>&1);
 
 if [[ $OUTPUT == *"command not found"* ]]; then
@@ -73,12 +75,12 @@ elif [[ $OUTPUT == *"connection refused"* ]]; then
 elif [[ $OUTPUT == *"server is not yet initialized"* ]]; then
   echo "Vault not initialized";
   exit $WARNING;
-elif [[ $OUTPUT == *"Sealed: true"* ]]; then
-  KEY_THRESHOLD="$(echo $OUTPUT | egrep -o 'Key Threshold: [[:digit:]]' | cut -d ':' -f2 | sed 's/^[ \t]*//;s/[ \t]*$//')";
-  USEAL_PROGRESS="$(echo $OUTPUT | egrep -o 'Unseal Progress: [[:digit:]]' | cut -d ':' -f2 | sed 's/^[ \t]*//;s/[ \t]*$//')";
+elif [[ $OUTPUT == *"\"sealed\": true"* ]]; then
+  KEY_THRESHOLD="$(echo $OUTPUT | egrep -o '"t": [[:digit:]]' | cut -d ':' -f2 | sed 's/^[ \t]*//;s/[ \t]*$//')";
+  USEAL_PROGRESS="$(echo $OUTPUT | egrep -o '"progress": [[:digit:]]' | cut -d ':' -f2 | sed 's/^[ \t]*//;s/[ \t]*$//')";
   echo "Vault sealed, $USEAL_PROGRESS/$KEY_THRESHOLD entered";
   exit $WARNING;
-elif [[ $OUTPUT == *"Sealed: false"* ]]; then
+elif [[ $OUTPUT == *"\"sealed\": false"* ]]; then
   echo "Vault unsealed";
   exit $OK;
 else
