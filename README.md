@@ -393,6 +393,11 @@ An example Vagrant project has been included to get you started right away.
         <td><a href="https://github.com/honzatlusty">Jan Tlusty</a></td>
         <td><a href="https://github.com/honzatlusty/nagios-sftp">upstream</a></td>
     </tr>
+    <tr>
+        <td>check_mysql-replication-running</td>
+        <td><a href="https://github.com/dmaes">dmaes</a></td>
+        <td></td>
+    </tr>
 </table>
 
 ### Contributions
