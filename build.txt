@@ -98,5 +98,5 @@ check_vault.sh                        1.2
 check_consul.py                       1.0
 check_ftp.pl                          1.0
 check_sftp.sh                         1.0
-check_mysql-replication-running       1.0
+check_mysql-replication-running       1.1
 # vim: set ts=2 sw=2 et : #

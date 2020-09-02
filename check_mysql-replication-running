@@ -107,7 +107,7 @@ mysql_exec() {
 # Execute the program if it was not included from another file.
 # This makes it possible to include without executing, and thus test.
 # ########################################################################
-if    [ "${0##*/}" = "pmp-check-mysql-replication-running" ] \
+if    [ "${0##*/}" = "check_mysql-replication-running" ] \
    || [ "${0##*/}" = "bash" -a "$_" = "$0" ]; then
    main "$@"
 fi
@@ -195,7 +195,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.
 
 =head1 VERSION
 
-check_mysql-replication-running 1.0
+check_mysql-replication-running 1.1
 
 =cut
 
