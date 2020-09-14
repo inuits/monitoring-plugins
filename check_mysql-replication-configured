@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# author: dmaes@inuits.eu
+
+RESULT=$(mysql -e "SHOW SLAVE STATUS;")
+
+if [ $? = 0 ]; then
+    # SHOW SLAVE STATUS will be empty if not configured as replica
+    if [ -s "${RESULT}" ]; then
+        echo "OK This server is configured as a replica."
+        exit 0
+    else
+        echo "CRIT This server is not configured as a replica."
+        exit 2
+    fi
+else
+    echo "UNK could not determine replication status"
+    exit 3
+fi
