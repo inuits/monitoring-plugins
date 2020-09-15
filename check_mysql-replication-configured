@@ -6,7 +6,7 @@ RESULT=$(mysql -e "SHOW SLAVE STATUS;")
 
 if [ $? = 0 ]; then
     # SHOW SLAVE STATUS will be empty if not configured as replica
-    if [ -s "${RESULT}" ]; then
+    if [ -n "${RESULT}" ]; then
         echo "OK This server is configured as a replica."
         exit 0
     else
