@@ -182,7 +182,7 @@ sub check_failed_actions {
 
 sub check_unmanaged_resources {
   my $line = shift;
-  if ( $line =~ m/\s*(\S+?)\s+\(.*\)\:\s+\w+\s+\w+\s+\(unmanaged\)\s+/i )
+  if ( $line =~ m/^\s+(.*)\s+[\[\(].*\(unmanaged\)$/i )
   {
       $np->add_message( CRITICAL, "; resource $1 unmanaged" );
   }
