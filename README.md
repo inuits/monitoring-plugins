@@ -398,6 +398,11 @@ An example Vagrant project has been included to get you started right away.
         <td><a href="https://github.com/dmaes">dmaes</a></td>
         <td></td>
     </tr>
+    <tr>
+        <td>check_s3-bucket</td>
+        <td><a href="https://github.com/dmaes">dmaes</a></td>
+        <td></td>
+    </tr>
 </table>
 
 ### Contributions
