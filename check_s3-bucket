@@ -1,0 +1,98 @@
+#!/bin/sh 
+# vi: set shiftwidth=2 tabstop=2 :
+
+# dmaes@inuits.eu
+
+STATUS_OK=0
+STATUS_WARN=1
+STATUS_CRIT=2
+STATUS_UNK=3
+
+parsecmd() {
+  while (($# > 0)); do
+    #CMDSTART
+    case "$1" in
+      -b|--bucket) # BUCKET
+        # bucket to connect to (required)
+        BUCKET=$2
+        shift;;
+      -e|--endpoint) # ENDPOINT
+        # endpoint to connect to (required)
+        ENDPOINT=$(echo $2 | sed -e 's/^.*:\/\///g')
+        shift;;
+      -f|--test-file) # TESTFILE
+        # file to use when testing (default: .do-not-remove_file_to_test_mountpoint)
+        TESTFILE=$2
+        shift;;
+      -k|--s3-key) # S3_KEY
+        # S3 key to connect (required)
+        S3_KEY=$2
+        shift;;
+      -s|--s3-secret) # S3_SECRET
+        # S3 secret to create signature (required)
+        S3_SECRET=$2
+        shift;;
+      -o|--curl-opts) # CURL_OPTS
+        # Optional arguments to pass to curl (default: '')
+        CURL_OPTS=$2
+        shift;;
+      -h|--help) #
+        # this help
+        showhelp
+        exit 0
+        ;;
+      *)
+        echo "UNK: Unknown parameter $1"
+        showhelp
+        exit $STATUS_UNK
+        ;;
+      esac
+      #CMDEND
+      shift
+  done
+}
+
+showhelp() {
+  echo "Usage: $0 [OPTION] ..."
+  echo
+  echo "Command line arguments:"
+  echo
+  sed -rn '/CMDSTART/,/CMDEND/{/\) \#|^ +# /{s/\)? #//g;s/^    //;p}}' "$0"
+  echo
+}
+
+parsecmd "$@"
+
+# Defaults
+[ -z "$BUCKET" ] && echo "No bucket provided" && exit $STATUS_UNK
+[ -z "$ENDPOINT" ] && echo "No endpoint provided" && exit $STATUS_UNK
+[ -z "$S3_KEY" ] && echo "No S3 key provided" && exit $STATUS_UNK
+[ -z "$S3_SECRET" ] && echo "No S3 secret provided" && exit $STATUS_UNK
+[ -z "$TESTFILE" ] && TESTFILE=.do-not-remove_file_to_test_mountpoint
+
+resource="/$BUCKET/$TESTFILE"
+content_type="text/html"
+date="`date +'%a, %d %b %Y %H:%M:%S %z'`"
+string_to_sign="GET\n\n${content_type}\n${date}\n${resource}"
+signature=`/bin/echo -en "$string_to_sign" | openssl sha1 -hmac $S3_SECRET -binary | base64`
+
+curl_output=$(mktemp "/tmp/${0##*/}.curl_output.XXXX") || exit $STATE_UNK
+curl_stderr=$(mktemp "/tmp/${0##*/}.curl_stderr.XXXX") || exit $STATE_UNK
+trap "rm -rf $curl_output >/dev/null 2>&1; rm -rf $curl_stderr >/dev/null 2>&1" EXIT
+
+rc=$(curl --output $curl_output --write-out "%{http_code}" -H "Date:$date" -H "Content-Type:$content_type" -H "Authorization: AWS $S3_KEY:$signature" https://$BUCKET.$ENDPOINT/$TESTFILE $CURL_OPTS 2>$curl_stderr)
+
+if [ $? -gt 0 ]; then
+  echo "UNK: $(cat $curl_output) $(cat $curl_stderr | sed -e 's/^.*curl: /curl: /g' | grep -E '^curl: ')"
+  exit $STATUS_UNK
+elif [ $rc -eq 200 ]; then
+  echo "OK: HTTP STATUS 200 - Testfile '$TESTFILE' found"
+  exit $STATUS_OK
+else
+  case "$(cat $curl_output)" in
+    *NoLoggingStatusForKey*)
+      echo "WARN: NoLoggingStatusForKey - Testfile '$TESTFILE' not found"; exit $STATUS_WARN;;
+    *)
+      echo "CRIT: $(cat $curl_output)"; exit $STATUS_CRIT;;
+  esac
+fi
