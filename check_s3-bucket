@@ -1,6 +1,8 @@
 #!/bin/sh 
 # vi: set shiftwidth=2 tabstop=2 :
 
+# dmaes@inuits.eu
+
 STATUS_OK=0
 STATUS_WARN=1
 STATUS_CRIT=2
