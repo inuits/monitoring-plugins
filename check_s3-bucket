@@ -21,7 +21,7 @@ parsecmd() {
         ENDPOINT=$(echo $2 | sed -e 's/^.*:\/\///g')
         shift;;
       -f|--test-file) # TESTFILE
-        # file to use when testing (default: .testfile)
+        # file to use when testing (default: .do-not-remove_file_to_test_mountpoint)
         TESTFILE=$2
         shift;;
       -k|--s3-key) # S3_KEY
@@ -68,7 +68,7 @@ parsecmd "$@"
 [ -z "$ENDPOINT" ] && echo "No endpoint provided" && exit $STATUS_UNK
 [ -z "$S3_KEY" ] && echo "No S3 key provided" && exit $STATUS_UNK
 [ -z "$S3_SECRET" ] && echo "No S3 secret provided" && exit $STATUS_UNK
-[ -z "$TESTFILE" ] && TESTFILE=.testfile
+[ -z "$TESTFILE" ] && TESTFILE=.do-not-remove_file_to_test_mountpoint
 
 resource="/$BUCKET/$TESTFILE"
 content_type="text/html"
