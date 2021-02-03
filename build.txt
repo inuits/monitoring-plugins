@@ -100,4 +100,5 @@ check_ftp.pl                          1.0
 check_sftp.sh                         1.0
 check_mysql-replication-configured    0.2
 check_s3-bucket                       0.1
+check_docker                       2.3
 # vim: set ts=2 sw=2 et : #

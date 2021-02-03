@@ -403,6 +403,11 @@ An example Vagrant project has been included to get you started right away.
         <td><a href="https://github.com/dmaes">dmaes</a></td>
         <td></td>
     </tr>
+    <tr>
+        <td>check_docker</td>
+        <td><a href="https://github.com/maartenbeeckmans">maartenbeeckmans</a></td>
+        <td><a href="https://github.com/newrelic/check_docker">upstream</a></td>
+    </tr>
 </table>
 
 ### Contributions
