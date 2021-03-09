@@ -408,6 +408,11 @@ An example Vagrant project has been included to get you started right away.
         <td><a href="https://github.com/maartenbeeckmans">maartenbeeckmans</a></td>
         <td><a href="https://github.com/newrelic/check_docker">upstream</a></td>
     </tr>
+    <tr>
+        <td>check_wireguard</td>
+        <td><a href="https://github.com/RobinOphalvens">Robin Ophalvens</a></td>
+        <td></td>
+    </tr>
 </table>
 
 ### Contributions
@@ -424,4 +429,3 @@ Guidelines:
 - Send a pull request
 - ...
 - Profit!
-
