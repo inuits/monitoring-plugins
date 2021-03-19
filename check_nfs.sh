@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Usage:
-# Requires showmound command from nfs-utils or nfs-common.
+# Requires showmount command from nfs-utils or nfs-common.
 # Checks the given host for NFS shares and tries to mount them.
 # If all shares are mountable or there are no shares then the exit code is 0
 # Exit code 1 means the system doesn't support NFS 
