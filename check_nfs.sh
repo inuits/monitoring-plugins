@@ -3,10 +3,11 @@
 # Usage:
 # Requires showmount command from nfs-utils or nfs-common.
 # Checks the given host for NFS shares and tries to mount them.
-# If all shares are mountable or there are no shares then the exit code is 0
+# If all shares are mountable then the exit code is 0
 # Exit code 1 means the system doesn't support NFS 
 # Exit code 2 means the showmount command is not found
 # Exit code 3 means one share couldn't be mounted
+# Exit code 4 means there are no shares found
 
 host=''
 localdir='/tmp/nfs_test'
@@ -58,7 +59,7 @@ mount_points=( $(showmount -e $host | grep / | sed s,'*',,g) )
 
 if [[ -z $mount_points ]]; then
 	echo "No mounts detected. Exiting..."
-	exit 0
+	exit 4
 fi
 
 set +e
