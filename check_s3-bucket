@@ -83,8 +83,8 @@ trap "rm -rf $curl_output >/dev/null 2>&1; rm -rf $curl_stderr >/dev/null 2>&1" 
 rc=$(curl --output $curl_output --write-out "%{http_code}" -H "Date:$date" -H "Content-Type:$content_type" -H "Authorization: AWS $S3_KEY:$signature" https://$BUCKET.$ENDPOINT/$TESTFILE $CURL_OPTS 2>$curl_stderr)
 
 if [ $? -gt 0 ]; then
-  echo "UNK: $(cat $curl_output) $(cat $curl_stderr | sed -e 's/^.*curl: /curl: /g' | grep -E '^curl: ')"
-  exit $STATUS_UNK
+  echo "CRIT: $(cat $curl_output) $(cat $curl_stderr | sed -e 's/^.*curl: /curl: /g' | grep -E '^curl: ')"
+  exit $STATUS_CRIT
 elif [ $rc -eq 200 ]; then
   echo "OK: HTTP STATUS 200 - Testfile '$TESTFILE' found"
   exit $STATUS_OK
