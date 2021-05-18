@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 import urllib2
 import json
 import pprint
@@ -14,6 +14,7 @@ UNKNOWN = 3
 # argument parsing
 args = sys.argv[1:]
 host = "localhost"
+port = "8500"
 node_name = None
 tls = False
 ca_cert = None
@@ -29,6 +30,8 @@ while len(args) > 0:
         continue
     elif args[0] == "--ca-cert":
         ca_cert = args[1]
+    elif args[0] == "--port":
+        port = args[1]
 
     args = args[2:]
 
@@ -41,7 +44,7 @@ try:
     scheme = "http://"
     if tls:
         scheme = "https://"
-    url = scheme + host + ':8500/v1/health/node/' + node_name
+    url = scheme + host + ':' + port + '/v1/health/node/' + node_name
     req = urllib2.Request(url)
     response = urllib2.urlopen(req, timeout=10, cafile=ca_cert)
     data = json.loads(response.read())
