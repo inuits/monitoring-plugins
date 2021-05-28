@@ -56,6 +56,20 @@ my @args = (
     default  => 80,
     required => 0,
   },
+  {
+    spec     => 'warn|w=i',
+    usage    => '-w, --warn=INTEGER',
+    desc     => 'warning level',
+    default  => 10,
+    required => 0,
+  },
+   {
+    spec     => 'crit|c=i',
+    usage    => '-c, --crit=INTEGER',
+    desc     => 'Critical level',
+    default  => 42,
+    required => 0,
+  },
 );
 
 
@@ -171,14 +185,19 @@ sub check_queue {
 
   }
 
-
-
-  if ( $tickets_count > 0 ) {
+  my $perf = " | open_tickets=$tickets_count";
+  if ( $tickets_count > $plugin->opts->crit ) {
     $message = "There are $tickets_count tickets open with titles: $titles";
-    $plugin->nagios_exit( CRITICAL, $message);
+    $plugin->nagios_exit( CRITICAL, $message . $perf);
+  } elsif ( $tickets_count > $plugin->opts->warn ) {
+    $message = "There are $tickets_count tickets open with titles: $titles";
+    $plugin->nagios_exit( WARNING, $message . $perf);
+  } elsif ( $tickets_count > 0 ) {
+    $message = "There are $tickets_count tickets open with titles: $titles";
+    $plugin->nagios_exit( OK, $message . $perf);
   } else {
     $message = "There are no new tickets open";
-    $plugin->nagios_exit( OK, $message);
+    $plugin->nagios_exit( OK, $message . $perf);
   }
 
 }
