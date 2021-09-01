@@ -117,7 +117,7 @@ sub send_request {
 
   my $port = $plugin->opts->port;
 
-  my $url = $protocol . $plugin->opts->hostname . ':' . $port . '/api/v1/tickets/search?query=state:new';
+  my $url = $protocol . $plugin->opts->hostname . ':' . $port . '/api/v1/tickets/search?query=state.name:new';
 
   my $request = HTTP::Request->new( GET => $url );
 
