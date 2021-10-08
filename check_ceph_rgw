@@ -1,0 +1,118 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+#  Copyright (c) 2014 Catalyst IT http://www.catalyst.net.nz
+#  Copyright (c) 2015 SWITCH http://www.switch.ch
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+
+from __future__ import print_function
+import argparse
+import os
+import re
+import subprocess
+import sys
+import json
+
+__version__ = '1.5.1'
+
+# default ceph values
+RGW_COMMAND = '/usr/bin/radosgw-admin'
+
+# nagios exit code
+STATUS_OK = 0
+STATUS_WARNING = 1
+STATUS_ERROR = 2
+STATUS_UNKNOWN = 3
+
+def main():
+
+  # parse args
+  parser = argparse.ArgumentParser(description="'radosgw-admin bucket stats' nagios plugin.")
+  parser.add_argument('-d','--detail', help='output perf data for all buckets', action='store_true')
+  parser.add_argument('-B','--byte', help='output perf data in Byte instead of KB', action='store_true')
+  parser.add_argument('-e','--exe', help='radosgw-admin executable [%s]' % RGW_COMMAND)
+  parser.add_argument('-c','--conf', help='alternative ceph conf file')
+  parser.add_argument('-i','--id', help='ceph client id')
+  parser.add_argument('-n','--name', help='ceph client name (type.id)')
+  parser.add_argument('-V','--version', help='show version and exit', action='store_true')
+  args = parser.parse_args()
+
+  # validate args
+  rgw_exec = args.exe if args.exe else RGW_COMMAND
+  if not os.path.exists(rgw_exec):
+    print("RGW ERROR: radosgw-admin executable '%s' doesn't exist" % rgw_exec)
+    return STATUS_UNKNOWN
+
+  if args.version:
+    print('version %s' % __version__)
+    return STATUS_OK
+
+  if args.conf and not os.path.exists(args.conf):
+    print("RGW ERROR: ceph conf file '%s' doesn't exist" % args.conf)
+    return STATUS_UNKNOWN
+
+  # build command
+  rgw_cmd = [rgw_exec]
+  if args.conf:
+    rgw_cmd.append('-c')
+    rgw_cmd.append(args.conf)
+  if args.id:
+    rgw_cmd.append('--id')
+    rgw_cmd.append(args.id)
+  if args.name:
+    rgw_cmd.append('-n')
+    rgw_cmd.append(args.name)
+  rgw_cmd.append('bucket')
+  rgw_cmd.append('stats')
+
+  # exec command
+  p = subprocess.Popen(rgw_cmd,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+  output, err = p.communicate()
+
+  if p.returncode != 0 or not output:
+    print("RGW ERROR: %s :: %s" % (output, err))
+    return STATUS_ERROR
+
+  bucket_stats = json.loads(output)
+  #print bucket_stats
+
+  buckets = []
+  for i in bucket_stats:
+    if type(i) is dict:
+      bucket_name = i['bucket']
+      usage_dict = i['usage']
+      if usage_dict and 'rgw.main' in usage_dict:
+        bucket_usage_kb = usage_dict['rgw.main']['size_kb_actual']
+      else:
+        bucket_usage_kb = 0
+      buckets.append((bucket_name, bucket_usage_kb))
+  buckets_total_kb = sum([b[1] for b in buckets])
+
+  if args.byte:
+    status = "RGW OK: {} buckets, {} KB total | /={}B ".format(len(buckets),buckets_total_kb,buckets_total_kb*1024)
+  else:
+    status = "RGW OK: {} buckets, {} KB total | /={}KB ".format(len(buckets),buckets_total_kb,buckets_total_kb)
+  #print buckets
+  if buckets and args.detail:
+    if args.byte:
+      status = status + " ".join(["{}={}B".format(b[0],b[1]*1024) for b in buckets])
+    else:
+      status = status + " ".join(["{}={}KB".format(b[0],b[1]) for b in buckets])
+
+  print(status)
+  return STATUS_OK
+
+if __name__ == "__main__":
+  sys.exit(main())
