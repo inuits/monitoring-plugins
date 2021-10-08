@@ -405,13 +405,63 @@ An example Vagrant project has been included to get you started right away.
     </tr>
     <tr>
         <td>check_docker</td>
-        <td><a href="https://github.com/maartenbeeckmans">maartenbeeckmans</a></td>
+        <td><a href="https://github.com/maartenbeeckmans">Maarten Beeckmans</a></td>
         <td><a href="https://github.com/newrelic/check_docker">upstream</a></td>
     </tr>
     <tr>
         <td>check_wireguard</td>
         <td><a href="https://github.com/RobinOphalvens">Robin Ophalvens</a></td>
         <td></td>
+    </tr>
+    <tr>
+        <td>check_ceph_df</td>
+        <td><a href="https://github.com/maartenbeeckmans">Maarten Beeckmans</a></td>
+        <td><a href="https://github.com/ceph/ceph-nagios-plugins">upstream</a></td>
+    </tr>
+    <tr>
+        <td>check_ceph_health</td>
+        <td><a href="https://github.com/maartenbeeckmans">Maarten Beeckmans</a></td>
+        <td><a href="https://github.com/ceph/ceph-nagios-plugins">upstream</a></td>
+    </tr>
+    <tr>
+        <td>check_ceph_mds</td>
+        <td><a href="https://github.com/maartenbeeckmans">Maarten Beeckmans</a></td>
+        <td><a href="https://github.com/ceph/ceph-nagios-plugins">upstream</a></td>
+    </tr>
+    <tr>
+        <td>check_ceph_mgr</td>
+        <td><a href="https://github.com/maartenbeeckmans">Maarten Beeckmans</a></td>
+        <td><a href="https://github.com/ceph/ceph-nagios-plugins">upstream</a></td>
+    </tr>
+    <tr>
+        <td>check_ceph_mon</td>
+        <td><a href="https://github.com/maartenbeeckmans">Maarten Beeckmans</a></td>
+        <td><a href="https://github.com/ceph/ceph-nagios-plugins">upstream</a></td>
+    </tr>
+    <tr>
+        <td>check_ceph_osd</td>
+        <td><a href="https://github.com/maartenbeeckmans">Maarten Beeckmans</a></td>
+        <td><a href="https://github.com/ceph/ceph-nagios-plugins">upstream</a></td>
+    </tr>
+    <tr>
+        <td>check_ceph_osd_db</td>
+        <td><a href="https://github.com/maartenbeeckmans">Maarten Beeckmans</a></td>
+        <td><a href="https://github.com/ceph/ceph-nagios-plugins">upstream</a></td>
+    </tr>
+    <tr>
+        <td>check_ceph_osd_df</td>
+        <td><a href="https://github.com/maartenbeeckmans">Maarten Beeckmans</a></td>
+        <td><a href="https://github.com/ceph/ceph-nagios-plugins">upstream</a></td>
+    </tr>
+    <tr>
+        <td>check_ceph_rgw</td>
+        <td><a href="https://github.com/maartenbeeckmans">Maarten Beeckmans</a></td>
+        <td><a href="https://github.com/ceph/ceph-nagios-plugins">upstream</a></td>
+    </tr>
+    <tr>
+        <td>check_ceph_rgw_api</td>
+        <td><a href="https://github.com/maartenbeeckmans">Maarten Beeckmans</a></td>
+        <td><a href="https://github.com/ceph/ceph-nagios-plugins">upstream</a></td>
     </tr>
 </table>
 

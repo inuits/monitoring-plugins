@@ -102,4 +102,14 @@ check_mysql-replication-configured    0.2
 check_s3-bucket                       0.1
 check_docker                       2.3
 check_wireguard                    1.0
+check_ceph_df                      1.7.1
+check_ceph_health                  1.7.0
+check_ceph_mds                     1.6.0
+check_ceph_mgr                     1.0.0
+check_ceph_mon                     1.5.0
+check_ceph_osd                     1.5.2
+check_ceph_osd_db                  1.0.0
+check_ceph_osd_df                  1.0.0
+check_ceph_rgw                     1.5.1
+check_ceph_rgw_api                 1.7.2
 # vim: set ts=2 sw=2 et : #
