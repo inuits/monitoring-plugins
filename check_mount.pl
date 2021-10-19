@@ -47,9 +47,9 @@ if ($erg)
 			print $MOUNT . " is mounted! Type is " . $TYPE . "\n";
 			exit $ERRORS{'OK'};
 		}
-		elsif ($TYPE eq 'none')
+		elsif ($TYPE eq '')
 		{
-			print $MOUNT . " is mounted! Type is " . $TYPE . "\n";
+			print $MOUNT . " is mounted!" . $TYPE . "\n";
 			exit $ERRORS{'OK'};
 		}
 		else
