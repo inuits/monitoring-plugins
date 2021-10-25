@@ -147,8 +147,8 @@ def main():
     print("| 'osd_up'=%d 'osd_down_in'=%d;;%d 'osd_down_out'=%d;;%d" % (len(up), len(down_in), args.crit, len(down_out), args.crit))
     return STATUS_OK
 
-  print("OSD WARN: no OSD.%s found on host %s" % (args.osdid, args.host))
-  return STATUS_WARNING
+  print("OSD ERROR: no OSD.%s found on host %s" % (args.osdid, args.host))
+  return STATUS_ERROR
 
 if __name__ == "__main__":
     sys.exit(main())
