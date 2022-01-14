@@ -229,6 +229,11 @@ An example Vagrant project has been included to get you started right away.
         <td><a href="https://github.com/opentable/nagios-elasticsearch">upstream</a></td>
     </tr>
     <tr>
+        <td>check_es-system.sh</td>
+        <td><a href="https://github.com/Napsty">Claudio Kuenzler</a></td>
+        <td><a href="https://github.com/Napsty/check_es_system">upstream</a></td>
+    </tr>
+    <tr>
         <td>check_puppetdb_*</td>
         <td><a href="https://github.com/jasonhancock/nagios-puppetdb.git">Jason Hancock</a></td>
         <td><a href="https://github.com/jasonhancock/nagios-puppetdb.git">upstream</a></td>
