@@ -468,6 +468,11 @@ An example Vagrant project has been included to get you started right away.
         <td><a href="https://github.com/maartenbeeckmans">Maarten Beeckmans</a></td>
         <td><a href="https://github.com/ceph/ceph-nagios-plugins">upstream</a></td>
     </tr>
+    <tr>
+        <td>check_patroni</td>
+        <td><a href="https://github.com/maartenbeeckmans">Maarten Beeckmans</a></td>
+        <td></td>
+    </tr>
 </table>
 
 ### Contributions
