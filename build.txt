@@ -113,4 +113,5 @@ check_ceph_osd_db                  1.0.0
 check_ceph_osd_df                  1.0.0
 check_ceph_rgw                     1.5.1
 check_ceph_rgw_api                 1.7.2
+check_patroni.py                   0.1
 # vim: set ts=2 sw=2 et : #
