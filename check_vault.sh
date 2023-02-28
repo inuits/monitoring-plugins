@@ -9,6 +9,9 @@
 # This is a simple Nagios/Icinga check which will query  #
 # the state of Vault.                                    #
 #                                                        #
+# 2023-02-28:                                            #
+#  - Option to raise critical on sealed vault            #
+#                                                        #
 # 2019-10-16:                                            #
 #  - Minor rewrite to support vault v1.2.3               #
 #                                                        #
@@ -26,6 +29,8 @@ OK=0;
 WARNING=1;
 CRITICAL=2;
 UNKNOWN=3;
+
+SEALED_RC=$WARNING;
 
 # Define PATH incase the user executing the script doesn't have it set (nrpe)
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin
@@ -49,6 +54,9 @@ while [ "$1" != "" ]; do
     --ca-cert )           shift
                           TLS="true"
                           export VAULT_CACERT="$1"
+                          ;;
+    --sealed-critical )   shift
+                          SEALED_RC=$CRITICAL
                           ;;
     * )
   esac
@@ -79,7 +87,7 @@ elif [[ $OUTPUT == *"\"sealed\": true"* ]]; then
   KEY_THRESHOLD="$(echo $OUTPUT | egrep -o '"t": [[:digit:]]' | cut -d ':' -f2 | sed 's/^[ \t]*//;s/[ \t]*$//')";
   USEAL_PROGRESS="$(echo $OUTPUT | egrep -o '"progress": [[:digit:]]' | cut -d ':' -f2 | sed 's/^[ \t]*//;s/[ \t]*$//')";
   echo "Vault sealed, $USEAL_PROGRESS/$KEY_THRESHOLD entered";
-  exit $WARNING;
+  exit $SEALED_RC;
 elif [[ $OUTPUT == *"\"sealed\": false"* ]]; then
   echo "Vault unsealed";
   exit $OK;
