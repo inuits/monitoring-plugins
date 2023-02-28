@@ -57,7 +57,6 @@ while [ "$1" != "" ]; do
                           ;;
     --sealed-critical )   shift
                           SEALED_RC=$CRITICAL
-                          export VAULT_CACERT="$1"
                           ;;
     * )
   esac
