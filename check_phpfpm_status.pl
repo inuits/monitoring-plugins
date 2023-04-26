@@ -26,52 +26,53 @@ package main;
 binmode(STDOUT, ":utf8");
 
 # Globals
-my $Version='1.1';
-my $Name=$0;
+my $Version=          '1.1';
+my $Name=             $0;
 
-my $o_host =        undef;  # hostname
-my $o_help=         undef;  # want some help ?
-my $o_port=         undef;  # port
-my $o_url =         undef;  # url to use, if not the default
-my $o_user=         undef;  # user for auth
-my $o_pass=         '';     # password for auth
-my $o_realm=        '';     # password for auth
-my $o_version=      undef;  # print version
-my $o_warn_p_level= -1;     # Min number of idle workers that will cause a warning
-my $o_crit_p_level= -1;     # Min number of idle workersthat will cause an error
-my $o_warn_q_level= -1;     # Number of Max Queue Reached that will cause a warning
-my $o_crit_q_level= -1;     # Number of Max Queue Reached that will cause an error
-my $o_warn_m_level= -1;     # Number of Max Processes Reached that will cause a warning
-my $o_crit_m_level= -1;     # Number of Max Processes Reached that will cause an error
-my $o_timeout=      15;     # Default 15s Timeout
-my $o_warn_thresold=undef;  # warning thresolds entry
-my $o_crit_thresold=undef;  # critical thresolds entry
-my $o_debug=        undef;  # debug mode
-my $o_fastcgi=      undef;  # direct fastcgi mode (without an http->fastcgi proxy)
-my $o_servername=   undef;  # ServerName (host header in http request)
-my $o_https=        undef;  # SSL (HTTPS) mode
-my $o_verify_ssl=   0;      # SSL verification, False by default
-my $o_cacert_file=  undef;  # Path to cacert.pem file
+my $o_host=           undef;     # hostname
+my $o_help=           undef;     # want some help ?
+my $o_port=           undef;     # port
+my $o_url=            undef;     # url to use, if not the default
+my $o_user=           undef;     # user for auth
+my $o_pass=           '';        # password for auth
+my $o_realm=          '';        # password for auth
+my $o_version=        undef;     # print version
+my $o_warn_p_level=   -1;        # Min number of idle workers that will cause a warning
+my $o_crit_p_level=   -1;        # Min number of idle workersthat will cause an error
+my $o_warn_q_level=   -1;        # Number of Max Queue Reached that will cause a warning
+my $o_crit_q_level=   -1;        # Number of Max Queue Reached that will cause an error
+my $o_warn_m_level=   -1;        # Number of Max Processes Reached that will cause a warning
+my $o_crit_m_level=   -1;        # Number of Max Processes Reached that will cause an error
+my $o_timeout=        15;        # Default 15s Timeout
+my $o_warn_threshold= undef;     # warning thresholds entry
+my $o_crit_threshold= undef;     # critical thresholds entry
+my $o_debug=          undef;     # debug mode
+my $o_fastcgi=        undef;     # direct fastcgi mode (without an http->fastcgi proxy)
+my $o_unixsocket=     undef;     # use a UNIX socket (in direct fastcgi mode)
+my $o_servername=     undef;     # ServerName (host header in http request)
+my $o_https=          undef;     # SSL (HTTPS) mode
+my $o_verify_ssl=     0;         # SSL verification, False by default
+my $o_cacert_file=    undef;     # Path to cacert.pem file
 
-my $TempPath = '/tmp/';     # temp path
-my $MaxUptimeDif = 60*30;   # Maximum uptime difference (seconds), default 30 minutes
+my $TempPath=         '/tmp/';   # temp path
+my $MaxUptimeDif=     60*30;     # Maximum uptime difference (seconds), default 30 minutes
 
-my $phpfpm = 'PHP-FPM'; # Could be used to store version also
+my $phpfpm=           'PHP-FPM'; # Could be used to store version also
 
 # functions
 sub show_versioninfo { print "$Name version : $Version\n"; }
 
 sub print_usage {
-  print "Usage: $Name -H <host ip> [-p <port>] [-s servername] [-t <timeout>] [-w <WARN_THRESOLD> -c <CRIT_THRESOLD>] [-V] [-d] [-f] [-u <url>] [-U user -P pass -r realm]\n";
+  print "Usage: $Name -H <host ip> [-p <port>] [-s servername] [-t <timeout>] [-w <WARN_THRESHOLD> -c <CRIT_THRESHOLD>] [-V] [-d] [-f] [-u <url>] [-U user -P pass -r realm]\n";
 }
 sub nagios_exit {
     my ( $nickname, $status, $message, $perfdata , $silent) = @_;
     my %STATUSCODE = (
-      'OK' => 0
-      , 'WARNING' => 1
-      , 'CRITICAL' => 2
-      , 'UNKNOWN' => 3
-      , 'PENDING' => 4
+      'OK'       => 0,
+      'WARNING'  => 1,
+      'CRITICAL' => 2,
+      'UNKNOWN'  => 3,
+      'PENDING'  => 4,
     );
     if(!defined($silent)) {
         my $output = undef;
@@ -100,13 +101,15 @@ sub help {
 -H, --hostname=HOST
    name or IP address of host to check
 -p, --port=PORT
-   Http port, or Fastcgi port when using --fastcgi
+   HTTP port, or Fastcgi port when using --fastcgi
 -u, --url=URL
    Specific URL (only the path part of it in fact) to use, instead of the default "/fpm-status"
 -s, --servername=SERVERNAME
    ServerName, (host header of HTTP request) use it if you specified an IP in -H to match the good Virtualhost in your target
 -f, --fastcgi
    Connect directly to php-fpm via network or local socket, using fastcgi protocol instead of HTTP.
+--unixsocket
+   Connect to php-fpm via UNIX socket, implies --fastcgi
 -U, --user=user
    Username for basic auth
 -P, --pass=PASS
@@ -114,7 +117,7 @@ sub help {
 -r, --realm=REALM
    Realm for basic auth
 -d, --debug
-   Debug mode (show http request response)
+   Debug mode (show request response)
 -t, --timeout=INTEGER
    timeout in seconds (Default: $o_timeout)
 -S, --ssl
@@ -136,41 +139,47 @@ sub help {
    prints version number
 
 Note :
-  3 items can be managed on this check, this is why -w and -c parameters are using 3 values thresolds
-  - MIN_AVAILABLE_PROCESSES: Working with the number of available (Idle) and working process (Busy).
+  3 items can be managed on this check, this is why -w and -c parameters are using 3 values thresholds
+  - MIN_AVAILABLE_PROCESSES: Working with the number of available (Idle) and working processes (Busy).
     Generating WARNING and CRITICAL if you do not have enough Idle processes.
-  - PROC_MAX_REACHED: the fpm-status report will show us how many times the max processes were reached sinc start,
-    this script will record how many time this happended since last check, letting you fix thresolds for alerts
+  - PROC_MAX_REACHED: the fpm-status report will show us how many times the max processes were reached since start,
+    this script will record how many times this happened since last check, letting you fix thresholds for alerts
   - QUEUE_MAX_REACHED: the php-fpm report will show us how many times the max queue was reached since start,
-    this script will record how many time this happended since last check, letting you fix thresolds for alerts
+    this script will record how many times this happened since last check, letting you fix thresholds for alerts
 
 Examples:
 
-  This will lead to CRITICAL if you have 0 Idle process, or you have reached the max processes 2 times between last check,
-  or you have reached the max queue len 5 times. A Warning will be reached for 1 Idle process only:
+  This will lead to CRITICAL if you have 0 idle processes or you reached the max processes 2 times between last check,
+  or you reached the max queue len 5 times. A warning will be generated for 1 idle process only:
 
 check_phpfpm_status.pl -H 10.0.0.10 -u /foo/my-fpm-status -s mydomain.example.com -t 8 -w 1,-1,-1 -c 0,2,5
 
-  this will generate WARNING and CRITICAL alerts only on the number of times you have reached the max process:
+  This will generate WARNING and CRITICAL alerts only on the number of times you have reached the max processes:
 
 check_phpfpm_status.pl -H 10.0.0.10 -u /foo/my-fpm-status -s mydomain.example.com -t 8 -w -1,10,-1 -c -1,20,-1
 
-  theses two equivalents will not generate any alert (if the php-fpm page is reachable) but could be used for graphics:
+  These two equivalents will not generate any alert (if the php-fpm page is reachable) but could be used for graphing:
 
 check_phpfpm_status.pl -H 10.0.0.10 -s mydomain.example.com -w -1,-1,-1 -c -1,-1,-1
 check_phpfpm_status.pl -H 10.0.0.10 -s mydomain.example.com
 
-  And this one is a basic starting example :
+  And this one is a basic starting example:
 
 check_phpfpm_status.pl -H 127.0.0.1 -s nagios.example.com -w 1,1,1 -c 0,2,2
 
   All these examples used an HTTP proxy (like Nginx or Apache) in front of php-fpm. If php-fpm is listening on a tcp/ip socket
-  you can also make a direct request on this port (9000 by default) using the fastcgi protocol. You'll need the FastCGI client
-  tools enabled in Perl (check the README) and the command would use the -f or --fastcgi option (note that SSL or servername
-  options are useless in this mode).
-  This can be especially usefull if you use php-fpm in an isolated env, without the HTTP proxy support (like in a docker container):
+  you can also make a direct request on this port (9000 by default) or to an UNIX socket by using the fastcgi protocol. You'll
+  need the FastCGI client tools enabled in Perl (check the README) and the command would use the -f or --fastcgi and eventually
+  the --unixsocket option (note that SSL or servername options are useless in this mode).
+  This can be especially usefull if you use php-fpm in an isolated env, without the HTTP proxy support (like in a docker container).
+
+  Connect to an INET socket on port 9002:
 
 check_phpfpm_status.pl -H 127.0.0.1 --fastcgi -p 9002 -w 1,1,1 -c 0,2,2
+
+  Connect to the UNIX socket listening in /run/php/php-fpm.sock with a non-standard URL:
+
+check_phpfpm_status.pl -H 127.0.0.1 --fastcgi --unixsocket /run/php/php-fpm.sock -u /secret-status -w 1,1,1 -c 0,2,2
 
 HTTPS/SSL:
 
@@ -178,8 +187,8 @@ HTTPS/SSL:
 
 check_phpfpm_status.pl -H 10.0.0.10 -s mydomain.example.com --ssl
 
-  Check --verify-ssl (false by defaut) --cacert and --sl for more options, like below
-  (note that certificate checks never wortked on my side, add -d for full debug and
+  Check --verify-ssl (false by default) --cacert and --sl for more options, like below
+  (note that certificate checks never worked on my side, add -d for full debug and
   tell me if it worked for you, you may need up to date CPAN adn openSSL libs)
 
 check_phpfpm_status.pl -H 10.0.0.10 -s mydomain.example.com --ssl TLSv1_2 --verify-ssl 1 --cacert /etc/ssl/cacert.pem
@@ -193,6 +202,7 @@ sub check_options {
       'h'     => \$o_help,          'help'             => \$o_help,
       'd'     => \$o_debug,         'debug'            => \$o_debug,
       'f'     => \$o_fastcgi,       'fastcgi'          => \$o_fastcgi,
+                                    'unixsocket:s'     => \$o_unixsocket,
       'H:s'   => \$o_host,          'hostname:s'       => \$o_host,
       's:s'   => \$o_servername,    'servername:s'     => \$o_servername,
       'S:s'   => \$o_https,         'ssl:s'            => \$o_https,
@@ -202,12 +212,12 @@ sub check_options {
       'r:s'   => \$o_realm,         'realm:s'          => \$o_realm,
       'p:i'   => \$o_port,          'port:i'           => \$o_port,
       'V'     => \$o_version,       'version'          => \$o_version,
-      'w=s'   => \$o_warn_thresold, 'warn=s'           => \$o_warn_thresold,
-      'c=s'   => \$o_crit_thresold, 'critical=s'       => \$o_crit_thresold,
+      'w=s'   => \$o_warn_threshold, 'warn=s'          => \$o_warn_threshold,
+      'c=s'   => \$o_crit_threshold, 'critical=s'      => \$o_crit_threshold,
       't:i'   => \$o_timeout,       'timeout:i'        => \$o_timeout,
       'x:i'   => \$o_verify_ssl,    'verifyhostname:i' => \$o_verify_ssl,
                                     'verifyssl:i'      => \$o_verify_ssl,
-      'X:s'   => \$o_cacert_file,   'cacert:s' => \$o_cacert_file,
+      'X:s'   => \$o_cacert_file,   'cacert:s'         => \$o_cacert_file,
     );
 
     if (defined ($o_help)) {
@@ -219,34 +229,37 @@ sub check_options {
         nagios_exit($phpfpm,"UNKNOWN","leaving","",1);
     };
 
-    if (defined($o_warn_thresold)) {
-        ($o_warn_p_level,$o_warn_m_level,$o_warn_q_level) = split(',', $o_warn_thresold);
+    if (defined($o_warn_threshold)) {
+        ($o_warn_p_level,$o_warn_m_level,$o_warn_q_level) = split(',', $o_warn_threshold);
     } else {
-        $o_warn_thresold = 'undefined'
+        $o_warn_threshold = 'undefined'
     }
-    if (defined($o_crit_thresold)) {
-        ($o_crit_p_level,$o_crit_m_level,$o_crit_q_level) = split(',', $o_crit_thresold);
+    if (defined($o_crit_threshold)) {
+        ($o_crit_p_level,$o_crit_m_level,$o_crit_q_level) = split(',', $o_crit_threshold);
     } else {
-        $o_crit_thresold = 'undefined'
+        $o_crit_threshold = 'undefined'
     }
     if (defined($o_fastcgi) && defined($o_https)) {
         nagios_exit($phpfpm,"UNKNOWN","You cannot use both --fastcgi and --ssl options, we do not use http (nor https) when we use direct fastcgi access!");
     }
+    if (defined($o_unixsocket) && not defined($o_fastcgi)) {
+        $o_fastcgi = 1;
+    }
     if (defined($o_debug)) {
-        print("\nDebug thresolds: \nWarning: ($o_warn_thresold) => Min Idle: $o_warn_p_level Max Reached :$o_warn_m_level MaxQueue: $o_warn_q_level");
-        print("\nCritical ($o_crit_thresold) => : Min Idle: $o_crit_p_level Max Reached: $o_crit_m_level MaxQueue : $o_crit_q_level\n");
+        print("\nDEBUG thresholds: \nWarning: ($o_warn_threshold) => Min Idle: $o_warn_p_level Max Reached :$o_warn_m_level MaxQueue: $o_warn_q_level");
+        print("\nCritical ($o_crit_threshold) => : Min Idle: $o_crit_p_level Max Reached: $o_crit_m_level MaxQueue : $o_crit_q_level\n");
     }
     if ((defined($o_warn_p_level) && defined($o_crit_p_level)) &&
          (($o_warn_p_level != -1) && ($o_crit_p_level != -1) && ($o_warn_p_level <= $o_crit_p_level)) ) {
-        nagios_exit($phpfpm,"UNKNOWN","Check warning and critical values for IdleProcesses (1st part of thresold), warning level must be > crit level!");
+        nagios_exit($phpfpm,"UNKNOWN","Check warning and critical values for IdleProcesses (1st part of threshold), warning level must be > crit level!");
     }
     if ((defined($o_warn_m_level) && defined($o_crit_m_level)) &&
          (($o_warn_m_level != -1) && ($o_crit_m_level != -1) && ($o_warn_m_level >= $o_crit_m_level)) ) {
-        nagios_exit($phpfpm,"UNKNOWN","Check warning and critical values for MaxProcesses (2nd part of thresold), warning level must be < crit level!");
+        nagios_exit($phpfpm,"UNKNOWN","Check warning and critical values for MaxProcesses (2nd part of threshold), warning level must be < crit level!");
     }
     if ((defined($o_warn_q_level) && defined($o_crit_q_level)) &&
          (($o_warn_q_level != -1) && ($o_crit_q_level != -1) && ($o_warn_q_level >= $o_crit_q_level)) ) {
-        nagios_exit($phpfpm,"UNKNOWN","Check warning and critical values for MaxQueue (3rd part of thresold), warning level must be < crit level!");
+        nagios_exit($phpfpm,"UNKNOWN","Check warning and critical values for MaxQueue (3rd part of threshold), warning level must be < crit level!");
     }
     # Check compulsory attributes
     if (!defined($o_host)) {
@@ -283,18 +296,34 @@ if (defined($o_fastcgi)) {
     # -- FASTCGI
     eval "use FCGI::Client::Connection;";
     nagios_exit($phpfpm,"UNKNOWN","You need to activate FCGI::Client::Connection CPAN module for this feature: " . $@) if $@;
-    eval "use IO::Socket::INET";
-    nagios_exit($phpfpm,"UNKNOWN","You need to activate IO::Socket::INET CPAN module for this feature: " . $@) if $@;
 
-    if (!defined($o_port)) {
-        $o_port = 9000;
-    }
-    my $sock = IO::Socket::INET->new(
-        PeerAddr => $override_ip,
-        PeerPort => $o_port,
-    );
-    if (!$sock) {
-        nagios_exit($phpfpm,"CRITICAL", "Cannot connect to  $override_ip : $o_port !");
+    my $sock;
+    if (defined($o_unixsocket)) {
+        eval "use IO::Socket::UNIX;";
+        nagios_exit($phpfpm,"UNKNOWN","You need to activate IO::Socket::UNIX CPAN module for this feature: " . $@) if $@;
+        if (!-S $o_unixsocket) {
+          nagios_exit($phpfpm,"UNKNOWN","$o_unixsocket is not an UNIX socket");
+        }
+        $sock = IO::Socket::UNIX->new(
+            Type => SOCK_STREAM(),
+            Peer => $o_unixsocket,
+        );
+        if (!$sock) {
+            nagios_exit($phpfpm,"CRITICAL", "Cannot connect to UNIX socket $o_unixsocket !");
+        }
+    } else {
+        eval "use IO::Socket::INET;";
+        nagios_exit($phpfpm,"UNKNOWN","You need to activate IO::Socket::INET CPAN module for this feature: " . $@) if $@;
+        if (!defined($o_port)) {
+            $o_port = 9000;
+        }
+        $sock = IO::Socket::INET->new(
+            PeerAddr => $override_ip,
+            PeerPort => $o_port,
+        );
+        if (!$sock) {
+            nagios_exit($phpfpm,"CRITICAL", "Cannot connect to $override_ip : $o_port !");
+        }
     }
     my $fastcgiClient = FCGI::Client::Connection->new(sock => $sock);
     $url = $o_url;
@@ -315,16 +344,16 @@ if (defined($o_fastcgi)) {
         ''
     );
     if (defined ($o_debug)) {
-        print "\nDEBUG: FASCGI requested url\n";
+        print "\nDEBUG: FASTCGI requested url\n";
         print $url;
-        print "\nDEBUG: FASCGI response: STDERR\n";
+        print "\nDEBUG: FASTCGI response: STDERR\n";
         print $stderr;
     }
     $response = fcgi_response->new($stdout, $o_debug);
 } else {
     # -- HTTP
     eval "use LWP::UserAgent;";
-    nagios_exit($phpfpm,"UNKNOWN","You need to activate LWP::UserAgent CPAN module for this feature: " . $@) if $@;
+    nagios_exit($phpfpm,"UNKNOWN","You need to install LWP::UserAgent CPAN module for this feature: " . $@) if $@;
     #use LWP::UserAgent;
 
     my $proto='http://';
@@ -397,7 +426,7 @@ if (defined($o_fastcgi)) {
 
             if (!defined($o_cacert_file)) {
                 eval "use Mozilla::CA;";
-                nagios_exit($phpfpm,"UNKNOWN","You need to activate Mozilla::CA CPAN module for this feature, or use --cacert option: " . $@) if $@;
+                nagios_exit($phpfpm,"UNKNOWN","You need to install Mozilla::CA CPAN module for this feature, or use --cacert option: " . $@) if $@;
                 $o_cacert_file = Mozilla::CA::SSL_ca_file();
             }
             #$ssl_opts{"SSL_ca_path"} = '/usr/share/ca-certificates/mozilla/';
@@ -572,7 +601,7 @@ if ($response->is_success) {
         $LastMaxListenQueue = <$FH>;
         close ($FH);
         if (defined ($o_debug)) {
-            print ("\nDebug: data from temporary file:\n");
+            print ("\nDEBUG: data from temporary file:\n");
             print ("LastUptime: $LastUptime LastAcceptedConn: $LastAcceptedConn LastMaxChildrenReached: $LastMaxChildrenReached LastMaxListenQueue: $LastMaxListenQueue \n");
         }
     }
