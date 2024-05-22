@@ -166,8 +166,8 @@ sub sys_stats {
     my $mem_used;
     if ( $DONT_INCLUDE_BUFFERS) { $mem_used = $memory[15]; }
     else { $mem_used = $memory[8];}
-    my $swap_total = $memory[18];
-    my $swap_used = $memory[19];
+    my $swap_total = $memory[14];
+    my $swap_used = $memory[15];
     my $mem_percent = ($mem_used / $mem_total) * 100;
     my $swap_percent;
     if ($swap_total == 0) {
