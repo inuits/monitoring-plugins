@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# check_crm_v0_8
+# check_crm_v0_9
 #
 # Copyright © 2013 Philip Garner, Sysnix Consultants Limited
 #
@@ -20,6 +20,8 @@
 #		    threshold ( Zoran Bosnjak & Marko Hrastovec )
 # v0.8 01/09/2020 - Make less assumptions about crm output
 #                   ( Jan Tlusty )
+# v0.9 25/03/2021 - Handle recent pacemaker prefixing lines with "  * "
+#                   ( Adam Cecile )
 #
 # NOTES: Requires Perl 5.8 or higher & the Perl Module Nagios::Plugin
 
@@ -108,6 +110,11 @@ sub gather_crm_output {
     or $np->nagios_exit( CRITICAL, $errormessage );
 
   @crm_output = <$filehandle>;
+
+  # Recent pacemaker version (e.g: 2.0.5) prefix lines with "  * " which breaks parsing
+  foreach (@crm_output) {
+    s/^\s+\*\s+//g;
+  }
 
   close($filehandle) or $np->nagios_exit( CRITICAL, $errormessage );
 }
