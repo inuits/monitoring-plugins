@@ -15,6 +15,11 @@ if [ -z "${GIT_PREVIOUS_COMMIT}" ] && [ -e last_success ]; then
   GIT_PREVIOUS_COMMIT=$(cat last_success)
 fi
 
+# Prep output directories
+mkdir -p packages/debian/{5,6}
+mkdir -p packages/rhel/{5,6,7,8,9}
+
+# Go over each defined plugin
 for PLUGIN in $(grep -viE '^#|^$' build.txt | awk {'print $1'} | sort | uniq); do
   PLUGIN_NAME_DEBIAN=$(echo ${PLUGIN} | sed -e 's/check_/check-/g' | tr '_' '-' | cut -d '.' -f 1)
   PLUGIN_NAME_RHEL=$(echo ${PLUGIN} | sed -e 's/check_//g' | cut -d '.' -f 1)
