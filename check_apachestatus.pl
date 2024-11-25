@@ -42,6 +42,8 @@ my $o_host =		undef; 		# hostname
 my $o_help=		undef; 		# want some help ?
 my $o_port = 		undef; 		# port
 my $o_version= 		undef;  	# print version
+my $o_ssl=		undef;  	# Use https
+my $o_insecure=	undef;  	# Disable SSL cert validation
 my $o_warn_level=	undef;  	# Number of available slots that will cause a warning
 my $o_crit_level=	undef;  	# Number of available slots that will cause an error
 my $o_timeout=  	15;            	# Default 15s Timeout
@@ -51,7 +53,7 @@ my $o_timeout=  	15;            	# Default 15s Timeout
 sub show_versioninfo { print "$Name version : $Version\n"; }
 
 sub print_usage {
-  print "Usage: $Name -H <host> [-p <port>] [-t <timeout>] [-w <warn_level> -c <crit_level>] [-V]\n";
+  print "Usage: $Name -H <host> [-p <port>] [-t <timeout>] [-w <warn_level> -c <crit_level>] [--ssl] [--insecure] [-V]\n";
 }
 
 # Get the alarm signal
@@ -73,6 +75,10 @@ sub help {
    Http port
 -t, --timeout=INTEGER
    timeout in seconds (Default: $o_timeout)
+-s, --ssl
+   Use https
+-k, --insecure
+   SSL verify_hostname=0
 -w, --warn=MIN
    number of available slots that will cause a warning
    -1 for no warning
@@ -118,6 +124,8 @@ sub check_options {
       'H:s'   => \$o_host,        'hostname:s'	  => \$o_host,
       'p:i'   => \$o_port,        'port:i'	  => \$o_port,
       'V'     => \$o_version,     'version'       => \$o_version,
+      's'     => \$o_ssl,         'ssl'           => \$o_ssl,
+      'k'     => \$o_insecure,    'insecure'       => \$o_insecure,
       'w:i'   => \$o_warn_level,  'warn:i'	  => \$o_warn_level,
       'c:i'   => \$o_crit_level,  'critical:i'	  => \$o_crit_level,
       't:i'   => \$o_timeout,     'timeout:i'     => \$o_timeout,
@@ -137,13 +145,21 @@ sub check_options {
 
 check_options();
 
-my $ua = LWP::UserAgent->new( protocols_allowed => ['http'], timeout => $o_timeout);
+my $ua = LWP::UserAgent->new( protocols_allowed => ['http', 'https'], timeout => $o_timeout);
+if (defined($o_insecure)) {
+  $ua->ssl_opts(verify_hostname => 0);
+}
 my $timing0 = [gettimeofday];
 my $response = undef;
+my $scheme = 'http://';
+
+if (defined($o_ssl)) {
+  $scheme = 'https://';
+}
 if (!defined($o_port)) {
-  $response = $ua->get('http://' . $o_host . '/server-status');
+  $response = $ua->get($scheme . $o_host . '/server-status');
 } else {
-  $response = $ua->get('http://' . $o_host . ':' . $o_port . '/server-status');
+  $response = $ua->get($scheme . $o_host . ':' . $o_port . '/server-status');
 }
 my $timeelapsed = tv_interval ($timing0, [gettimeofday]);
 
